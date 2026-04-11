@@ -6,6 +6,7 @@ namespace Hospital_System
 {
 	internal class Person
 	{
+
 		private string name;
 		//private string surname;
 		private int age;
