@@ -16,8 +16,8 @@ namespace Hospital_System
                     salary = value;
             }
         }
-        public Employee(string name, string surname, int age, char gender, string id, string phoneNumber, decimal salary)
-            : base(name, surname, age, gender, id, phoneNumber)
+        public Employee(string name, string surname, int age, char gender, long Nationalid, long phoneNumber, decimal salary)
+            : base(name, surname, age, gender, Nationalid, phoneNumber)
         {
             this.Salary = salary;
         }

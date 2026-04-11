@@ -7,11 +7,11 @@ namespace Hospital_System
 	internal class Person
 	{
 		private string name;
-		private string surname;
+		//private string surname;
 		private int age;
 		private char gender;
-		private string id;
-		private string phoneNumber;
+		private long Nationalid;
+		private long phoneNumber;
         public string Name
         {
             get => name;
@@ -27,7 +27,7 @@ namespace Hospital_System
                 }
             }
         }
-        public string Surname
+        /*public string Surname
         {
             get => surname;
             set
@@ -41,7 +41,7 @@ namespace Hospital_System
                     surname = value;
                 }
             }
-        }
+        }*/
         public int Age {
 			get { return age; }
 			set
@@ -73,44 +73,42 @@ namespace Hospital_System
 				}
 			}
 		}
-		public string Id
+		public long NationalId
 		{
-			get => id;
+			get => Nationalid;
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value)&&value.Length!=14)
+				if (value <= 0)
 				{
                     throw new ArgumentException("ID cannot be empty and must be 14 characters.");
                 }
-				id = value;
+				
+				Nationalid = value;
             }
         }
-        public string PhoneNumber
+        public long PhoneNumber
 		{
 			get => phoneNumber;
 			set
 			{
-							if (string.IsNullOrWhiteSpace(value)||value.Length!=11)
-				{
-					throw new ArgumentException("Phone number cannot be empty and must be 11 digits.");
-				}
+							if (value <= 0) throw new ArgumentException("Phone number cannot be empty and must be 11 digits.");
 				
 					phoneNumber = value;
                 
             }
 		}
-        public Person(string name, string surname, int age, char gender, string id, string phoneNumber)
+        public Person(string name, string surname, int age, char gender, long Nationalid, long phoneNumber)
 		{
 			this.Name = name;
-			this.Surname = surname;
+			//this.Surname = surname;
 			this.Age = age;
 			this.Gender = gender;
-			this.Id = id;
+			this.NationalId = Nationalid;
 			this.PhoneNumber = phoneNumber;
 		}
-		public string GetFullname()
+		/*public string GetFullname()
 		{
 			return $"{Name} {Surname}";
-		}
+		}*/
     }
 }
