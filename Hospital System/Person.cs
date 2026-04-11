@@ -46,9 +46,9 @@ namespace Hospital_System
 			get { return age; }
 			set
 			{
-                if (value < 0)
+                if (value <= 0)
                 {
-                    throw new ArgumentException("Age cannot be negative.");
+                    throw new ArgumentException("Age cannot be negative and must be greater than zero.");
                 }
                 if (value > 150) { throw new ArgumentException("Age cannot be greater than 150."); }
 
