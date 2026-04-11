@@ -4,16 +4,28 @@ using System.Text;
 
 namespace Hospital_System
 {
+
+// enum for managing the gender type ---> Ahmed AYman
+public enum GenderType{ Male,Female }
+
+
+
+
+
+
 	internal class Person
 	{
 
 		private string name;
 		//private string surname;
 		private int age;
-		private char gender;
-		private long Nationalid;
-		private long phoneNumber;
-        public string Name
+		//private char gender;
+		private string Nationalid;
+		private string  phoneNumber;
+
+
+		//Patient name Property
+		public string Name
         {
             get => name;
             set
@@ -27,8 +39,8 @@ namespace Hospital_System
                     name = value;
                 }
             }
-        }
-        /*public string Surname
+		}
+		/*public string Surname
         {
             get => surname;
             set
@@ -43,62 +55,91 @@ namespace Hospital_System
                 }
             }
         }*/
-        public int Age {
+
+
+
+
+		//Patient name Age
+
+		public int Age
+		{
 			get { return age; }
-			set
-			{
-                if (value <= 0)
-                {
-                    throw new ArgumentException("Age cannot be negative and must be greater than zero.");
-                }
-                if (value > 150) { throw new ArgumentException("Age cannot be greater than 150."); }
-
-					age = value;
-               
-            }
-
-            }
-		public char Gender
-		{
-			get { return gender; }
-			set
-			{
-				char input = char.ToUpper(value);
-				if (input == 'M' || input == 'F')
-				{
-					gender = input;
-				}
-				else
-				{
-					throw new ArgumentException("Gender must be 'M' or 'F'.");
-				}
-			}
-		}
-		public long NationalId
-		{
-			get => Nationalid;
 			set
 			{
 				if (value <= 0)
 				{
-                    throw new ArgumentException("ID cannot be empty and must be 14 characters.");
-                }
+					throw new ArgumentException("Age cannot be negative and must be greater than zero.");
+				}
+				if (value > 150) { throw new ArgumentException("Age cannot be greater than 150."); }
+
+				age = value;
+
+			}
+
+		}
+
+
+		//Gender Enum to chose only Male or Female 
+
+		public GenderType Gender { set; get; }
+
+
+		//Patient name Gender
+
+		//public char Gender
+		//{
+		//	get { return gender; }
+		//	set
+		//	{
+		//		char input = char.ToUpper(value);
+		//		if (input == 'M' || input == 'F' )
+		//		{
+		//			gender = input;
+		//		}
+		//		else
+		//		{
+		//			throw new ArgumentException("Gender must be 'M' or 'F'.");
+		//		}
+		//	}
+		//}
+		public string NationalId
+		{
+			get => Nationalid;
+			set
+			{
+				if (value.Length ==14 && long.TryParse(value,out _))
+				{
+                     Nationalid = value;
+				}
+				else { throw new ArgumentException("Invalid ID ."); }
 				
-				Nationalid = value;
             }
-        }
-        public long PhoneNumber
+		}
+		public string PhoneNumber
 		{
 			get => phoneNumber;
 			set
 			{
-							if (value <= 0) throw new ArgumentException("Phone number cannot be empty and must be 11 digits.");
-				
+				//int int_phone_no = int.Parse(value);	
+
+				if (value.Length == 11 && long.TryParse(value, out _))
+				{
 					phoneNumber = value;
-                
-            }
+				}
+				else { throw new ArgumentException("Invalid Phome Number ."); }
+
+				//phoneNumber = int_phone_no.ToString();
+
+			}
+
+
+
+
+
+
+
 		}
-        public Person(string name, string surname, int age, char gender, long Nationalid, long phoneNumber)
+		public Person(string name,int age, GenderType gender, string Nationalid, string phoneNumber)
 		{
 			this.Name = name;
 			//this.Surname = surname;
