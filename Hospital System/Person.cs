@@ -17,8 +17,10 @@ public enum GenderType{ Male,Female }
 	{
 
 		private string name;
-		//private string surname;
-		private int age;
+		private string email;
+        //private string password;  can be added later if needed for login functionality
+        private string address;
+        private int age;
 		//private char gender;
 		private string Nationalid;
 		private string  phoneNumber;
@@ -40,26 +42,7 @@ public enum GenderType{ Male,Female }
                 }
             }
 		}
-		/*public string Surname
-        {
-            get => surname;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Surname cannot be empty.");
-                }
-                else
-                {
-                    surname = value;
-                }
-            }
-        }*/
-
-
-
-
-		//Patient name Age
+		
 
 		public int Age
 		{
@@ -111,7 +94,7 @@ public enum GenderType{ Male,Female }
 				{
                      Nationalid = value;
 				}
-				else { throw new ArgumentException("Invalid ID ."); }
+				else { throw new ArgumentException("ID Must Be Only 14 Digits."); }
 				
             }
 		}
@@ -126,7 +109,7 @@ public enum GenderType{ Male,Female }
 				{
 					phoneNumber = value;
 				}
-				else { throw new ArgumentException("Invalid Phome Number ."); }
+				else { throw new ArgumentException("Phone Number Must Be Only 11 Digits."); }
 
 				//phoneNumber = int_phone_no.ToString();
 
@@ -139,18 +122,69 @@ public enum GenderType{ Male,Female }
 
 
 		}
-		public Person(string name,int age, GenderType gender, string Nationalid, string phoneNumber)
+        //Added validation for email to ensure it is not empty and follows a basic format
+        public string Email
+        {
+            get => email;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Email cannot be empty.");
+                }
+                else
+                {
+                    email = value;
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+        //Added validation for address to ensure it is not empty
+        public string Address
+        {
+            get => address;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Address cannot be empty.");
+                }
+                else
+                {
+                    address = value;
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+        public Person(string name,int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address)
 		{
 			this.Name = name;
-			//this.Surname = surname;
 			this.Age = age;
 			this.Gender = gender;
 			this.NationalId = Nationalid;
 			this.PhoneNumber = phoneNumber;
-		}
-		/*public string GetFullname()
-		{
-			return $"{Name} {Surname}";
-		}*/
+			this.Email = email;
+			this.Address = address;
+        }
+
+        //removed the Surname property as it is not required in the current implementation and can be added later if needed
+
     }
 }

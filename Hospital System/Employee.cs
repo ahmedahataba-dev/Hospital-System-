@@ -111,8 +111,8 @@ namespace Hospital_System
 
 
 
-		public Employee(string name,int age , GenderType gender, string Nationalid, string phoneNumber, decimal salary ,double arrivaltime,double departuretime, double experienceyears/*, int employeeid*/)
-			: base(name,age,gender, Nationalid, phoneNumber)
+		public Employee(string name,int age , GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary ,double arrivaltime,double departuretime, double experienceyears/*, int employeeid*/)
+			: base(name,age,gender, Nationalid, phoneNumber, email, address)
 		{
 			Salary = salary;
 			ArrivalTime = arrivaltime;
