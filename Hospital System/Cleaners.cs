@@ -8,8 +8,8 @@ namespace Hospital_System
     {
         string assignedArea;//location of work in the hospital
         bool hasHazmatTraining;//to check if he has the ability to deal with dangerous materials or not
-        DateTime lastSanitationCheck;//DateTime is a datatype
-        TimeSpan shiftStartTime;//TimeSpan is a datatype
+        DateTime lastSanitationCheck;//DateTime is a Function that gives us the current date and time
+        TimeSpan shiftStartTime;//TimeSpan is a Function that gives us the current time
         string equipmentId;//to identify the cleaning equipment used by the cleaner
         string currentStatus;//to track the cleaner's current status (e.g., available, on break, assigned to a task)
         public enum TrainingLevel { None, Basic, Advanced }
@@ -79,7 +79,8 @@ namespace Hospital_System
             }
         }
         public TrainingLevel CleanerTrainingLevel { get; set; }
-        public Cleaners(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email, string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
+        public Cleaners(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email
+            , string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
             string assignedArea, bool hasHazmatTraining, DateTime lastSanitationCheck, TimeSpan shiftStartTime,
             string equipmentId, string currentStatus, TrainingLevel cleanerTrainingLevel)
             : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivaltime, departuretime, experienceyears)
