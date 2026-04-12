@@ -9,7 +9,7 @@ namespace Hospital_System
         string assignedArea;//location of work in the hospital
         bool hasHazmatTraining;//to check if he has the ability to deal with dangerous materials or not
         DateTime lastSanitationCheck;//DateTime is a Function that gives us the current date and time
-        TimeSpan shiftStartTime;//TimeSpan is a Function that gives us the current time
+        TimeSpan shiftStartTime;//TimeSpan is a Function that gives us the Duration of time, in this case the start time of the cleaner's shift
         string equipmentId;//to identify the cleaning equipment used by the cleaner
         string currentStatus;//to track the cleaner's current status (e.g., available, on break, assigned to a task)
         public enum TrainingLevel { None, Basic, Advanced }
