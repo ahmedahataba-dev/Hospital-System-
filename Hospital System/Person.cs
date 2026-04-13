@@ -16,14 +16,14 @@ public enum GenderType{ Male,Female }
 	internal class Person
 	{
 
-		private string name;
-		private string email;
+		private string name=string.Empty;
+		private string email=string.Empty;
         //private string password;  can be added later if needed for login functionality
-        private string address;
+        private string address= string.Empty;
         private int age;
 		//private char gender;
-		private string Nationalid;
-		private string  phoneNumber;
+		private string Nationalid = string.Empty;
+		private string  phoneNumber = string.Empty;
 
 
 		//Patient name Property
