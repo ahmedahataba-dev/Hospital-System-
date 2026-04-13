@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Hospital_System
 {
+    //made by Youssef Essam
     internal class Doctors : Employee
     {
         string department;//ICU(intensive care unit),Er(emergency room),Surgery, etc.

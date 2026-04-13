@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Hospital_System
 {
+    //made by Youssef Essam
     internal class Nurses : Employee
     {
         private string licenseNumber;// can be used for verification of the nurse's credentials

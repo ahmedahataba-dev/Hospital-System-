@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Hospital_System
 {
+    //made by Youssef Essam
     internal class Room(string roomNumber, string type, bool isOccupied, string assignedPatient, string assignedDoctor, int floorNumber, DateTime lastSanitizationDate)
     {
         public string RoomNumber { get; set; } = roomNumber;

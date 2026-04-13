@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Hospital_System
 {
+    //made by Youssef Essam
     internal class Receptionists: Employee
     {
         string assignedDesk;//location of work in the hospital

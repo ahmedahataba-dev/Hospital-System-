@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Hospital_System
 {
+    //made by Youssef Essam
     internal class Cleaners : Employee
     {
         string assignedArea;//location of work in the hospital
