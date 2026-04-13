@@ -5,7 +5,7 @@ using System.Linq;
 namespace Hospital_System
 {
     //made by Youssef Essam
-    internal class Doctor : Employee // 1. Changed name to singular 'Doctor'
+    internal class Doctor : Employee 
     {
         private readonly string[] validBloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
 
@@ -90,7 +90,7 @@ namespace Hospital_System
             }
         }
 
-        // --- CONSTRUCTOR ---
+    
 
         public Doctor(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
                       string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
