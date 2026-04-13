@@ -9,7 +9,7 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
     private string speciality = string.Empty;// can be used to specify the nurse's area of expertise (e.g., pediatric nurse, surgical nurse, etc.)
     private string degree = string.Empty;// can be used to specify the nurse's educational background (e.g., Bachelor of Science in Nursing, Master of Science in Nursing, etc.)
     private string assignedWard = string.Empty;// can be used to specify the ward or department the nurse is assigned to (e.g., emergency, intensive care unit, etc.)
-    private bool isOnCall;// can be used to indicate whether the nurse is currently on call or not
+    private bool isOnCall=false;// can be used to indicate whether the nurse is currently on call or not
     private int currentPatientLoad; // to track number of patients to manage workload
     private bool canAdministerMedication; // can be used to indicate whether the nurse is authorized to administer medication to patients
     private bool isHeadNurse;// can be used to indicate whether the nurse holds a leadership position
@@ -53,8 +53,6 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
             assignedWard = value;
         }
     }
-
-    public bool IsOnCall { get; set; }
     public bool CanAdministerMedication { get; set; }
     public bool IsHeadNurse { get; set; }
 
@@ -66,6 +64,11 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
             if (value < 0) throw new ArgumentException("Current patient load cannot be negative.");
             currentPatientLoad = value;
         }
+    }
+    public bool IsOnCall
+    {
+        get => isOnCall;
+        set => isOnCall = value;
     }
     public Nurse(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
                  string address, decimal salary, double arrivalTime, double departureTime, double experienceYears,

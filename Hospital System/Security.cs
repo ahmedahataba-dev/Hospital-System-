@@ -7,10 +7,10 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Security: Employee
     {
-        string assignedArea;//location in hospital
-        bool isFireSafetyTrained;
+        string assignedArea=string.Empty;//location in hospital
+        bool isFireSafetyTrained=false;
         TimeSpan patrolTime; //time taken for each patrol round
-        string shiftReport; //report of any incidents during the shift
+        string shiftReport=string.Empty; //report of any incidents during the shift
         public string AssignedArea
         {
             get { return assignedArea; }
@@ -18,15 +18,15 @@ namespace Hospital_System
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Assigned area cannot be empty.");
+                    throw new ArgumentException("Assigned area name mustn't have space , and it can't be empty ");
                 }
                 assignedArea = value;
             }
         }
         public bool IsFireSafetyTrained
         {
-            get { return isFireSafetyTrained; }
-            set { isFireSafetyTrained = value; }
+            get;
+            set;
         }
         public TimeSpan PatrolTime
         {

@@ -7,7 +7,7 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Receptionists: Employee
     {
-        string assignedDesk;//location of work in the hospital
+        string assignedDesk=string.Empty;//location of work in the hospital
        // int accessLevel;//to determine the receptionist's access level to hospital systems and information
         int managedDoctors;//to track the number of doctors the receptionist is responsible for managing
         public string AssignedDesk
