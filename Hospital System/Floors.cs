@@ -7,10 +7,15 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Floors
     {
-        public int FloorNumber { get; set; }
+        int floornumber;
+        public int FloorNumber
+        {
+            get { return floornumber; }
+            set { floornumber = value; }
+        }
         public string description;
         public bool hasElevatorAccess;
-        public List<Departments> DepartmentsOnFloor { get; set; } = new List<Departments>();
+        public List<Department> DepartmentsOnFloor { get; set; } = new List<Department>();
         public Floors(int floorNumber,string description,bool hasElevatorAccess)
         {
             FloorNumber = floorNumber;

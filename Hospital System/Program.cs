@@ -24,7 +24,7 @@ namespace Hospital_System
             //System.Windows.Forms.MessageBox.Show($"id ={e3.EmployeeId}");
 
             // Create a Department on Floor 2
-            Department surgery = new Department("Surgery", 2);
+            Department surgery = new Department("Surgery",2);
 
             // Create a Room that says it's on Floor 5 (Opps!)
             Room wrongRoom = new Room("501", "Operating Theater", 5);
