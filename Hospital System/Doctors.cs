@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
+using System.Linq;//language integrated query
 namespace Hospital_System
 {
     //made by Youssef Essam
@@ -33,7 +33,7 @@ namespace Hospital_System
             get { return bloodType; }
             set
             {
-                // We only need ONE version of this property!
+                
                 string formattedValue = value.Trim().ToUpper();
                 if (validBloodTypes.Contains(formattedValue))
                 {
