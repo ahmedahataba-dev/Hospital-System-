@@ -20,12 +20,12 @@ namespace Hospital_System
         {
             if (room.FloorNumber != this.FloorNumber)
             {
-                Console.WriteLine($"Error: Room {room.RoomNumber} belongs on floor {room.FloorNumber}, but {this.Name} is on floor {this.FloorNumber}!");
+                Console.WriteLine($"Error: Room {room.RoomNumber} belongs on floor {room.FloorNumber}, but {this.name} is on floor {this.FloorNumber}!");
             }
             else
             {
                 Rooms.Add(room);
-                Console.WriteLine($"Room {room.RoomNumber} successfully added to {this.Name}.");
+                Console.WriteLine($"Room {room.RoomNumber} successfully added to {this.name}.");
             }
         }
         public Department(string name, string location)
