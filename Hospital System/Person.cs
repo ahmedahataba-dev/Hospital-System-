@@ -107,11 +107,11 @@ public enum GenderType{ Male,Female }
 			get => Nationalid;
 			set
 			{
-				if (value.Length ==14 && long.TryParse(value,out _))
+				if (value.Length ==14 && value.All(char.IsDigit) && long.TryParse(value,out _))
 				{
                      Nationalid = value;
 				}
-				else { throw new ArgumentException("Invalid ID ."); }
+				else { throw new ArgumentException("ID Must Be 14 Digits only ."); }
 				
             }
 		}
@@ -122,11 +122,11 @@ public enum GenderType{ Male,Female }
 			{
 				//int int_phone_no = int.Parse(value);	
 
-				if (value.Length == 11 && long.TryParse(value, out _))
+				if (value.Length == 11 &&value.All(char.IsDigit)&& long.TryParse(value, out _))
 				{
 					phoneNumber = value;
 				}
-				else { throw new ArgumentException("Invalid Phome Number ."); }
+				else { throw new ArgumentException("Phone Number Must be 11 Digits only."); }
 
 				//phoneNumber = int_phone_no.ToString();
 
