@@ -158,7 +158,6 @@ namespace Hospital_System
 		public Person(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address)
 		{
 			this.Name = name;
-			//this.Surname = surname;
 			this.Age = age;
 			this.Gender = gender;
 			this.NationalId = Nationalid;
