@@ -25,9 +25,9 @@ namespace Hospital_System
                 GenderType gender,
                 string nationalId,
                 string phoneNumber,
-                decimal salary,
-                double arrivalTime,
-                double departureTime,
+               string salary,
+               string arrivalTime,
+               decimal departureTime,
                 double experienceYears,
                 string role
             )
