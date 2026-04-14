@@ -1,51 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+
 namespace Hospital_System
 {
-	internal static class Program
+	internal class Program
 	{
-		/// <summary>
-		///  The main entry point for the application.
-		/// </summary>
-		[STAThread]
+		// [STAThread] // You only need this if you are running a Windows Forms UI
 		static void Main()
 		{
-            Hospital neurai = new Hospital();
-            Floors floor1 = new Floors(1, "Main Floor", true);
-            Department cardiology = new Department("Cardiology");
-            Room heartRoom = new Room(101, Room.RoomType.ICU, 1);
-            cardiology.Rooms.Add(heartRoom);
-            floor1.DepartmentsOnFloor.Add(cardiology);
-            neurai.AddFloor(floor1);
-            //// To customize application configuration such as set high DPI settings or default font,
-            ////// see https://aka.ms/applicationconfiguration.
-            //ApplicationConfiguration.Initialize();
-            //Application.Run(new Form1())
-            //Person p1 = new Person("ahe", 50, GenderType.Male, "00701181200491", "01025920863");
-            //System.Windows.Forms.MessageBox.Show($"phone no ={p1.PhoneNumber}");
-            //System.Windows.Forms.MessageBox.Show($"id ={p1.NationalId}");
-            //Employee e1 = new Employee("ahmed", 19, GenderType.Male, "30701181200491", "01025920863","youssef@gmail.com","egypt",5000, 7, 16, 3);
-            //Employee e2 = new Employee("sayed", 19, GenderType.Male, "30701181200491", "01025920863", "youssef@gmail.com", "egypt", 5000, 7, 16, 3);
-            //Employee e3 = new Employee("yed", 19, GenderType.Male, "30701181200491", "01025920863", 5000, 7, 16.5, 3);
+			// ==========================================
+			// Ahmed Hataba's Tests (Console Environment)
+			// ==========================================
+			Employee e1 = new Employee("ahmed", 19, GenderType.Male, "30701181200491", "01025920864", "ahmed@example.com", "Mansoura", 15000, 5); e1.CheckInandOut(e1);
 
-            //System.Windows.Forms.MessageBox.Show($"id ={e1.EmployeeId}");
-            //System.Windows.Forms.MessageBox.Show($"id ={e2.EmployeeId}");
-            //System.Windows.Forms.MessageBox.Show($"id ={e3.EmployeeId}");
+			Console.WriteLine("\n-----------------------------------\n");
 
-            // Create a Department on Floor 2
-            /*Department surgery = new Department("Surgery","2");
+			// ==========================================
+			// Youssef's Tests (Hospital & Rooms Environment)
+			// ==========================================
+			/*
+			Hospital neurai = new Hospital();
+			Floors floor1 = new Floors(1, "Main Floor", true);
+			Department cardiology = new Department("Cardiology");
+			Room heartRoom = new Room(101, Room.RoomType.ICU, 1);
+			
+			cardiology.Rooms.Add(heartRoom);
+			floor1.DepartmentsOnFloor.Add(cardiology);
+			neurai.AddFloor(floor1);
 
-            // Create a Room that says it's on Floor 5 (Opps!)
-            Room wrongRoom = new Room("501", "Operating Theater", 5);
+			Room room1 = new Room(201, Room.RoomType.ICU, 2);
+			Room room2 = new Room(207, Room.RoomType.ICU, 2);
 
-            // This will trigger your "Error" message!
-            surgery.AddRoom(wrongRoom);*/
-            Room room1 = new Room(201, Room.RoomType.ICU, 2);
-            Room room2 = new Room(207, Room.RoomType.ICU, 2);
-
-			System.Windows.Forms.MessageBox.Show($"Room Number: {room1.RoomNumber}\nRoom Type: {room1.Type}\nFloor Number: {room1.FloorNumber}");
-            System.Windows.Forms.MessageBox.Show(room1.IsOccupied);
-            System.Windows.Forms.MessageBox.Show(room2.IsOccupied);
+			// Note: Replace MessageBox with Console.WriteLine if testing in Console
+			Console.WriteLine($"Room Number: {room1.RoomNumber}\nRoom Type: {room1.Type}\nFloor Number: {room1.FloorNumber}");
+			Console.WriteLine($"Room 1 Occupied: {room1.IsOccupied}");
+			Console.WriteLine($"Room 2 Occupied: {room2.IsOccupied}");
 			Room.ShowAvailableRooms();
-
+			*/
 		}
 	}
 }
