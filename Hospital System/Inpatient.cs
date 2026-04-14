@@ -16,9 +16,7 @@ namespace Hospital_System
         public override void Display()
         {
             base.Display();
-            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("      Inpatient Specific Info      ");
-            Console.ResetColor();
             Console.WriteLine($"Ward: {WardName} \nRoom: {RoomNumber} \nBed: {BedNumber}");
             Console.WriteLine($"Physician: {AttendingPhysician} \nDiet: {DietPlan}");
             if (HasOperations) Console.WriteLine($"Operation: {OperationType}");
