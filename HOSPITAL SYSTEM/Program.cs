@@ -131,7 +131,7 @@ namespace Hospital_System
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }
 
-            p.NationalId=ReadString("NationalId:")
+            p.NationalId = ReadString("NationalId:");
            p.PhoneNumber = ReadString ("Phone number");
             p.Height = ReadDouble("Height (m): ");
             p.Weight = ReadDouble("Weight (kg): ");
