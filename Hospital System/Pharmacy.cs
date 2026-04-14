@@ -26,7 +26,6 @@ namespace Hospital_System
                 new Medicine(8, "Lanoxin", 45, 15, 6, 10),
                 new Medicine(9, "Aldactone", 60, 40, 5, 10)
             };
-
             // 2. Chest
             categories["Chest"] = new List<Medicine>
             {
