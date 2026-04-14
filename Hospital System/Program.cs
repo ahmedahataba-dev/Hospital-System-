@@ -39,8 +39,13 @@ namespace Hospital_System
             // This will trigger your "Error" message!
             surgery.AddRoom(wrongRoom);*/
             Room room1 = new Room(201, Room.RoomType.ICU, 2);
+            Room room2 = new Room(207, Room.RoomType.ICU, 2);
 
-            System.Windows.Forms.MessageBox.Show($"Room Number: {room1.RoomNumber}\nRoom Type: {room1.Type}\nFloor Number: {room1.FloorNumber}");
-        }
+			System.Windows.Forms.MessageBox.Show($"Room Number: {room1.RoomNumber}\nRoom Type: {room1.Type}\nFloor Number: {room1.FloorNumber}");
+            System.Windows.Forms.MessageBox.Show(room1.IsOccupied);
+            System.Windows.Forms.MessageBox.Show(room2.IsOccupied);
+			Room.ShowAvailableRooms();
+
+		}
 	}
 }
