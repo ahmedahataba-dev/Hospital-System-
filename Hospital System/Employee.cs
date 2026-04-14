@@ -92,7 +92,11 @@ namespace Hospital_System
 			}
 		}
 
-		public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears/*, int employeeid*/)
+        public double Experienceyears1 { get; }
+        public int V1 { get; }
+        public int V2 { get; }
+
+        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears/*, int employeeid*/, double departuretime)
 			: base(name, age, gender, Nationalid, phoneNumber, email, address)
 		{
 			Salary = salary;
@@ -101,7 +105,18 @@ namespace Hospital_System
 			employeeid_counter++;
 		}
 
-		public void CheckIn()
+        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears, double departuretime, double experienceyears1) : this(name, age, gender, Nationalid, phoneNumber, email, address, salary, experienceyears, departuretime)
+        {
+            Experienceyears1 = experienceyears1;
+        }
+
+        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, int v1, int v2) : base(name, age, gender, Nationalid, phoneNumber, email, address)
+        {
+            V1 = v1;
+            V2 = v2;
+        }
+
+        public void CheckIn()
 		{
 			if (!ischeckedin)
 			{
