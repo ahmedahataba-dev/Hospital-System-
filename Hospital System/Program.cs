@@ -1,143 +1,234 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Hospital_System;
+using System;
+using System.Numerics;
+using System;
 
 namespace Hospital_System
 {
-	class Program
-	{
-		static List<Patient> patients = new List<Patient>();
+    using System;
 
-		static void Main(string[] args)
-		{
-			while (true)
-			{
-				Console.Clear();
-				Console.ForegroundColor = ConsoleColor.Cyan;
-				Console.WriteLine("      WELCOME TO HOSPITAL MANAGEMENT      ");
-				Console.ResetColor();
-				Console.WriteLine("1. Add Inpatient ");
-				Console.WriteLine("2. Add Outpatient ");
-				Console.WriteLine("3. View All Patients");
-				Console.WriteLine("4. Search by ID");
-				Console.WriteLine("5. Exit");
-				Console.Write("\nChoose an option: ");
 
-				string choice = Console.ReadLine();
-				switch (choice)
-				{
-					case "1": AddInpatient(); break;
-					case "2": AddOutpatient(); break;
-					case "3": ViewByCategory(); break;
-					case "4": SearchByCategory(); break;
-					case "5": return;
-					default:
-						Console.WriteLine("Invalid choice! Press any key...");
-						Console.ReadKey();
-						break;
-				}
-			}
-		}
 
-		// Logic for adding Inpatients
-		static void AddInpatient()
-		{
-			Console.WriteLine("\n--- Add New Inpatient ---");
-			string name = ReadLettersOnly("Enter Name: ");
-			int age = ReadInt("Enter Age: ");
-			GenderType gender = ReadGender();
-			string nId = ReadString("Enter National ID: ");
-			string phone = ReadString("Enter Phone Number: ");
+    namespace Hospital_System
+    {
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                Pharmacy pharmacy = new Pharmacy();
 
-			Inpatient p = new Inpatient(name, age, gender, nId, phone);
-			FillPatientDetails(p);
-			p.WardName = ReadString("Ward Name: ");
-			p.RoomNumber = ReadInt("Room Number: ");
-			p.AttendingPhysician = ReadString("Attending Physician: ");
-			p.HasOperations = ReadBool("Does the patient have surgery?");
-			if (p.HasOperations) p.OperationType = ReadString("Operation Type: ");
+                List<Prescription> prescriptions = new List<Prescription>();
 
-			patients.Add(p);
-			Console.WriteLine("\nSaved successfully!");
-			Console.ReadKey();
-		}
+                Console.WriteLine("===== HOSPITAL SYSTEM =====");
 
-		// Logic for adding Outpatients
-		static void AddOutpatient()
-		{
-			Console.WriteLine("\n--- Add New Outpatient ---");
-			string name = ReadLettersOnly("Enter Name: ");
-			int age = ReadInt("Enter Age: ");
-			GenderType gender = ReadGender();
-			string nId = ReadString("Enter National ID: ");
-			string phone = ReadString("Enter Phone Number: ");
+                // 👨‍⚕️ Doctor
+                string doctor;
+                do
+                {
+                    Console.Write("Enter Doctor Name: ");
+                    doctor = Console.ReadLine();
+                }
+                while (string.IsNullOrWhiteSpace(doctor));
 
-			Outpatient p = new Outpatient(name, age, gender, nId, phone);
-			FillPatientDetails(p);
-			p.ClinicName = ReadString("Clinic Name: ");
-			p.ConsultationFee = ReadDouble("Consultation Fee: ");
-			p.ChiefComplaint = ReadString("Complaint: ");
+                // 👤 Patient (اختياري - بدون كلاس Patient)
+                string patientName;
 
-			patients.Add(p);
-			Console.WriteLine("\nSaved successfully!");
-			Console.ReadKey();
-		}
+                Console.Write("Enter Patient Name: ");
+                patientName = Console.ReadLine();
 
-		// --- Helper Methods ---
-		static void FillPatientDetails(Patient p)
-		{
-			p.PatientId = patients.Count == 0 ? 1 : patients.Max(x => x.PatientId) + 1;
-			p.Height = ReadDouble("Height (m): ");
-			p.Weight = ReadDouble("Weight (kg): ");
-			p.BloodType = ReadBloodType();
-			p.MedicalCase = ReadString("Medical Case: ");
-			p.Allergies = ReadString("Allergies: ");
-			p.Risk = ReadString("Risk Level: ");
-			p.PaymentMethods = ReadString("Payment Method: ");
-		}
+                while (string.IsNullOrWhiteSpace(patientName))
+                {
+                    Console.Write("Invalid  Enter again: ");
+                    patientName = Console.ReadLine();
+                }
 
-		static GenderType ReadGender()
-		{
-			while (true)
-			{
-				Console.Write("Enter Gender (1 for Male, 2 for Female): ");
-				string input = Console.ReadLine();
-				if (input == "1") return GenderType.Male;
-				if (input == "2") return GenderType.Female;
-			}
-		}
+                // 🏥 Department
+                string dept;
 
-		static BloodGroup ReadBloodType()
-		{
-			while (true)
-			{
-				Console.WriteLine("\nChoose Blood Type (1-8):");
-				var types = Enum.GetValues(typeof(BloodGroup));
-				for (int i = 0; i < types.Length; i++)
-					Console.WriteLine($"{i + 1}. {types.GetValue(i)}");
-				if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= 8)
-					return (BloodGroup)(choice - 1);
-			}
-		}
+                while (true)
+                {
+                    pharmacy.ShowAll();
 
-		static void ViewByCategory()
-		{
-			patients.ForEach(p => p.Display());
-			Console.ReadKey();
-		}
+                    Console.Write("Choose Department Number: ");
 
-		static void SearchByCategory()
-		{
-			int id = ReadInt("Enter Patient ID: ");
-			var p = patients.FirstOrDefault(x => x.PatientId == id);
-			if (p != null) p.Display(); else Console.WriteLine("Not found!");
-			Console.ReadKey();
-		}
+                    if (!int.TryParse(Console.ReadLine(), out int index))
+                    {
+                        Console.WriteLine("Invalid input ");
+                        continue;
+                    }
 
-		static string ReadString(string prompt) { Console.Write(prompt); return Console.ReadLine(); }
-		static string ReadLettersOnly(string prompt) { Console.Write(prompt); return Console.ReadLine(); }
-		static int ReadInt(string prompt) { Console.Write(prompt); int.TryParse(Console.ReadLine(), out int r); return r; }
-		static double ReadDouble(string prompt) { Console.Write(prompt); double.TryParse(Console.ReadLine(), out double r); return r; }
-		static bool ReadBool(string prompt) { Console.Write(prompt + " (y/n): "); return Console.ReadLine().ToLower() == "y"; }
-	}
+                    dept = pharmacy.GetCategoryNameByIndex(index);
+
+                    if (dept != null)
+                    {
+                        Console.WriteLine("Department Selected ");
+                        break;
+                    }
+
+                    Console.WriteLine("Invalid Department  Try again");
+                }
+
+                //  MENU
+                while (true)
+                {
+                    Console.WriteLine("\n========== MENU ==========");
+                    Console.WriteLine("1. Show All Categories");
+                    Console.WriteLine("2. Show Medicines in Category");
+                    Console.WriteLine("3. Search Medicine");
+                    Console.WriteLine("4. Create Prescription");
+                    Console.WriteLine("5. Show Prescriptions");
+                    Console.WriteLine("6. Exit");
+                    Console.WriteLine("==========================");
+
+                    Console.Write("Choose option: ");
+
+                    if (!int.TryParse(Console.ReadLine(), out int choice))
+                    {
+                        Console.WriteLine("Enter number only ");
+                        continue;
+                    }
+
+                    switch (choice)
+                    {
+                        case 1:
+                            pharmacy.ShowAll();
+                            break;
+
+                        case 2:
+                            pharmacy.ShowAll();
+
+                            Console.Write("Enter Category Number: ");
+                            if (!int.TryParse(Console.ReadLine(), out int catIndex))
+                            {
+                                Console.WriteLine("Invalid ");
+                                break;
+                            }
+
+                            string cat = pharmacy.GetCategoryNameByIndex(catIndex);
+
+                            if (cat == null)
+                            {
+                                Console.WriteLine("Invalid Category ");
+                                break;
+                            }
+
+                            pharmacy.ShowCategory(cat);
+                            break;
+
+                        case 3:
+                            Console.Write("Enter Medicine Name: ");
+                            string search = Console.ReadLine();
+
+                            var found = pharmacy.FindMedicine(search);
+
+                            if (found != null)
+                                Console.WriteLine(found.ToString());
+                            else
+                                Console.WriteLine("Medicine Not Found ");
+
+                            break;
+
+                        case 4:
+                            Prescription prescription = new Prescription();
+                            prescription.DoctorName = doctor;
+                            prescription.PatientName = patientName;
+                            prescription.Department = dept;
+
+                            pharmacy.ShowAll();
+
+                            Console.Write("Enter Category Number: ");
+                            if (!int.TryParse(Console.ReadLine(), out int catIndex4))
+                            {
+                                Console.WriteLine("Invalid ");
+                                break;
+                            }
+
+                            string cat4 = pharmacy.GetCategoryNameByIndex(catIndex4);
+
+                            if (cat4 == null)
+                            {
+                                Console.WriteLine("Invalid Category ");
+                                break;
+                            }
+
+                            var medicines = pharmacy.categories[cat4];
+
+                            Console.Write("How many medicines ");
+                            if (!int.TryParse(Console.ReadLine(), out int count))
+                            {
+                                Console.WriteLine("Invalid ");
+                                break;
+                            }
+
+                            for (int i = 0; i < count; i++)
+                            {
+                                Console.WriteLine("\n--- Medicines List ---");
+
+                                for (int j = 0; j < medicines.Count; j++)
+                                {
+                                    Console.WriteLine($"{j + 1}. {medicines[j].Name} | Stock: {medicines[j].Quantity}");
+                                }
+
+                                Console.Write("Choose Medicine Number: ");
+
+                                if (!int.TryParse(Console.ReadLine(), out int medChoice) ||
+                                    medChoice < 1 || medChoice > medicines.Count)
+                                {
+                                    Console.WriteLine("Invalid ");
+                                    i--;
+                                    continue;
+                                }
+
+                                Medicine med = medicines[medChoice - 1];
+
+                                Console.Write("Enter Quantity: ");
+                                int qty = int.Parse(Console.ReadLine());
+
+                                if (qty > med.Quantity)
+                                {
+                                    Console.WriteLine("Not enough stock ");
+                                    i--;
+                                    continue;
+                                }
+
+                                Console.Write("Times Per Day: ");
+                                int times = int.Parse(Console.ReadLine());
+
+                                Console.Write("Number of Days: ");
+                                int days = int.Parse(Console.ReadLine());
+
+                                prescription.AddMedicine(med, qty, times, days);
+
+                                Console.WriteLine("Added ");
+                            }
+
+                            prescriptions.Add(prescription);
+
+                            Console.WriteLine("\nPrescription Created Successfully ");
+                            break;
+
+                        case 5:
+                            if (prescriptions.Count == 0)
+                            {
+                                Console.WriteLine("No prescriptions ");
+                                break;
+                            }
+
+                            foreach (var p in prescriptions)
+                                p.ShowPrescription();
+
+                            break;
+
+                        case 6:
+                            Console.WriteLine("Exiting...");
+                            return;
+
+                        default:
+                            Console.WriteLine("Invalid Choice ");
+                            break;
+                    }
+                }
+            }
+        }
+    }
 }
