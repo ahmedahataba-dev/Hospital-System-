@@ -1,109 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;//language integrated query
+using System.Linq;
+
 namespace Hospital_System
 {
     //made by Youssef Essam
-    internal class Doctor : Employee 
+    internal class Doctor : Employee
     {
+        
         private readonly string[] validBloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
 
+        
         private string bloodType = string.Empty;
         private string department = string.Empty;
         private string medicalLicenseNumber = string.Empty;
         private string assignedRoom = string.Empty;
-
-        public enum DoctorRank { Trainee, Junior, Senior, Consultant };
         private decimal consultationFee;
         private int maxPatientsPerDay;
+
+        
+        public List<string> CurrentPatients { get; set; } = new List<string>();
+
+        
+        public enum DoctorRank { Trainee, Junior, Senior, Consultant };
+        public DoctorRank Rank { get; set; }
+
         public string Department
         {
-            get { return department; }
+            get => department;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Department cannot be empty.");
+                if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Department cannot be empty.");
                 department = value;
             }
         }
 
         public string BloodType
         {
-            get { return bloodType; }
+            get => bloodType;
             set
             {
-                
                 string formattedValue = value.Trim().ToUpper();
-                if (validBloodTypes.Contains(formattedValue))
-                {
-                    bloodType = formattedValue;
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid blood type. Valid types are: " + string.Join(", ", validBloodTypes));
-                }
+                if (!validBloodTypes.Contains(formattedValue))
+                    throw new ArgumentException("Invalid blood type.");
+                bloodType = formattedValue;
             }
         }
 
-        public string MedicalLicenseNumber
+        public string MedicalLicenseNumber 
         {
-            get { return medicalLicenseNumber; }
+            get {  return medicalLicenseNumber; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("Medical license number cannot be empty.");
                 medicalLicenseNumber = value;
             }
-        }
 
-        public decimal ConsultationFee
+        }
+        public decimal ConsultationFee 
         {
             get { return consultationFee; }
             set
             {
-                if (value < 0)
-                    throw new ArgumentException("Consultation fee cannot be negative.");
+                if (value <= 0)
+                    throw new ArgumentException("Invalid Consultation Fee.");
                 consultationFee = value;
             }
         }
-
         public int MaxPatientsPerDay
         {
             get { return maxPatientsPerDay; }
             set
             {
-                if (value < 0 || value > 30)
-                    throw new ArgumentException("Max patients per day must be between 0 and 30.");
+                if (value <= 0)
+                    throw new ArgumentException("Invalid Max Patients Per Day .");
                 maxPatientsPerDay = value;
             }
         }
-
         public string AssignedRoom
         {
             get { return assignedRoom; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Assigned room cannot be empty.");
                 assignedRoom = value;
             }
         }
 
-    
-
         public Doctor(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
                       string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
                       string department, string bloodType, string medicalLicenseNumber, decimal consultationFee,
-                      int maxPatientsPerDay, string assignedRoom)
+                      int maxPatientsPerDay, string assignedRoom, DoctorRank rank)
             : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivaltime, departuretime, experienceyears)
         {
-            this.Department = department;
-            this.BloodType = bloodType;
-            this.MedicalLicenseNumber = medicalLicenseNumber;
-            this.ConsultationFee = consultationFee;
-            this.MaxPatientsPerDay = maxPatientsPerDay;
-            this.AssignedRoom = assignedRoom;
+            Department = department;
+           BloodType = bloodType;
+            MedicalLicenseNumber = medicalLicenseNumber;
+            ConsultationFee = consultationFee;
+            MaxPatientsPerDay = maxPatientsPerDay;
+            AssignedRoom = assignedRoom;
+            Rank = rank;
+        }
+
+        public bool AcceptPatient(string patientName)
+        {
+            if (CurrentPatients.Count >= MaxPatientsPerDay)
+            {
+                Console.WriteLine($"Dr. {Name} is at full capacity!");
+                return false;
+            }
+
+            CurrentPatients.Add(patientName);
+            Console.WriteLine($"Patient {patientName} assigned to Dr. {Name}.");
+            return true;
+        }
+        public string GetProfessionalProfile()
+        {
+            return $"Dr. {Name} ({Rank})\nDept: {Department}\nExperience: {ExperienceYears} years\nFee: {ConsultationFee:C}";
         }
     }
 }

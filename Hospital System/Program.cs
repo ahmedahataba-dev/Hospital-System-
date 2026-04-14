@@ -8,6 +8,13 @@ namespace Hospital_System
 		[STAThread]
 		static void Main()
 		{
+            Hospital neurai = new Hospital();
+            Floors floor1 = new Floors(1, "Main Floor", true);
+            Department cardiology = new Department("Cardiology");
+            Room heartRoom = new Room(101, Room.RoomType.ICU, 1);
+            cardiology.Rooms.Add(heartRoom);
+            floor1.DepartmentsOnFloor.Add(cardiology);
+            neurai.AddFloor(floor1);
             //// To customize application configuration such as set high DPI settings or default font,
             ////// see https://aka.ms/applicationconfiguration.
             //ApplicationConfiguration.Initialize();
