@@ -13,13 +13,13 @@ namespace Hospital_System
             get { return floornumber; }
             set { floornumber = value; }
         }
-        public string description;
+        public string Description;
         public bool hasElevatorAccess;
         public List<Department> DepartmentsOnFloor { get; set; } = new List<Department>();
         public Floors(int floorNumber,string description,bool hasElevatorAccess)
         {
             FloorNumber = floorNumber;
-            this.description = description;
+            this.Description = description;
             this.hasElevatorAccess = hasElevatorAccess;
         }
     }

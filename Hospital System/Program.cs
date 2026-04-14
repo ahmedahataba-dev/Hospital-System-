@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // ==========================================
 // Ahmed Hataba's Tests (Console Environment)
 // ==========================================
-Employee e1 = new Employee("ahmed", 19, GenderType.Male, "30701181200491", "01025920864", "ahmed@example.com", "Mansoura", 15000, 5); e1.CheckInandOut(e1);
+Employee e1 = new Employee("Youssef", 19, GenderType.Male, "30704211200695", "01029611625", "youssef@example.com", "Mansoura", 15000, 5); e1.CheckInandOut(e1);
 
 Console.WriteLine("\n-----------------------------------\n");
 
@@ -32,3 +32,20 @@ Console.WriteLine($"Room 2 Occupied: {room2.IsOccupied}");
 Room.ShowAvailableRooms();
 */
 
+Hospital neurAi = new Hospital("NeurAi Medical Center");
+
+
+Department surgicalWing = new Department("Surgical Wing");
+for (int i = 102; i <= 105; i++)
+{
+    surgicalWing.Rooms.Add(new Room(i, Room.RoomType.General, 3));
+}
+
+Department pediatrics = new Department("Pediatrics & Neonatology");
+for (int i = 201; i <= 205; i++)
+{
+    pediatrics.Rooms.Add(new Room(i, Room.RoomType.Maternity, 2));
+}
+neurAi.Floors[0].DepartmentsOnFloor.Add(surgicalWing); 
+neurAi.Floors[1].DepartmentsOnFloor.Add(pediatrics);   
+neurAi.DisplayHospitalMap();
