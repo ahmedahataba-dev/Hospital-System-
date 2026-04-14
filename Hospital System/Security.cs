@@ -8,7 +8,7 @@ namespace Hospital_System
     internal class Security: Employee
     {
         string assignedArea=string.Empty;//location in hospital
-        bool isFireSafetyTrained=false;
+       // bool isFireSafetyTrained=false;
         TimeSpan patrolTime; //time taken for each patrol round
         string shiftReport=string.Empty; //report of any incidents during the shift
         public string AssignedArea

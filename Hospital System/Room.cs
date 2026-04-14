@@ -9,7 +9,8 @@ namespace Hospital_System
 		//made by Youssef Essam
 		internal class Room 
     {
-		private static List<Room> AllRooms = new List<Room>();
+        private static readonly List<Room> rooms = new List<Room>();
+        private static readonly List<Room> AllRooms = rooms;
 
 
 
