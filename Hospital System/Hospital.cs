@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hospital_System.Hospital_System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Hospital_System
     {
         public string Name { get; set; }= "NeurAi";
         public Floors[] Floors { get; private set; } = new Floors[5];
+        public ExternalDepartments facilities{ get; set; }
         public Hospital(string name)
         {
             this.Name = name;
@@ -16,6 +18,7 @@ namespace Hospital_System
             {
                 Floors[i] = new Floors(i + 1, $"Floor {i + 1}", true);
             }
+            facilities = new ExternalDepartments(ambulanceCount: 5, bloodBankCapacity: 1000); 
         }
         public void ShowFloorDetails(int choice)
         {
