@@ -17,20 +17,46 @@ namespace Hospital_System
                 Floors[i] = new Floors(i + 1, $"Floor {i + 1}", true);
             }
         }
+        public void ShowFloorDetails(int choice)
+        {
+           
+            int index = choice - 1;
+
+            if (index >= 0 && index < Floors.Length)
+            {
+                var floor = Floors[index];
+                Console.WriteLine($"\n--- DETAILED VIEW: {floor.Description} ---");
+
+                foreach (var dept in floor.DepartmentsOnFloor)
+                {
+                    Console.WriteLine($"Department: {dept.DeptName}");
+                    foreach (var room in dept.Rooms)
+                    {
+                        Console.WriteLine($"  - Room {room.RoomNumber} [{room.Type}]");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("That floor doesn't exist!");
+            }
+        }
         public void DisplayHospitalMap()
         {
             Console.WriteLine($"--- {Name} Structure ---");
-
-            // Use 'floor' (singular) for the loop variable
             foreach (var floor in Floors)
             {
-                // 1. Fixed: Changed 'floors' to 'floor'
-                Console.WriteLine($"[Floor {floor.FloorNumber}] - {floor.Description}");
+                
+                Console.WriteLine($"[Floor {floor.FloorNumber}] (Rooms {floor.FloorNumber}00-{floor.FloorNumber}99)");
 
-                // 2. Ensure your Floor class has a 'List<Department> Departments'
                 foreach (var dept in floor.DepartmentsOnFloor)
                 {
-                    Console.WriteLine($"  --> Department: {dept.DeptName} ({dept.Rooms.Count} Rooms)");
+                    Console.WriteLine($"  --> Department: {dept.DeptName}");
+                    foreach (var room in dept.Rooms)
+                    {
+                        
+                        Console.WriteLine($"      - Room {room.RoomNumber} [{room.Type}]");
+                    }
                 }
             }
         }

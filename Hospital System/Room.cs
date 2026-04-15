@@ -21,7 +21,7 @@ namespace Hospital_System
             get { return roomNumber; }
             set
             {
-                if (value <= 0 || value > 500)
+                if (value <= 0 || value > 599)
                 {
                     Console.WriteLine("Invalid Room Number");
                 }
@@ -29,7 +29,7 @@ namespace Hospital_System
             }
         }
 
-        public enum RoomType { General/*عام*/, ICU/*رعاية مركزة*/, OperatingTheater/*غرفة عمليات*/, Maternity/*غرفة ولادة*/, Incubator/*حضانة*/, Isolation/*غرف عزل*/ };
+        public enum RoomType { General/*عام*/, ICU/*رعاية مركزة*/, OperatingTheater/*غرفة عمليات*/, Maternity/*غرفة ولادة*/, Incubator/*حضانة*/, Isolation/*غرف عزل*/ ,Emergency};
 
 
 
@@ -73,14 +73,33 @@ namespace Hospital_System
 
         public Room(int roomNumber, RoomType type, int floorNumber)
         {
-            RoomNumber = roomNumber;
-            Type = type;
-            FloorNumber = floorNumber;
+        
+            int minRange = floorNumber * 100;
+            int maxRange = minRange + 99;    
+
+            if (roomNumber < minRange || roomNumber > maxRange)
+            {
+                
+                Console.WriteLine($"!!! WARNING: Room {roomNumber} cannot be on Floor {floorNumber}.");
+
+              
+                this.FloorNumber = roomNumber / 100;
+                Console.WriteLine($"Correcting: Room {roomNumber} has been moved to Floor {this.FloorNumber}.");
+            }
+            else
+            {
+                this.FloorNumber = floorNumber;
+            }
+
+
+            this.RoomNumber = roomNumber;
+            this.Type = type;
+            this.isoccupied = false;
+
             AllRooms.Add(this);
-            isoccupied = false;
         }
 
-        
+
 
         //-----------------------------------------------------------
         //By Ahmed Hataba 

@@ -17,7 +17,14 @@ namespace Hospital_System
             DeptName = name;
         }
 
-      
+        public void InitializeEmergencyDept(int floorNumber)
+        {
+            
+            AddRoom(new Room(floorNumber * 100 + 1, Room.RoomType.ICU, floorNumber)); // Trauma
+            AddRoom(new Room(floorNumber * 100 + 2, Room.RoomType.General, floorNumber)); // Exam 1
+            AddRoom(new Room(floorNumber * 100 + 3, Room.RoomType.General, floorNumber)); // Exam 2
+            AddRoom(new Room(floorNumber * 100 + 4, Room.RoomType.Isolation, floorNumber)); // Isolation
+        }
         public void AddRoom(Room room)
         {
             Rooms.Add(room);
