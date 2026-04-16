@@ -22,12 +22,8 @@ namespace Hospital_System
             }
 
             CampusFacilities = new ExternalDepartments(ambulanceCount: 5, bloodBankCapacity: 1000);
-
-            // 2. Call the setup method when the hospital is built
             SetupAllDepartments();
         }
-
-        // 3. The master method that builds every department
         private void SetupAllDepartments()
         {
             // --- 1. EMERGENCY (Floor 1) --->ENABLE THIS WHEN YOUR CLASS IS CREATED
