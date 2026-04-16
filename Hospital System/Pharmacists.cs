@@ -25,13 +25,15 @@ namespace Hospital_System
                 GenderType gender,
                 string nationalId,
                 string phoneNumber,
-               string salary,
+                string email,
+                string address,
+               decimal salary,
                //string arrivalTime,
                //int departureTime,
                 int experienceYears,
                 string role
             )
-                : base(name, age, gender, nationalId, phoneNumber, salary,/* arrivalTime, departureTime,*/ experienceYears)
+                : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/* arrivalTime, departureTime,*/ experienceYears)
             {
                 PharmacyStaffId = pharmacyStaffIdCounter++;
                 Role = role;

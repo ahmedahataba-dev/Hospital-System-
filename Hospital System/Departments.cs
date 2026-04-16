@@ -11,8 +11,8 @@ namespace Hospital_System
         public List<Doctor> Doctors { get; private set; } = new List<Doctor>();
         public List<Nurse> Nurses { get; private set; } = new List<Nurse>();
 
-
-        // public List<Device> Devices { get; private set; } = new List<Device>();==> enable this line when you have your Device class ready
+        //--- DEVICE MANAGEMENT --->ENABLE THIS PROPERTY WHEN YOU HAVE YOUR DEVICE CLASS READY  
+        // public List<Device> Devices { get; private set; } = new List<Device>();
         public Department(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -54,6 +54,28 @@ namespace Hospital_System
                 Console.WriteLine("[!] Error: Either the room or the doctor was not found in this department.");
             }
         }
+
+        // The pharmacy link
+        public void ShowDepartmentMedicines(Pharmacy hospitalPharmacy)
+        {
+            Console.WriteLine($"\n--- {DeptName} Department Medicine Stock ---");
+            if (hospitalPharmacy.categories.ContainsKey(this.DeptName))
+            {
+                foreach (var med in hospitalPharmacy.categories[this.DeptName])
+                {
+                    Console.WriteLine($"- {med.Name} (Qty: {med.Quantity})");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No specific medicines found for {DeptName}. Check General pharmacy.");
+            }
+        }
+
+
+        //------------------------------------------------------------------------------------------------------\\
+
+
 
         // --- DEVICE MANAGEMENT ---> enable this method when you have your Device class ready
         /*public void AddDevice(Device device)
