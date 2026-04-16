@@ -81,10 +81,10 @@ namespace Hospital_System
         }
         public TrainingLevel CleanerTrainingLevel { get; set; }
         public Cleaners(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email
-            , string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
+            , string address, decimal salary, /*double arrivaltime, double departuretime,*/ double experienceyears,
             string assignedArea, bool hasHazmatTraining, DateTime lastSanitationCheck, TimeSpan shiftStartTime,
             string equipmentId, string currentStatus, TrainingLevel cleanerTrainingLevel)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivaltime, departuretime, experienceyears)
+            : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/*, arrivaltime, departuretime,*/ experienceyears)
         {
             AssignedArea = assignedArea;
             HasHazmatTraining = hasHazmatTraining;

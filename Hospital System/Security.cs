@@ -53,8 +53,8 @@ namespace Hospital_System
             }
         }
         public Security(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email
-            , string address, decimal salary, double arrivaltime, double departuretime, double experienceyears, string assignedArea, bool isFireSafetyTrained, TimeSpan patrolTime, string shiftReport)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivaltime, departuretime, experienceyears)
+            , string address, decimal salary, /*double arrivaltime, double departuretime,*/ double experienceyears, string assignedArea, bool isFireSafetyTrained, TimeSpan patrolTime, string shiftReport)
+            : base(name, age, gender, nationalId, phoneNumber, email, address, salary, /*arrivaltime, departuretime,*/ experienceyears)
         {
             AssignedArea = assignedArea;
             IsFireSafetyTrained = isFireSafetyTrained;

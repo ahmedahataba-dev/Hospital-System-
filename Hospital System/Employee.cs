@@ -95,8 +95,9 @@ namespace Hospital_System
         public double Experienceyears1 { get; }
         public int V1 { get; }
         public int V2 { get; }
+        public string Salary1 { get; }
 
-        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears/*, int employeeid*/, double departuretime)
+        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears/*, int employeeid*//* double departuretime*/)
 			: base(name, age, gender, Nationalid, phoneNumber, email, address)
 		{
 			Salary = salary;
@@ -105,7 +106,7 @@ namespace Hospital_System
 			employeeid_counter++;
 		}
 
-        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears, double departuretime, double experienceyears1) : this(name, age, gender, Nationalid, phoneNumber, email, address, salary, experienceyears, departuretime)
+        public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears,/* double departuretime,*/ double experienceyears1) : this(name, age, gender, Nationalid, phoneNumber, email, address, salary, experienceyears /*departuretime*/)
         {
             Experienceyears1 = experienceyears1;
         }
@@ -114,6 +115,17 @@ namespace Hospital_System
         {
             V1 = v1;
             V2 = v2;
+        }
+
+        public Employee(string name, int age, GenderType gender, string nationalId, string phoneNumber, string salary1, int experienceYears)
+        {
+            Name = name;
+            Age = age;
+            Gender = gender;
+            NationalId = nationalId;
+            PhoneNumber = phoneNumber;
+            Salary1 = salary1;
+            experienceyears = experienceYears;
         }
 
         public void CheckIn()

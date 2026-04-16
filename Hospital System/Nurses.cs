@@ -71,10 +71,10 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
         set => isOnCall = value;
     }
     public Nurse(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
-                 string address, decimal salary, double arrivalTime, double departureTime, double experienceYears,
+                 string address, decimal salary,/* double arrivalTime, double departureTime,*/ double experienceYears,
                  string licenseNumber, string speciality, string degree, string assignedWard,
                  bool isOnCall, int currentPatientLoad /*bool canAdministerMedication*//*, bool isHeadNurse*/)
-        : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivalTime, departureTime, experienceYears)
+        : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/* arrivalTime, departureTime,*/ experienceYears)
     {
         LicenseNumber = licenseNumber;
         Speciality = speciality;
