@@ -66,7 +66,7 @@ namespace Hospital_System
             }
 
             // Show all categories
-            public void ShowAll()
+           public void ShowAll()
             {
                 Console.WriteLine("\n=== Available Categories ===");
                 int index = 1;

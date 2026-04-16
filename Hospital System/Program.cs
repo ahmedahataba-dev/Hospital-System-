@@ -14,23 +14,13 @@ Console.WriteLine("\n-----------------------------------\n");
 // ==========================================
 
 Hospital neurai = new Hospital("NeurAi Medical Center");
-Department surgicalWing = new Department("Surgical Wing");
-
-
-Department emergency = new Department("Emergency");
-
-Department pediatrics = new Department("Pediatrics & Neonatology");
-neurai.Floors[2].DepartmentsOnFloor.Add(surgicalWing);
-neurai.Floors[1].DepartmentsOnFloor.Add(pediatrics);
-neurai.Floors[0].DepartmentsOnFloor.Add(emergency);
 bool stayInMenu = true;
-
 while (stayInMenu)
 {
     Console.WriteLine("\n--- NeurAi Medical Center Navigation ---");
     Console.WriteLine("1-5: View Specific Floor");
-    Console.WriteLine("6:   View External Facilities");
-    Console.WriteLine("0:   View Entire Hospital (The big list)");
+    Console.WriteLine("6:   View Pharmacy & External Facilities");//Full pharmacy integration with search and department filtering
+    Console.WriteLine("0:   View Entire Hospital");
     Console.WriteLine("9:   Exit");
     Console.Write("Selection: ");
     string? choice = Console.ReadLine();
@@ -46,33 +36,69 @@ while (stayInMenu)
             break;
 
         case "6":
-            neurai.facilities.ShowExternalFacilities();
-            Console.WriteLine("\nWould you like to open the Pharmacy menu? (Y/N)");
-            string? pharmChoice = Console.ReadLine()?.ToUpper();
-            if (pharmChoice == "Y")
-            {
-                neurai.facilities.HospitalPharmacy.ShowAll();
-                Console.Write("\nEnter a medicine name to search (or press Enter to go back): ");
-                string? searchName = Console.ReadLine();
+            bool pharmacyMenu = true;
+            neurai.CampusFacilities.ShowExternalFacilities();
 
-                if (!string.IsNullOrWhiteSpace(searchName))
+            while (pharmacyMenu)
+            {
+                Console.WriteLine("\n=== Pharmacy Terminal ===");
+                Console.WriteLine("1: View All Medicines in Hospital");
+                Console.WriteLine("2: Search for a Specific Medicine");
+                Console.WriteLine("3: View Medicines by Department");
+                Console.WriteLine("0: Return to Main Menu");
+                Console.Write("Pharmacy Selection: ");
+
+                string? pharmChoice = Console.ReadLine();
+
+                if (pharmChoice == "1")
                 {
-                    Medicine? foundMed = neurai.facilities.HospitalPharmacy.FindMedicine(searchName);
-                    if (foundMed != null)
+                    neurai.CampusFacilities.HospitalPharmacy.ShowAll();
+                }
+                else if (pharmChoice == "2")
+                {
+                    Console.Write("\nEnter a medicine name to search: ");
+                    string? searchName = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(searchName))
                     {
-                        Console.WriteLine($"\n>>> Found Medicine: {foundMed.Name}, Price: {foundMed.Price:C}");
+                        Medicine? foundMed = neurai.CampusFacilities.HospitalPharmacy.FindMedicine(searchName);
+                        if (foundMed != null)
+                            Console.WriteLine($"\n>>> Found: {foundMed.Name}, Price: {foundMed.Price:C}");
+                        else
+                            Console.WriteLine("\n>>> Medicine not found.");
+                    }
+                }
+                else if (pharmChoice == "3")
+                {
+                    Console.Write("\nEnter Department Name (Cardiology, Chest, Pediatrics, General): ");
+                    string? targetDept = Console.ReadLine();
+
+                    Department? foundDept = neurai.ActiveDepartments.Find(d =>
+                        d.DeptName.Equals(targetDept, StringComparison.OrdinalIgnoreCase));
+
+                    if (foundDept != null)
+                    {
+                        foundDept.ShowDepartmentMedicines(neurai.CampusFacilities.HospitalPharmacy);
                     }
                     else
                     {
-                        Console.WriteLine("\n>>> Medicine not found.");
+                        Console.WriteLine($"[!] Could not find a department named '{targetDept}'.");
                     }
+                }
+                else if (pharmChoice == "0")
+                {
+                    pharmacyMenu = false;
+                    Console.WriteLine("\nClosing Pharmacy Terminal...");
+                }
+                else
+                {
+                    Console.WriteLine("\n[!] Invalid selection. Please try again.");
                 }
             }
             break;
 
         case "0":
-            neurai.DisplayHospitalMap();
-            neurai.facilities.ShowExternalFacilities();
+            neurai.ShowAllDepartments();
+            neurai.CampusFacilities.ShowExternalFacilities();
             break;
 
         case "9":

@@ -25,19 +25,19 @@ namespace Hospital_System
         {
             Room newRoom = new Room(roomNumber, type, floorNumber);
             Rooms.Add(newRoom);
-            Console.WriteLine($"[+] Room {roomNumber} ({type}) added to {DeptName}.");
+           // Console.WriteLine($"[+] Room {roomNumber} ({type}) added to {DeptName}.");==>output would be so long
         }
 
         public void AssignDoctor(Doctor doctor)
         {
             Doctors.Add(doctor);
-            Console.WriteLine($"[+] Dr. {doctor.Name} assigned to {DeptName}.");
+            //Console.WriteLine($"[+] Dr. {doctor.Name} assigned to {DeptName}.");
         }
 
         public void AssignNurse(Nurse nurse)
         {
             Nurses.Add(nurse);
-            Console.WriteLine($"[+] Nurse {nurse.Name} assigned to {DeptName}.");
+           // Console.WriteLine($"[+] Nurse {nurse.Name} assigned to {DeptName}.");
         }
         public void AssignDoctorToRoom(string doctorName, int roomNumber)
         {
