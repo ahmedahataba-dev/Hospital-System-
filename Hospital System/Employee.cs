@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
+using System.IO;
 //using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 // By Ahmed Hataba
 
@@ -8,7 +11,7 @@ namespace Hospital_System
 {
 	internal class Employee : Person
 	{
-		static int employeeid_counter = 1;
+		public static int employeeid_counter = 1;
 		private decimal salary;
 		private DateTime checkintime;
 		private DateTime checkouttime;
@@ -16,6 +19,9 @@ namespace Hospital_System
 		private double experienceyears;
 		private int employeeid;
 		private bool ischeckedin;
+		//list includes All employees
+		public static List<Employee> employees = new List<Employee>();
+
 
 		//      public double ArrivalTime {
 		//	get { return arrivaltime; }
@@ -92,14 +98,38 @@ namespace Hospital_System
 			}
 		}
 
+
+
+
+
 		public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears/*, int employeeid*/)
 			: base(name, age, gender, Nationalid, phoneNumber, email, address)
 		{
 			Salary = salary;
 			ExperienceYears = experienceyears;
-			EmployeeId = employeeid_counter;
-			employeeid_counter++;
+			//employees.Add(this);
+			HospitalData.AddEmployee(this);
+
 		}
+
+
+
+
+
+		static public void ValidateId(int id)
+		{
+		
+			var emp = employees.FirstOrDefault(e => e.EmployeeId == id);
+		 if (emp!=null)
+		 {
+				emp.CheckInandOut();
+		 }
+		else
+		{
+				Console.WriteLine("u are not a registered employee .");
+		}
+		}
+		
 
 		public void CheckIn()
 		{
@@ -118,15 +148,15 @@ namespace Hospital_System
 				this.checkouttime = DateTime.Now;
 				this.workedhours = checkouttime - checkintime;
 				Console.WriteLine($"On {this.checkintime:dd-MM-yyyy}\n{this.Name} Checked In At :{this.checkintime:hh:mm:ss tt}	|	" +
-				$"Checked Out At :{this.checkouttime:hh:mm:ss tt}\n Good Bye .");
+				$"Checked Out At :{this.checkouttime:hh:mm:ss tt}\nGood Bye .");
 				ischeckedin = false;
 			}
 			else Console.WriteLine("Please Check In first .");
 		}
 
-		public void CheckInandOut(Employee emp)
+		public void CheckInandOut()
 		{
-			Console.Write($"Please Enter Your ID {this.Name} : ");
+			//Console.Write($"Please Enter Your ID {this.Name} : ");
 			Console.WriteLine($"Hello {this.Name} Do You Want To Check In Or out \nChoose 1-Check IN				2-Check Out  ");
 
 			if (int.TryParse(Console.ReadLine(), out int chosenno)) //try parse to avoid wrong input crash 

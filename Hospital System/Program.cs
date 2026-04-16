@@ -6,37 +6,53 @@ namespace Hospital_System
 	internal class Program
 	{
 		// [STAThread] // You only need this if you are running a Windows Forms UI
+		//static void Main()
+		//{
+		//	HospitalData.ExtractEmployees();
+
+		//	Employee e1 = new Employee("Khaled", 19, GenderType.Male, "30702181200491", "01025920864", "kh@example.com", "meetghamr", 15000, 4.5);
+		//	Employee e2 = new Employee("Sayed", 19, GenderType.Male, "30701481251478", "01025920864", "sy@example.com", "meet mahmoud", 1000, 3);
+		//	HospitalData.SaveEmployees();
+
+		//	foreach (var emp in Employee.employees)
+		//	{
+		//		Console.WriteLine($"ID: {emp.EmployeeId} | Name: {emp.Name} | Salary: {emp.Salary}");
+		//	}
+
+
+
+		//	//while (true){
+
+		//	//	Console.Write("Please Enter Your ID To Check In/Out :");
+		//	//int.TryParse(Console.ReadLine().Trim(),out int enteredid);
+		//	//	Employee.ValidateId(enteredid);
+		//	//}
+
+
+
+		//}
+
 		static void Main()
 		{
-			// ==========================================
-			// Ahmed Hataba's Tests (Console Environment)
-			// ==========================================
-			Employee e1 = new Employee("ahmed", 19, GenderType.Male, "30701181200491", "01025920864", "ahmed@example.com", "Mansoura", 15000, 5); e1.CheckInandOut(e1);
+			HospitalData.ExtractEmployees();
 
-			Console.WriteLine("\n-----------------------------------\n");
+			//if (Employee.employees.Count == 0)
+			//{
+			//	Console.WriteLine("System is empty. Seeding initial data...");
+			//	new Employee("Khaled", 19, GenderType.Male, "30702181200491", "01025920864", "kh@example.com", "meetghamr", 15000, 4.5);
+			//	new Employee("Sayed", 19, GenderType.Male, "30701481251478", "01025920864", "sy@example.com", "meet mahmoud", 1000, 3);
 
-			// ==========================================
-			// Youssef's Tests (Hospital & Rooms Environment)
-			// ==========================================
-			/*
-			Hospital neurai = new Hospital();
-			Floors floor1 = new Floors(1, "Main Floor", true);
-			Department cardiology = new Department("Cardiology");
-			Room heartRoom = new Room(101, Room.RoomType.ICU, 1);
-			
-			cardiology.Rooms.Add(heartRoom);
-			floor1.DepartmentsOnFloor.Add(cardiology);
-			neurai.AddFloor(floor1);
+			//	HospitalData.SaveEmployees();
+			//}
+			//Employee e1=new Employee("ahmed", 19, GenderType.Male, "30701181200491", "01025920863", "ahmed@example.com","cairo", 30000, 4.5);
+			HospitalData.SaveEmployees();
 
-			Room room1 = new Room(201, Room.RoomType.ICU, 2);
-			Room room2 = new Room(207, Room.RoomType.ICU, 2);
 
-			// Note: Replace MessageBox with Console.WriteLine if testing in Console
-			Console.WriteLine($"Room Number: {room1.RoomNumber}\nRoom Type: {room1.Type}\nFloor Number: {room1.FloorNumber}");
-			Console.WriteLine($"Room 1 Occupied: {room1.IsOccupied}");
-			Console.WriteLine($"Room 2 Occupied: {room2.IsOccupied}");
-			Room.ShowAvailableRooms();
-			*/
+			Console.WriteLine("\n--- Current Registered Employees ---");
+			foreach (var emp in Employee.employees)
+			{
+				Console.WriteLine($"ID: {emp.EmployeeId} | Name: {emp.Name} | Salary: {emp.Salary}");
+			}
 		}
 	}
 }
