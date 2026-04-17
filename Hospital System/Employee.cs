@@ -17,39 +17,6 @@ namespace Hospital_System
         private int employeeid;
         private bool ischeckedin;
 
-        //      public double ArrivalTime {
-        //	get { return arrivaltime; }
-        //	set
-        //	{
-        //		if (value <= 0)
-        //		{
-        //			throw new ArgumentException("Invalid Time .");
-        //		}
-        //              else{ 
-
-        //		arrivaltime = value;
-        //		}
-        //	}
-        //}
-
-        //public double DepartureTime
-        //{
-        //	get { return departuretime; }
-        //	set
-        //	{
-        //		if (value <= 0)
-        //		{
-        //			throw new ArgumentException("Invalid Time .");
-        //		}
-        //		else if (departuretime>arrivaltime)
-        //		{
-
-        //			departuretime = value;
-        //		}
-
-        //	}
-        //}
-
         public double ExperienceYears
         {
             get { return experienceyears; }
@@ -99,6 +66,11 @@ namespace Hospital_System
             ExperienceYears = experienceyears;
             EmployeeId = employeeid_counter;
             employeeid_counter++;
+        }
+
+        public Employee(string name)
+        {
+            Name = name;
         }
 
         public void CheckIn()

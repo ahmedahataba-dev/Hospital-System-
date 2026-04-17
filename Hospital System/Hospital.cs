@@ -11,9 +11,13 @@ namespace Hospital_System
         public List<Department> ActiveDepartments { get; private set; } = new List<Department>();
 
         public ExternalDepartments CampusFacilities { get; set; }
-
+        public SecurityDepartment CampusSecurity { get; private set; }
         public Hospital(string name)
         {
+            CampusSecurity = new SecurityDepartment();
+            CampusSecurity.HireGuard(new Security("Ahmed", "SEC-001", "Day"));
+            CampusSecurity.HireGuard(new Security("Mohammed", "SEC-002", "Evening"));
+            CampusSecurity.HireGuard(new Security("Adham", "SEC-003", "Night"));
             this.Name = name;
 
             for (int i = 0; i < 5; i++)

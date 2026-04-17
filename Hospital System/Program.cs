@@ -1,6 +1,8 @@
 ﻿using Hospital_System;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Xml.Linq;
 // [STAThread] // You only need this if you are running a Windows Forms UI
 // ==========================================
 // Ahmed Hataba's Tests (Console Environment)
@@ -18,9 +20,10 @@ bool stayInMenu = true;
 while (stayInMenu)
 {
     Console.WriteLine("\n--- NeurAi Medical Center Navigation ---");
+    Console.WriteLine("0:   View Entire Hospital");
     Console.WriteLine("1-5: View Specific Floor");
     Console.WriteLine("6:   View Pharmacy & External Facilities");//Full pharmacy integration with search and department filtering
-    Console.WriteLine("0:   View Entire Hospital");
+    Console.WriteLine("7:   Security Department Terminal (Patrol & Lockdown)");
     Console.WriteLine("9:   Exit");
     Console.Write("Selection: ");
     string? choice = Console.ReadLine();
@@ -92,6 +95,66 @@ while (stayInMenu)
                 else
                 {
                     Console.WriteLine("\n[!] Invalid selection. Please try again.");
+                }
+            }
+            break;
+        case "7":
+            bool securityMenu = true;
+            while (securityMenu)
+            {
+                Console.WriteLine("\n=== SECURITY HEADQUARTERS ===");
+                Console.WriteLine($"Current Status: {(neurai.CampusSecurity.IsLockdownActive ? "LOCKDOWN" : "SECURE")}");
+                Console.WriteLine("1: Dispatch Guard to Patrol a Floor");
+                Console.WriteLine("2: View Active Guard Roster");
+                Console.WriteLine("3: Toggle Hospital Lockdown");
+                Console.WriteLine("4: Hire Substitute Guard");
+                Console.WriteLine("0: Return to Main Menu");
+                Console.Write("Command: ");
+
+                string? secChoice = Console.ReadLine();
+
+                if (secChoice == "1")
+                {
+                    Console.Write("Enter Floor Number to Patrol (1-5): ");
+                    if (int.TryParse(Console.ReadLine(), out int floorToPatrol))
+                    {
+                        neurai.CampusSecurity.PatrolFloor(floorToPatrol, neurai.Floors);
+                    }
+                }
+                else if (secChoice == "2")
+                {
+                    Console.WriteLine("\n--- Active Guards ---");
+                    foreach (var guard in neurai.CampusSecurity.Guards)
+                    {
+                        Console.WriteLine($"- Officer {guard.Name} | Badge: {guard.BadgeNumber} | Shift: {guard.Shift}");
+                    }
+                }
+                else if (secChoice == "3")
+                {
+                    neurai.CampusSecurity.ToggleLockdown();
+                }
+                else if (secChoice == "4")
+                {
+                    Console.WriteLine("\n--- Hire Substitute Guard ---");
+                    Console.Write("Enter Guard Name: ");
+                    string? newName = Console.ReadLine();
+
+                    Console.Write("Enter Shift Time (Day, Evening, Night) : ");
+                    string? newShift = Console.ReadLine();
+
+                    if (!string.IsNullOrWhiteSpace(newName) && !string.IsNullOrWhiteSpace(newShift))
+                    {
+                        neurai.CampusSecurity.HireSubstituteGuard(newName, newShift);
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n[!] Invalid input. Name and Shift cannot be empty.");
+                    }
+                }
+                else if (secChoice == "0")
+                {
+                    securityMenu = false;
+                    Console.WriteLine("\nLogging out of Security Terminal...");
                 }
             }
             break;
