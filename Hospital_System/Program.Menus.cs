@@ -143,6 +143,7 @@ namespace Hospital_System
                     if (patient != null)
                     {
                         op.PatientName = patient.Name;
+                        patient.NextScheduledProcedure = op.SurgeryDate;
                         Console.WriteLine($"Patient found: {patient.Name}");
                     }
                     else
