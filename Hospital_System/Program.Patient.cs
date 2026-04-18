@@ -187,6 +187,13 @@ namespace Hospital_System
             p.Allergies = ReadString("Allergies: ");
             p.Risk = ReadString("Risk Level: ");
             p.MedicalHistory = ReadString("Medical History: ");
+             Console.Write("Last Surgery Date (yyyy-mm-dd) or Enter to skip: ");
+             if (DateTime.TryParse(Console.ReadLine(), out DateTime last)) p.LastSurgeryDate = last;
+
+             Console.Write("Next Surgery Date (yyyy-mm-dd) or Enter to skip: ");
+             if (DateTime.TryParse(Console.ReadLine(), out DateTime next)) p.NextScheduledProcedure = next;
+
+            p.PreviousSurgeriesLog = ReadString("Full Surgical History: ");
             p.FamilyHistory = ReadString("Family History: ");
             p.PaymentMethods = ReadString("Payment Method: ");
         }
