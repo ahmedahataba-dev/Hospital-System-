@@ -30,37 +30,48 @@ namespace Hospital_System
         }
         private void SetupAllDepartments()
         {
-            // --- 1. EMERGENCY (Floor 1) --->ENABLE THIS WHEN YOUR CLASS IS CREATED
-          /*  EmergencyDepartment er = new EmergencyDepartment();
-            er.AddRoom(101, Room.RoomType.Emergency, 1);
-            er.AddRoom(102, Room.RoomType.ICU, 1);
-            ActiveDepartments.Add(er);*/
+            ActiveDepartments.Clear();
+            ActiveDepartments.Add(new Department("General Medicine"));
+            ActiveDepartments.Add(new Department("Internal Medicine"));
+            ActiveDepartments.Add(new Department("Neurology"));
+            ActiveDepartments.Add(new Department("Ophthalmology"));
+            ActiveDepartments.Add(new Department("Physical Medicine"));
+            ActiveDepartments.Add(new Department("Otolaryngology (ENT)"));
+            ActiveDepartments.Add(new Department("Cardiology"));
+            ActiveDepartments.Add(new Department("Orthopedics"));
+            ActiveDepartments.Add(new Department("Pulmonology"));
+            ActiveDepartments.Add(new Department("Dermatology"));
+            ActiveDepartments.Add(new Department("General Surgery"));
 
-            // --- 2. CARDIOLOGY (Floor 2) ---
-            Department cardiology = new Department("Cardiology");
-            cardiology.AddRoom(201, Room.RoomType.ICU, 2);
-            cardiology.AddRoom(202, Room.RoomType.OperatingTheater, 2);
-            cardiology.AddRoom(203, Room.RoomType.General, 2);
-            ActiveDepartments.Add(cardiology);
 
-            // --- 3. CHEST (Floor 3) ---
-            Department chest = new Department("Chest");
-            chest.AddRoom(301, Room.RoomType.Isolation, 3);
-            chest.AddRoom(302, Room.RoomType.General, 3);
-            ActiveDepartments.Add(chest);
+            // --- ROOM DISTRIBUTION SYSTEM  ---
+            int currentFloor = 1;
+            int roomsOnCurrentFloor = 0;
+            int deptIndex = 0;
+            int roomsGivenToCurrentDept = 0;
+            for (int i = 1; i <= 100; i++)
+            {
+                int roomNum = (currentFloor * 100) + (roomsOnCurrentFloor + 1);
+                string roomType = "General";
+                if (i % 10 == 0) roomType = "ICU";
+                else if (i % 15 == 0) roomType = "OperatingTheater";
+                ActiveDepartments[deptIndex].Rooms.Add(new Room(roomNum,Enum.Parse<Room.RoomType>(roomType),currentFloor));
+                //Console.WriteLine($"[+] Room {roomNum} ({roomType}) added to {ActiveDepartments[deptIndex].DeptName}.");
 
-            // --- 4. PEDIATRICS (Floor 4) ---
-            Department pediatrics = new Department("Pediatrics");
-            pediatrics.AddRoom(401, Room.RoomType.Incubator, 4);
-            pediatrics.AddRoom(402, Room.RoomType.Maternity, 4);
-            pediatrics.AddRoom(403, Room.RoomType.General, 4);
-            ActiveDepartments.Add(pediatrics);
+                roomsGivenToCurrentDept++;
+                if (roomsGivenToCurrentDept >= 9 && deptIndex < ActiveDepartments.Count - 1)
+                {
+                    deptIndex++;
+                    roomsGivenToCurrentDept = 0; 
+                }
+                roomsOnCurrentFloor++;
+                if (roomsOnCurrentFloor == 20) 
+                {
+                    currentFloor++;
+                    roomsOnCurrentFloor = 0; 
+                }
+            }
 
-            // --- 5. GENERAL / PAINKILLERS (Floor 5) ---
-            Department general = new Department("General");
-            general.AddRoom(501, Room.RoomType.General, 5);
-            general.AddRoom(502, Room.RoomType.General, 5);
-            ActiveDepartments.Add(general);
         }
         public void ShowAllDepartments()
         {

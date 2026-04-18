@@ -16,6 +16,7 @@ Console.WriteLine("\n-----------------------------------\n");
 // ==========================================
 
 Hospital neurai = new Hospital("NeurAi Medical Center");
+Pharmacy hospitalPharmacy = neurai.CampusFacilities.HospitalPharmacy;
 bool stayInMenu = true;
 while (stayInMenu)
 {
@@ -72,11 +73,16 @@ while (stayInMenu)
                 }
                 else if (pharmChoice == "3")
                 {
-                    Console.Write("\nEnter Department Name (Cardiology, Chest, Pediatrics, General): ");
-                    string? targetDept = Console.ReadLine();
+                    Console.WriteLine("Available Departments:");
+                    foreach (var category in hospitalPharmacy.categories.Keys)
+                    {
+                        Console.WriteLine($"- {category}");
+                    }
+                    Console.Write("\nEnter Department Name from the list above: ");
+                    string? selectedDept = Console.ReadLine();
 
                     Department? foundDept = neurai.ActiveDepartments.Find(d =>
-                        d.DeptName.Equals(targetDept, StringComparison.OrdinalIgnoreCase));
+                        d.DeptName.Equals(selectedDept, StringComparison.OrdinalIgnoreCase));
 
                     if (foundDept != null)
                     {
@@ -84,7 +90,7 @@ while (stayInMenu)
                     }
                     else
                     {
-                        Console.WriteLine($"[!] Could not find a department named '{targetDept}'.");
+                        Console.WriteLine($"[!] Could not find a department named '{selectedDept}'.");
                     }
                 }
                 else if (pharmChoice == "0")
