@@ -7,59 +7,53 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Security: Employee
     {
-        string assignedArea=string.Empty;//location in hospital
-        bool isFireSafetyTrained=false;
-        TimeSpan patrolTime; //time taken for each patrol round
-        string shiftReport=string.Empty; //report of any incidents during the shift
-        public string AssignedArea
+        int badgeNumber;
+        String? shift; //morning, evening, night
+        private string? name;
+
+        public new string? Name
         {
-            get { return assignedArea; }
+            get => name;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Assigned area name mustn't have space , and it can't be empty ");
+                    throw new ArgumentException("Name cannot be empty.");
                 }
-                assignedArea = value;
+                name = value;
             }
         }
-        public bool IsFireSafetyTrained
+
+        public string? Shift
         {
-            get;
-            set;
-        }
-        public TimeSpan PatrolTime
-        {
-            get { return patrolTime; }
-            set
-            {
-                if (value <= TimeSpan.Zero)
-                {
-                    throw new ArgumentException("Patrol time must be positive.");
-                }
-                patrolTime = value;
-            }
-        }
-        public string ShiftReport
-        {
-            get { return shiftReport; }
+            get { return shift; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Shift report cannot be empty.");
+                    throw new ArgumentException("Shift cannot be empty.");
                 }
-                shiftReport = value;
+                shift = value;
             }
         }
-        public Security(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email
-            , string address, decimal salary, double arrivaltime, double departuretime, double experienceyears, string assignedArea, bool isFireSafetyTrained, TimeSpan patrolTime, string shiftReport)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivaltime, departuretime, experienceyears)
+        public int BadgeNumber
+            {
+                get { return badgeNumber; }
+                set
+                {
+                    if (value <= 0)
+                    {
+                        throw new ArgumentException("Badge number must be a positive integer.");
+                    }
+                    badgeNumber = value;
+                }
+        }
+       
+        public Security(string name, string badgeNumber, string shift):base(name) 
         {
-            AssignedArea = assignedArea;
-            IsFireSafetyTrained = isFireSafetyTrained;
-            PatrolTime = patrolTime;
-            ShiftReport = shiftReport;
+           this.Name = name;
+            this.BadgeNumber = int.Parse(badgeNumber.Replace("SEC-", ""));
+            this.Shift = shift;
         }
     }
 }

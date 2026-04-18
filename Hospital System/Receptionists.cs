@@ -39,8 +39,8 @@ namespace Hospital_System
             }
         }
         public Receptionists(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email
-            , string address, decimal salary, double arrivaltime, double departuretime, double experienceyears, string assignedDesk, int managedDoctors)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary, arrivaltime, departuretime, experienceyears)
+            , string address, decimal salary,/* double arrivaltime, double departuretime,*/ double experienceyears, string assignedDesk, int managedDoctors)
+            : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/* arrivaltime, departuretime,*/ experienceyears)
         {
             AssignedDesk = assignedDesk;
             ManagedDoctors = managedDoctors;
