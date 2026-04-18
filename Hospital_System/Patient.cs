@@ -20,6 +20,9 @@ namespace Hospital_System
         public string? FamilyHistory { get; set; }
         public string? Risk { get; set; }
         public string? PaymentMethods { get; set; }
+        public DateTime? LastSurgeryDate { get; set; } 
+        public DateTime? NextScheduledProcedure { get; set; } 
+        public string? PreviousSurgeriesLog { get; set; } 
 
 
 
@@ -30,6 +33,9 @@ namespace Hospital_System
             Console.WriteLine($"Case: {MedicalCase} \nRisk: {Risk} \nBlood: {BloodType}");
             Console.WriteLine($"Height: {Height}m \nWeight: {Weight}kg");
             Console.WriteLine($"Medical History: {MedicalHistory}");
+            Console.WriteLine($"Last Surgery: {(LastSurgeryDate.HasValue ? LastSurgeryDate.Value.ToShortDateString() : "None")}");
+            Console.WriteLine($"Next Scheduled: {(NextScheduledProcedure.HasValue ? NextScheduledProcedure.Value.ToShortDateString() : "None")}");
+            Console.WriteLine($"Full Surgical History: {PreviousSurgeriesLog}");
             Console.WriteLine($"Family History: {FamilyHistory}");
             Console.WriteLine($"Allergies: {Allergies} \nPayment: {PaymentMethods}");
 
