@@ -1,0 +1,126 @@
+using System.Collections.Generic;
+using System.Text;
+
+namespace Hospital_System
+{
+    internal class Devices
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Purpose { get; set; }
+        public decimal Price { get; set; }
+        public Devices(int id, string name, string purpose, decimal price)
+        {
+            Id = id;
+            Name = name;
+            Purpose = purpose;
+            Price = price;
+
+
+
+        }
+        public   void Print()
+        {// عرض بيانات كل جهاز لوحده 
+            Console.WriteLine($"ID: {Id} | Name: {Name} | Purpose: {Purpose} | Price: {Price} EGP");
+        }
+        private List<Devices> devices = new List<Devices>();
+
+        public Devices()
+        {
+            devices.Add(new Devices(1, "ECG Machine", "Heart monitoring", 50000));
+            devices.Add(new Devices(2, "X-Ray Machine", "Bone imaging", 200000));
+            devices.Add(new Devices(3, "MRI Scanner", "Detailed imaging", 1500000));
+            devices.Add(new Devices(4, "Ultrasound Machine", "Pregnancy scanning", 80000));
+            devices.Add(new Devices(5, "Ventilator", "Breathing support", 120000));
+
+            devices.Add(new Devices(6, "Infusion Pump", "IV fluid control", 30000));
+            devices.Add(new Devices(7, "Defibrillator", "Heart shock", 90000));
+            devices.Add(new Devices(8, "Blood Pressure Monitor", "BP measurement", 5000));
+            devices.Add(new Devices(9, "Suction Machine", "Remove fluids", 25000));
+            devices.Add(new Devices(10, "Anesthesia Machine", "Surgery anesthesia", 180000));
+
+            devices.Add(new Devices(11, "CT Scanner", "Cross-sectional imaging", 900000));
+            devices.Add(new Devices(12, "Oxygen Concentrator", "Oxygen supply", 20000));
+            devices.Add(new Devices(13, "Heart Monitor", "Heart tracking", 40000));
+            devices.Add(new Devices(14, "Fetal Doppler", "Fetal heartbeat", 15000));
+            devices.Add(new Devices(15, "Dialysis Machine", "Kidney treatment", 250000));
+
+            devices.Add(new Devices(16, "Surgical Light", "Operation lighting", 60000));
+            devices.Add(new Devices(17, "Patient Bed", "Patient rest", 10000));
+            devices.Add(new Devices(18, "Sterilizer", "Cleaning tools", 70000));
+            devices.Add(new Devices(19, "ECG Portable", "Portable heart check", 45000));
+            devices.Add(new Devices(20, "Lab Analyzer", "Blood analysis", 300000));
+
+            devices.Add(new Devices(21, "Incubator", "Newborn care", 200000));
+            devices.Add(new Devices(22, "Pulse Oximeter", "Oxygen level", 3000));
+            devices.Add(new Devices(23, "Wheelchair", "Mobility", 8000));
+            devices.Add(new Devices(24, "Syringe Pump", "Drug infusion", 35000));
+            devices.Add(new Devices(25, "Endoscope", "Internal viewing", 220000));
+
+            devices.Add(new Devices(26, "Hematology Analyzer", "Blood cells", 280000));
+            devices.Add(new Devices(27, "Portable Ventilator", "Breathing support", 140000));
+            devices.Add(new Devices(28, "Laser Machine", "Surgery laser", 500000));
+            devices.Add(new Devices(29, "ECG Holter", "24h monitoring", 55000));
+        }
+        public   void ShowAllDevices() 
+            // طباعه كل الاجهزه 
+        {
+            Console.WriteLine("     Hosptial devices ");
+            foreach (var device in devices) 
+            {
+
+
+                device.Print();
+            }
+            }
+        
+            public void SearchDevice(string searchName)
+        //id تبحث عن الجهاز بواسطه الاسم او ال 
+
+        {
+            bool found = false;
+
+            foreach (var device in devices)
+            {
+                if (device.Name.ToLower().Contains(searchName.ToLower()) || device.Id.ToString() == searchName)
+                {
+                    device.Print();
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                Console.WriteLine("Device not found ");
+            }
+
+        }
+
+        public void AddDevice(int id ,string name, string purpose ,decimal price 
+            )
+        { 
+            //اضافه جهاز الي الاجهزه 
+
+
+        
+            
+            devices.Add(new Devices(id, name, purpose, price));
+            Console.WriteLine("Device added successfully ");
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+        }
+    
+    
+
+     
