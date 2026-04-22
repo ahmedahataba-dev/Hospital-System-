@@ -55,20 +55,20 @@ namespace Hospital_System
                 string roomType = "General";
                 if (i % 10 == 0) roomType = "ICU";
                 else if (i % 15 == 0) roomType = "OperatingTheater";
-                ActiveDepartments[deptIndex].Rooms.Add(new Room(roomNum,Enum.Parse<Room.RoomType>(roomType),currentFloor));
+                ActiveDepartments[deptIndex].Rooms.Add(new Rooms(roomNum, Enum.Parse<Rooms.RoomType>(roomType), currentFloor));
                 //Console.WriteLine($"[+] Room {roomNum} ({roomType}) added to {ActiveDepartments[deptIndex].DeptName}.");
 
                 roomsGivenToCurrentDept++;
                 if (roomsGivenToCurrentDept >= 9 && deptIndex < ActiveDepartments.Count - 1)
                 {
                     deptIndex++;
-                    roomsGivenToCurrentDept = 0; 
+                    roomsGivenToCurrentDept = 0;
                 }
                 roomsOnCurrentFloor++;
-                if (roomsOnCurrentFloor == 20) 
+                if (roomsOnCurrentFloor == 20)
                 {
                     currentFloor++;
-                    roomsOnCurrentFloor = 0; 
+                    roomsOnCurrentFloor = 0;
                 }
             }
 
@@ -116,6 +116,60 @@ namespace Hospital_System
             {
                 Console.WriteLine("[!] Invalid floor number. Please choose between 1 and 5.");
             }
+        }
+
+        protected internal static void RunMainMenu(Hospital neurai)
+        {
+            bool stayInMenu = true;
+            while (stayInMenu)
+            {
+                Console.WriteLine("\n--- NeurAi Medical Center Navigation ---");
+                Console.WriteLine("0:   View Entire Hospital");
+                Console.WriteLine("1-5: View Specific Floor");
+                Console.WriteLine("6:   View Pharmacy & External Facilities");
+                Console.WriteLine("7:   Security Department Terminal (Patrol & Lockdown)");
+                Console.WriteLine("8:   Doctor Management Terminal");
+                Console.WriteLine("9:   Exit");
+                Console.Write("Selection: ");
+                string? choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                    case "2":
+                    case "3":
+                    case "4":
+                    case "5":
+                        neurai.ShowFloorDetails(int.Parse(choice));
+                        break;
+
+                    case "6":
+                        Pharmacy.RunPharmacyMenu(neurai);
+                        break;
+
+                    case "7":
+                        SecurityDepartment.RunSecurityMenu(neurai);
+                        break;
+                    case "8":
+                        Doctor.RunDoctorMenu(neurai);
+                        break;
+
+                    case "0":
+                        neurai.ShowAllDepartments();
+                        neurai.CampusFacilities.ShowExternalFacilities();
+                        break;
+
+                    case "9":
+                        stayInMenu = false;
+                        Console.WriteLine("Exiting System. Goodbye!");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid selection. Please try again.");
+                        break;
+                }
+            }
+
         }
     }
 }

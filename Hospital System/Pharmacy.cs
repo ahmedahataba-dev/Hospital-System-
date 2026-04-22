@@ -4,17 +4,17 @@ using System.Text;
 
 namespace Hospital_System
 {
-        public class Pharmacy
+    public class Pharmacy
+    {
+        public Dictionary<string, List<Medicine>> categories = new Dictionary<string, List<Medicine>>();
+
+        public Pharmacy()
         {
-            public Dictionary<string, List<Medicine>> categories = new Dictionary<string, List<Medicine>>();
+            SeedData();
+        }
 
-            public Pharmacy()
-            {
-                SeedData();
-            }
-
-            private void SeedData()
-            {
+        private void SeedData()
+        {
             categories.Clear();
 
             // 1. Cardiology (Your exact original list)
@@ -110,7 +110,7 @@ namespace Hospital_System
 };
 
             // 11. General Surgery
-                categories["General Surgery"] = new List<Medicine>
+            categories["General Surgery"] = new List<Medicine>
 {
     new Medicine(41, "Morphine Sulfate", 150, 20, 1, 5),
     new Medicine(42, "Cefazolin", 110, 40, 3, 7),
@@ -118,85 +118,154 @@ namespace Hospital_System
 };
         }
 
-            // Show all categories
-           public void ShowAll()
-            {
-                Console.WriteLine("\n=== Available Categories ===");
-                int index = 1;
+        // Show all categories
+        public void ShowAll()
+        {
+            Console.WriteLine("\n=== Available Categories ===");
+            int index = 1;
 
-                foreach (var cat in categories.Keys)
+            foreach (var cat in categories.Keys)
+            {
+                Console.WriteLine($"{index}. {cat}");
+                index++;
+            }
+        }
+
+        // Show medicines in category
+        public void ShowCategory(string category)
+        {
+            if (categories.ContainsKey(category))
+            {
+                Console.WriteLine($"\n--- Medicines in {category} ---");
+                Console.WriteLine("ID | Name | Price | Qty | Strips | Tablets");
+                Console.WriteLine("----------------------------------------");
+
+                foreach (var m in categories[category])
                 {
-                    Console.WriteLine($"{index}. {cat}");
-                    index++;
+                    Console.WriteLine(m.ToString());
                 }
             }
-
-            // Show medicines in category
-            public void ShowCategory(string category)
+            else
             {
-                if (categories.ContainsKey(category))
-                {
-                    Console.WriteLine($"\n--- Medicines in {category} ---");
-                    Console.WriteLine("ID | Name | Price | Qty | Strips | Tablets");
-                    Console.WriteLine("----------------------------------------");
+                Console.WriteLine("Category not found!");
+            }
+        }
 
-                    foreach (var m in categories[category])
+        // Find medicine by name
+        public Medicine? FindMedicine(string name)
+        {
+            foreach (var cat in categories.Values)
+            {
+                foreach (var med in cat)
+                {
+                    if (med.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
-                        Console.WriteLine(m.ToString());
+                        return med;
                     }
+                }
+            }
+            return null;
+        }
+
+        // Get category by index
+        public string? GetCategoryNameByIndex(int index)
+        {
+            var keys = new List<string>(categories.Keys);
+
+            if (index > 0 && index <= keys.Count)
+                return keys[index - 1];
+
+            return null;
+        }
+
+
+        public void AddMedicineToCategory(string category, string name, double price, int quantity, int strips, int tablets)
+        {
+            if (categories.ContainsKey(category))
+            {
+                int newId = categories.SelectMany(c => c.Value).Max(m => m.MedicineId) + 1;
+
+                Medicine newMed = new Medicine(newId, name, price, quantity, strips, tablets);
+
+                categories[category].Add(newMed);
+
+                Console.WriteLine("Medicine Added Successfully ");
+            }
+            else
+            {
+                Console.WriteLine("Category not found ");
+            }
+        }
+
+        internal static void RunPharmacyMenu(Hospital neurai)
+        {
+            Pharmacy hospitalPharmacy = neurai.CampusFacilities.HospitalPharmacy;
+            bool pharmacyMenu = true;
+            neurai.CampusFacilities.ShowExternalFacilities();
+
+            while (pharmacyMenu)
+            {
+                Console.WriteLine("\n=== Pharmacy Terminal ===");
+                Console.WriteLine("1: View All Medicines in Hospital");
+                Console.WriteLine("2: Search for a Specific Medicine");
+                Console.WriteLine("3: View Medicines by Department");
+                Console.WriteLine("0: Return to Main Menu");
+                Console.Write("Pharmacy Selection: ");
+
+                string? pharmChoice = Console.ReadLine();
+
+                if (pharmChoice == "1")
+                {
+                    hospitalPharmacy.ShowAll();
+                }
+                else if (pharmChoice == "2")
+                {
+                    Console.Write("\nEnter a medicine name to search: ");
+                    string? searchName = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(searchName))
+                    {
+                        Medicine? foundMed = hospitalPharmacy.FindMedicine(searchName);
+                        if (foundMed != null)
+                            Console.WriteLine($"\n>>> Found: {foundMed.Name}, Price: {foundMed.Price:C}");
+                        else
+                            Console.WriteLine("\n>>> Medicine not found.");
+                    }
+                }
+                else if (pharmChoice == "3")
+                {
+                    Console.WriteLine("Available Departments:");
+                    foreach (var category in hospitalPharmacy.categories.Keys)
+                    {
+                        Console.WriteLine($"- {category}");
+                    }
+                    Console.Write("\nEnter Department Name from the list above: ");
+                    string? selectedDept = Console.ReadLine();
+
+                    Department? foundDept = neurai.ActiveDepartments.Find(d =>
+                        d.DeptName.Equals(selectedDept, StringComparison.OrdinalIgnoreCase));
+
+                    if (foundDept != null)
+                    {
+                        foundDept.ShowDepartmentMedicines(hospitalPharmacy);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[!] Could not find a department named '{selectedDept}'.");
+                    }
+                }
+                else if (pharmChoice == "0")
+                {
+                    pharmacyMenu = false;
+                    Console.WriteLine("\nClosing Pharmacy Terminal...");
                 }
                 else
                 {
-                    Console.WriteLine("Category not found!");
-                }
-            }
-
-            // Find medicine by name
-            public Medicine? FindMedicine(string name)
-            {
-                foreach (var cat in categories.Values)
-                {
-                    foreach (var med in cat)
-                    {
-                        if (med.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return med;
-                        }
-                    }
-                }
-                return null;
-            }
-
-            // Get category by index
-            public string? GetCategoryNameByIndex(int index)
-            {
-                var keys = new List<string>(categories.Keys);
-
-                if (index > 0 && index <= keys.Count)
-                    return keys[index - 1];
-
-                return null;
-            }
-
-
-            public void AddMedicineToCategory(string category, string name, double price, int quantity, int strips, int tablets)
-            {
-                if (categories.ContainsKey(category))
-                {
-                    int newId = categories.SelectMany(c => c.Value).Max(m => m.MedicineId) + 1;
-
-                    Medicine newMed = new Medicine(newId, name, price, quantity, strips, tablets);
-
-                    categories[category].Add(newMed);
-
-                    Console.WriteLine("Medicine Added Successfully ");
-                }
-                else
-                {
-                    Console.WriteLine("Category not found ");
+                    Console.WriteLine("\n[!] Invalid selection. Please try again.");
                 }
             }
         }
+
     }
+}
 
 
