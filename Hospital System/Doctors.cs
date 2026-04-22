@@ -7,10 +7,7 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Doctor : Employee
     {
-        
         private readonly string[] validBloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
-
-        
         private string bloodType = string.Empty;
         private string department = string.Empty;
         private string medicalLicenseNumber = string.Empty;
@@ -20,7 +17,6 @@ namespace Hospital_System
         public List<string> CurrentPatients { get; set; } = new List<string>();
         public enum DoctorRank { Trainee, Junior, Senior, Consultant };
         public DoctorRank Rank { get; set; }
-
         public string Department
         {
             get => department;
@@ -118,20 +114,13 @@ namespace Hospital_System
         internal static void RunDoctorMenu(Hospital neurai )
         {
 
-
-
-
-
-
-
             bool doctorMenu = true;
             while (doctorMenu)
             {
-                Console.WriteLine("\n=== DOCTOR MANAGEMENT TERMINAL ===");
                 Console.WriteLine("1: View All Doctors by Department");
                 Console.WriteLine("2: Assign a Doctor to a Room");
+                Console.WriteLine("3: Hire a New Doctor (Set Rank & Dept)");
                 Console.WriteLine("0: Return to Main Menu");
-                Console.Write("Command: ");
 
                 string? docChoice = Console.ReadLine();
 
@@ -156,14 +145,12 @@ namespace Hospital_System
 
                     Doctor? foundDoctor = null;
                     Department? foundDept = null;
-
-                    // 1. Search the entire hospital to find the doctor and their department
                     foreach (var dept in neurai.ActiveDepartments)
                     {
                         foundDoctor = dept.Doctors.Find(d => d.Name.Equals(docName, StringComparison.OrdinalIgnoreCase));
                         if (foundDoctor != null)
                         {
-                            foundDept = dept; // We found the doctor, so save the department they belong to!
+                            foundDept = dept;
                             break;
                         }
                     }
@@ -202,7 +189,91 @@ namespace Hospital_System
                     {
                         Console.WriteLine("\n[!] Invalid room number format.");
                     }
+                   
                 }
+                else if (docChoice == "3")
+                {
+                    Console.WriteLine("\n=== HIRE A NEW DOCTOR ===");
+                    Console.Write("Enter Doctor's Name (e.g., Ahmed Mohammed): ");
+                    string? rawName = Console.ReadLine();
+                    string name = "Unknown";
+
+                    if (!string.IsNullOrWhiteSpace(rawName))
+                    {
+                        name = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rawName.Trim().ToLower());//check language and culture for name formatting
+                    }
+                    bool isDuplicate = false;
+                    foreach (var dept in neurai.ActiveDepartments)
+                    {
+                        if (dept.Doctors.Exists(d =>
+                            d.Name.Replace(" ", "").Equals(name.Replace(" ", ""), StringComparison.OrdinalIgnoreCase)))
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (isDuplicate)
+                    {
+                        Console.WriteLine($"\n[!] HIRING BLOCKED: A doctor named Dr. {name} already works at the hospital.");
+                        continue; 
+                    }
+                    // ==========================================
+                    Console.WriteLine("\nAvailable Departments: Cardiology, Pulmonology, General Medicine, Orthopedics, Internal Medicine, Neurology, Ophthalmology, Physical Medicine, Otolaryngology (ENT), Dermatology, General Surgery");
+                    Console.Write("Enter Exact Department Name: ");
+                    string? deptName = Console.ReadLine();
+
+                    Console.Write("Enter Blood Type (e.g., A+, O-): ");
+                    string? rawBloodType = Console.ReadLine();
+                    string bloodType = "";
+                    if (!string.IsNullOrWhiteSpace(rawBloodType))
+                    {
+                        bloodType = rawBloodType.Trim().ToUpper();
+                    }
+
+                    // 3. RANK SELECTION
+                    Console.WriteLine("\nSelect Doctor Rank:");
+                    Console.WriteLine("1: Trainee");
+                    Console.WriteLine("2: Junior");
+                    Console.WriteLine("3: Senior");
+                    Console.WriteLine("4: Consultant");
+                    Console.Write("Selection: ");
+                    string? rankChoice = Console.ReadLine();
+
+                    Doctor.DoctorRank selectedRank = Doctor.DoctorRank.Trainee;
+                    if (rankChoice == "2") selectedRank = Doctor.DoctorRank.Junior;
+                    else if (rankChoice == "3") selectedRank = Doctor.DoctorRank.Senior;
+                    else if (rankChoice == "4") selectedRank = Doctor.DoctorRank.Consultant;
+
+                    // 4. CREATION & HIRING
+                    try
+                    {
+                        Doctor newDoctor = new Doctor(
+                            name, 30, GenderType.Male, "29999999999999", "01000000000",
+                            "new.doc@neurai.com", "Unassigned", 15000m, 1.0, deptName??"Unassigned",
+                            bloodType, "MED-NEW-999", 300m, 20, "Unassigned Room", selectedRank
+                        );
+
+                        Department? targetDept = neurai.ActiveDepartments.Find(d =>
+                            d.DeptName.Trim().Equals(deptName?.Trim() ?? "Unassigned", StringComparison.OrdinalIgnoreCase));
+
+                        if (targetDept != null)
+                        {
+                            targetDept.Doctors.Add(newDoctor);
+                            Console.WriteLine($"\n[+] SUCCESS: Dr. {newDoctor.Name} has been officially hired as a {selectedRank} in {targetDept.DeptName}!");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\n[!] ERROR: Department '{deptName}' does not exist.");
+                        }
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine($"\n[!] HIRING FAILED: {ex.Message}");
+                    }
+                }
+
+
                 else if (docChoice == "0")
                 {
                     doctorMenu = false;
@@ -217,7 +288,7 @@ namespace Hospital_System
 
         internal static void HireInitialDoctors(Hospital neurai)
         {
-            List<Doctor> hospitalDoctors = new List<Doctor>
+            List<Doctor> hospitalDoctors = new List<Doctor>//some doctors 
     {
         new Doctor("Ahmed Hassan", 50, GenderType.Male, "29010101234567", "01011112222", "ahmed.h@neurai.com", "Cairo", 35000m, 20.5, "Cardiology", "O+", "MED-CAR-001", 800m, 15, "Room 101", Doctor.DoctorRank.Consultant),
         new Doctor("Sarah Kamel", 42, GenderType.Female, "28502021234567", "01122223333", "sarah.k@neurai.com", "Giza", 28000m, 14.0, "Pulmonology", "A+", "MED-PUL-002", 600m, 20, "Room 105", Doctor.DoctorRank.Senior),
