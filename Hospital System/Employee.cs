@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;//using static System.Windows.Forms.VisualStyles.VisualStyleElement;// By Ahmed Hatabanamespace Hospital_System
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using System.IO;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-// By Ahmed Hataba
-
 namespace Hospital_System
 {
 	internal class Employee : Person
 	{
 		public static int employeeid_counter = 1;
-		private decimal salary;
+		private decimal salary;//basic salary if there is no deductions 
 		private DateTime checkintime;
 		private DateTime checkouttime;
 		private TimeSpan workedhours;
+		private TimeSpan lateness;
+		private TimeSpan shiftstart = new TimeSpan(9, 0, 0);
 		private double experienceyears;
 		private int employeeid;
 		private bool ischeckedin;
@@ -23,7 +22,7 @@ namespace Hospital_System
 		public static List<Employee> employees = new List<Employee>();
 
 
-		//      public double ArrivalTime {
+		//      public double ArrivalTime {
 		//	get { return arrivaltime; }
 		//	set
 		//	{
@@ -31,7 +30,7 @@ namespace Hospital_System
 		//		{
 		//			throw new ArgumentException("Invalid Time .");
 		//		}
-		//              else{ 
+		//              else{ 
 
 		//		arrivaltime = value;
 		//		}
@@ -98,8 +97,20 @@ namespace Hospital_System
 			}
 		}
 
+		public bool IsCheckedIn { get; set; }
+		public DateTime CheckInTime { get; set; }
+		//public decimal NetSalary
+		//{
+		//	get => netsalary;
+		//	set
+		//	{
+		//		if (value <= 0) throw new ArgumentException("Invalid Salary .");
+		//		netsalary = value;
+		//	}
+		//}
+		public decimal TotalDeductionAmmount { set; get; }
 
-
+		public decimal NetSalary => Salary - TotalDeductionAmmount;
 
 
 		public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears/*, int employeeid*/)
@@ -118,38 +129,54 @@ namespace Hospital_System
 
 		static public void ValidateId(int id)
 		{
-		
+
 			var emp = employees.FirstOrDefault(e => e.EmployeeId == id);
-		 if (emp!=null)
-		 {
+			if (emp != null)
+			{
 				emp.CheckInandOut();
-		 }
-		else
-		{
+			}
+			else
+			{
 				Console.WriteLine("u are not a registered employee .");
+			}
 		}
-		}
-		
+
 
 		public void CheckIn()
 		{
-			if (!ischeckedin)
+			if (!IsCheckedIn)
 			{
-				this.checkintime = DateTime.Now;
-				ischeckedin = true;
+				this.CheckInTime = DateTime.Now;
+				IsCheckedIn = true;
+				decimal dailydeductionammount = 0;
+
+
+				lateness = (CheckInTime.TimeOfDay) - shiftstart;
+				if (lateness > TimeSpan.Zero)
+				{
+					dailydeductionammount = (salary / (30 * 8 * 60)) * (decimal)lateness.TotalMinutes;
+					TotalDeductionAmmount += dailydeductionammount;
+					//netsalary = salary - totaldeductionammount;
+					Console.WriteLine($"You Are Late {lateness.TotalMinutes:f0} Minutes");
+				}
+				else
+				{
+					Console.WriteLine("You Arrived On Time . Well Done!");
+				}
 			}
 			else Console.WriteLine("You Are Already Checked In .");
+			HospitalData.SaveEmployees();//saves the public attributes in the "employee.json" file
 		}
 
 		public void CheckOut()
 		{
-			if (ischeckedin)
+			if (IsCheckedIn)
 			{
 				this.checkouttime = DateTime.Now;
-				this.workedhours = checkouttime - checkintime;
-				Console.WriteLine($"On {this.checkintime:dd-MM-yyyy}\n{this.Name} Checked In At :{this.checkintime:hh:mm:ss tt}	|	" +
+				this.workedhours = checkouttime - CheckInTime;
+				Console.WriteLine($"On {this.CheckInTime:dd-MM-yyyy}\n{this.Name} Checked In At :{this.CheckInTime:hh:mm:ss tt}	|	" +
 				$"Checked Out At :{this.checkouttime:hh:mm:ss tt}\nGood Bye .");
-				ischeckedin = false;
+				IsCheckedIn = false;
 			}
 			else Console.WriteLine("Please Check In first .");
 		}
@@ -157,9 +184,9 @@ namespace Hospital_System
 		public void CheckInandOut()
 		{
 			//Console.Write($"Please Enter Your ID {this.Name} : ");
-			Console.WriteLine($"Hello {this.Name} Do You Want To Check In Or out \nChoose 1-Check IN				2-Check Out  ");
+			Console.WriteLine($"Hello {this.Name} Do You Want To Check In Or out \nChoose 1-Check IN				2-Check Out  ");
 
-			if (int.TryParse(Console.ReadLine(), out int chosenno)) //try parse to avoid wrong input crash 
+			if (int.TryParse(Console.ReadLine(), out int chosenno)) //try parse to avoid wrong input crash 
 			{
 				switch (chosenno)
 				{
@@ -181,7 +208,7 @@ namespace Hospital_System
 			this.workedhours = checkouttime - checkintime;
 			Console.WriteLine($"On {this.checkintime:dd-MM-yyyy}\n{this.Name} Checked In At :{this.checkintime:hh:mm:ss}	|	" +
 			$"Checked Out At :{this.checkouttime:hh:mm:ss}");
-*/
+	*/
 		}
 	}
 }
