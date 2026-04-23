@@ -88,10 +88,10 @@ namespace Hospital_System
         }
 
         public Doctor(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
-                      string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
+                      string address, decimal salary, /*double arrivaltime, double departuretime,*/ double experienceyears,
                       string department, string bloodType, string medicalLicenseNumber, decimal consultationFee,
                       int maxPatientsPerDay, string assignedRoom, DoctorRank rank)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary,  experienceyears)
+            : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/*, arrivaltime, departuretime,*/ experienceyears)
         {
             Department = department;
            BloodType = bloodType;

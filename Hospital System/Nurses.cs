@@ -11,8 +11,8 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
     private string assignedWard = string.Empty;// can be used to specify the ward or department the nurse is assigned to (e.g., emergency, intensive care unit, etc.)
     private bool isOnCall=false;// can be used to indicate whether the nurse is currently on call or not
     private int currentPatientLoad; // to track number of patients to manage workload
-    private bool canAdministerMedication; // can be used to indicate whether the nurse is authorized to administer medication to patients
-    private bool isHeadNurse;// can be used to indicate whether the nurse holds a leadership position
+    //private bool canAdministerMedication; // can be used to indicate whether the nurse is authorized to administer medication to patients
+   // private bool isHeadNurse;// can be used to indicate whether the nurse holds a leadership position
 
     public string LicenseNumber
     {
@@ -53,8 +53,8 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
             assignedWard = value;
         }
     }
-    public bool CanAdministerMedication { get; set; }
-    public bool IsHeadNurse { get; set; }
+   // public bool CanAdministerMedication { get; set; }
+    //public bool IsHeadNurse { get; set; }
 
     public int CurrentPatientLoad
     {
@@ -71,10 +71,10 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
         set => isOnCall = value;
     }
     public Nurse(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
-                 string address, decimal salary, double arrivalTime, double departureTime, double experienceYears,
+                 string address, decimal salary,/* double arrivalTime, double departureTime,*/ double experienceYears,
                  string licenseNumber, string speciality, string degree, string assignedWard,
-                 bool isOnCall, int currentPatientLoad, bool canAdministerMedication, bool isHeadNurse)
-        : base(name, age, gender, nationalId, phoneNumber, email, address, salary, experienceYears)
+                 bool isOnCall, int currentPatientLoad /*bool canAdministerMedication*//*, bool isHeadNurse*/)
+        : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/* arrivalTime, departureTime,*/ experienceYears)
     {
         LicenseNumber = licenseNumber;
         Speciality = speciality;
@@ -82,7 +82,7 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
         AssignedWard = assignedWard;
         IsOnCall = isOnCall;
         CurrentPatientLoad = currentPatientLoad; 
-        CanAdministerMedication = canAdministerMedication;
-        IsHeadNurse = isHeadNurse;
+        //CanAdministerMedication = canAdministerMedication;
+        //IsHeadNurse = isHeadNurse;
     }
 }

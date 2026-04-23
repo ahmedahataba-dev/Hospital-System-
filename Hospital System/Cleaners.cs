@@ -7,12 +7,12 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Cleaners : Employee
     {
-        string assignedArea;//location of work in the hospital
+        string assignedArea=string.Empty;//location of work in the hospital
         bool hasHazmatTraining;//to check if he has the ability to deal with dangerous materials or not
         DateTime lastSanitationCheck;//DateTime is a Function that gives us the current date and time
         TimeSpan shiftStartTime;//TimeSpan is a Function that gives us the Duration of time, in this case the start time of the cleaner's shift
-        string equipmentId;//to identify the cleaning equipment used by the cleaner
-        string currentStatus;//to track the cleaner's current status (e.g., available, on break, assigned to a task)
+        string equipmentId=string.Empty;//to identify the cleaning equipment used by the cleaner
+        string currentStatus = string.Empty;//to track the cleaner's current status (e.g., available, on break, assigned to a task)
         public enum TrainingLevel { None, Basic, Advanced }
         public string AssignedArea
         {
@@ -81,10 +81,10 @@ namespace Hospital_System
         }
         public TrainingLevel CleanerTrainingLevel { get; set; }
         public Cleaners(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email
-            , string address, decimal salary, double arrivaltime, double departuretime, double experienceyears,
+            , string address, decimal salary, /*double arrivaltime, double departuretime,*/ double experienceyears,
             string assignedArea, bool hasHazmatTraining, DateTime lastSanitationCheck, TimeSpan shiftStartTime,
             string equipmentId, string currentStatus, TrainingLevel cleanerTrainingLevel)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary, experienceyears)
+            : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/*, arrivaltime, departuretime,*/ experienceyears)
         {
             AssignedArea = assignedArea;
             HasHazmatTraining = hasHazmatTraining;

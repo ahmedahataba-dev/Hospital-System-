@@ -7,13 +7,13 @@ namespace Hospital_System
         public int PatientId { get; set; }
         public double Height { get; set; }
         public double Weight { get; set; }
-        public string Allergies { get; set; }
-        public string MedicalCase { get; set; }
+        public  string? Allergies { get; set; }
+        public  string? MedicalCase { get; set; }
         //public BloodGroup BloodType { get; set; }
-        public string MedicalHistory { get; set; }
-        public string FamilyHistory { get; set; }
-        public string Risk { get; set; }
-        public string PaymentMethods { get; set; }
+        public  string? MedicalHistory { get; set; }
+        public  string? FamilyHistory { get; set; }
+        public  string? Risk { get; set; }
+        public  string? PaymentMethods { get; set; }
 
         public virtual void Display()
         {
