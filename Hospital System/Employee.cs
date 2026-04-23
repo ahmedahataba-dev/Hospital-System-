@@ -11,18 +11,16 @@ namespace Hospital_System
 	internal class Employee : Person
 	{
 		public static int employeeid_counter = 1;
-		private decimal salary; // Basic salary
-		private DateTime checkintime; 
+		private decimal salary;
 		private DateTime checkouttime;
 		private TimeSpan workedhours;
 		private TimeSpan lateness;
-		private TimeSpan shiftstart = new TimeSpan(9, 0, 0); //shift starts at 9
+		private TimeSpan shiftstart = new TimeSpan(9, 0, 0);
 		private double experienceyears;
 		private int employeeid;
-		
+
 		public static List<Employee> employees = new List<Employee>();
 
-		// Properties
 		public int EmployeeId
 		{
 			get { return employeeid; }
@@ -44,7 +42,7 @@ namespace Hospital_System
 		public bool IsCheckedIn { get; set; }
 		public DateTime CheckInTime { get; set; }
 		public decimal TotalDeductionAmmount { get; set; }
-		
+
 		public decimal NetSalary => Salary - TotalDeductionAmmount;
 
 		public Employee(string name, int age, GenderType gender, string Nationalid, string phoneNumber, string email, string address, decimal salary, double experienceyears)
@@ -55,20 +53,6 @@ namespace Hospital_System
 			EmployeeId = employeeid_counter;
 			employeeid_counter++;
 			HospitalData.AddEmployee(this);
-		}
-
-		// ميثود الـ ValidateId عشان تربط الـ UI بالـ Backend
-		static public void ValidateId(int id)
-		{
-			var emp = employees.FirstOrDefault(e => e.EmployeeId == id);
-			if (emp != null)
-			{
-				emp.CheckInandOut();
-			}
-			else
-			{
-				Console.WriteLine("u are not a registered employee .");
-			}
 		}
 
 		public void CheckIn()
@@ -88,11 +72,11 @@ namespace Hospital_System
 				}
 				else
 				{
-					Console.WriteLine("You Arrived On Time . Well Done!");
+					Console.WriteLine("You Arrived On Time. Well Done!");
 				}
-				HospitalData.SaveEmployees(); 
+				HospitalData.SaveEmployees();
 			}
-			else Console.WriteLine("You Are Already Checked In .");
+			else Console.WriteLine("You Are Already Checked In.");
 		}
 
 		public void CheckOut()
@@ -102,11 +86,11 @@ namespace Hospital_System
 				this.checkouttime = DateTime.Now;
 				this.workedhours = checkouttime - CheckInTime;
 				Console.WriteLine($"On {this.CheckInTime:dd-MM-yyyy}\n{this.Name} Checked In At :{this.CheckInTime:hh:mm:ss tt} | " +
-				$"Checked Out At :{this.checkouttime:hh:mm:ss tt}\nGood Bye .");
+				$"Checked Out At :{this.checkouttime:hh:mm:ss tt}\nGood Bye.");
 				IsCheckedIn = false;
 				HospitalData.SaveEmployees();
 			}
-			else Console.WriteLine("Please Check In first .");
+			else Console.WriteLine("Please Check In first.");
 		}
 
 		public void CheckInandOut()
@@ -118,8 +102,21 @@ namespace Hospital_System
 				{
 					case 1: CheckIn(); break;
 					case 2: CheckOut(); break;
-					default: Console.WriteLine("Invalid Number Chosen"); break;
+					default: Console.WriteLine("Invalid choice."); break;
 				}
+			}
+		}
+
+		static public void ValidateId(int id)
+		{
+			var emp = employees.FirstOrDefault(e => e.EmployeeId == id);
+			if (emp != null)
+			{
+				emp.CheckInandOut();
+			}
+			else
+			{
+				Console.WriteLine("u are not a registered employee.");
 			}
 		}
 	}
