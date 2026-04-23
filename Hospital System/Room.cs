@@ -7,10 +7,10 @@ namespace Hospital_System
 {
 	
 		//made by Youssef Essam
-		internal class Room 
+		internal class Rooms 
     {
-        private static readonly List<Room> rooms = new List<Room>();
-        private static readonly List<Room> AllRooms = rooms;
+        private static readonly List<Rooms> rooms = new List<Rooms>();
+        private static readonly List<Rooms> AllRooms = rooms;
 
 
 
@@ -71,7 +71,7 @@ namespace Hospital_System
 
 
 
-        public Room(int roomNumber, RoomType type, int floorNumber)
+        public Rooms(int roomNumber, RoomType type, int floorNumber)
         {
         
             int minRange = floorNumber * 100;

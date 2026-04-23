@@ -7,7 +7,7 @@ namespace Hospital_System
     internal class Department
     {
         public string DeptName { get; set; }
-        public List<Room> Rooms { get; private set; } = new List<Room>();
+        public List<Rooms> Rooms { get; private set; } = new List<Rooms>();
         public List<Doctor> Doctors { get; private set; } = new List<Doctor>();
         public List<Nurse> Nurses { get; private set; } = new List<Nurse>();
 
@@ -21,9 +21,9 @@ namespace Hospital_System
             DeptName = name;
         }
         
-        public void AddRoom(int roomNumber, Room.RoomType type, int floorNumber)
+        public void AddRoom(int roomNumber, Rooms.RoomType type, int floorNumber)
         {
-            Room newRoom = new Room(roomNumber, type, floorNumber);
+            Rooms newRoom = new Rooms(roomNumber, type, floorNumber);
             Rooms.Add(newRoom);
            // Console.WriteLine($"[+] Room {roomNumber} ({type}) added to {DeptName}.");==>output would be so long
         }
