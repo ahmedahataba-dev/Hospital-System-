@@ -4,9 +4,9 @@ namespace Hospital_System
 {
     class Outpatient : Patient
     {
-        public string ClinicName { get; set; }
+        public  string? ClinicName { get; set; }
         public double ConsultationFee { get; set; }
-        public string Complaint { get; set; }
+        public string Complaint { get; set; } = "Not Specified";
 
         public override void Display()
         {
