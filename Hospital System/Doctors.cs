@@ -7,16 +7,25 @@ namespace Hospital_System
     //made by Youssef Essam
     internal class Doctor : Employee
     {
+    
+        
         private readonly string[] validBloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
+
+        
         private string bloodType = string.Empty;
         private string department = string.Empty;
         private string medicalLicenseNumber = string.Empty;
         private string assignedRoom = string.Empty;
         private decimal consultationFee;
         private int maxPatientsPerDay;   
+
+        
         public List<string> CurrentPatients { get; set; } = new List<string>();
+
+        
         public enum DoctorRank { Trainee, Junior, Senior, Consultant };
         public DoctorRank Rank { get; set; }
+
         public string Department
         {
             get => department;
@@ -80,10 +89,8 @@ namespace Hospital_System
         }
 
         public Doctor(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
-                      string address, decimal salary, /*double arrivaltime, double departuretime,*/ double experienceyears,
                       string department, string bloodType, string medicalLicenseNumber, decimal consultationFee,
                       int maxPatientsPerDay, string assignedRoom, DoctorRank rank)
-            : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/*, arrivaltime, departuretime,*/ experienceyears)
         {
             Department = department;
            BloodType = bloodType;
