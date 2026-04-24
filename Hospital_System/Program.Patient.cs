@@ -13,14 +13,14 @@ namespace Hospital_System
         {
             Inpatient p = new Inpatient();
             FillBasicInfo(p);
-            p.WardName = ReadString("Ward Name: ");
-            p.RoomNumber = ReadInt("Room Number: ");
-            p.BedNumber = ReadInt("Bed Number: ");
-            p.AttendingPhysician = ReadString("Attending Physician: ");
-            p.DietPlan = ReadString("Diet Plan: ");
+            p.WardName = InputHelper.ReadString("Ward Name: ");
+            p.RoomNumber = InputHelper.ReadInt("Room Number: ");
+            p.BedNumber = InputHelper.ReadInt("Bed Number: ");
+            p.AttendingPhysician = InputHelper.ReadString("Attending Physician: ");
+            p.DietPlan = InputHelper.ReadString("Diet Plan: ");
             Console.Write("Has Operation? (y/n): ");
             p.HasOperations = Console.ReadLine().ToLower() == "y";
-            if (p.HasOperations) p.OperationType = ReadString("Operation Type: ");
+            if (p.HasOperations) p.OperationType = InputHelper.ReadString("Operation Type: ");
 
             patients.Add(p);
             SaveData();
@@ -32,9 +32,9 @@ namespace Hospital_System
         {
             Outpatient p = new Outpatient();
             FillBasicInfo(p);
-            p.ClinicName = ReadString("Clinic Name: ");
-            p.ConsultationFee = ReadDouble("Fee: ");
-            p.Complaint = ReadString("Complaint: ");
+            p.ClinicName = InputHelper.ReadString("Clinic Name: ");
+            p.ConsultationFee = InputHelper.ReadDouble("Fee: ");
+            p.Complaint = InputHelper.ReadString("Complaint: ");
 
             patients.Add(p);
             SaveData();
@@ -64,7 +64,7 @@ namespace Hospital_System
         // بحث بالرقم القومي او الاسم
         static void Search()
         {
-            string query = ReadString("Enter Name or National ID to search: ").ToLower();
+            string query = InputHelper.ReadString("Enter Name or National ID to search: ").ToLower();
             var results = patients.Where(p =>
                 p.Name.ToLower().Contains(query) ||
                 p.NationalId.Contains(query)).ToList();
@@ -131,14 +131,14 @@ namespace Hospital_System
             Console.WriteLine($"\n[Patient ID: {p.PatientId}]");
 
 
-            p.Name = ReadLettersOnly("Enter Name: ");
+            p.Name = InputHelper.ReadLettersOnly("Enter Name: ");
 
 
             while (true)
             {
                 try
                 {
-                    p.Age = ReadInt("Enter Age: ");
+                    p.Age = InputHelper.ReadInt("Enter Age: ");
                     break;
                 }
                 catch (ArgumentException ex)
@@ -157,7 +157,7 @@ namespace Hospital_System
             {
                 try
                 {
-                    p.NationalId = ReadString("National ID (14 digits): ");
+                    p.NationalId = InputHelper.ReadString("National ID (14 digits): ");
                     break;
                 }
                 catch (ArgumentException ex)
@@ -171,7 +171,7 @@ namespace Hospital_System
             {
                 try
                 {
-                    p.PhoneNumber = ReadString("Phone Number (11 digits): ");
+                    p.PhoneNumber = InputHelper.ReadString("Phone Number (11 digits): ");
                     break;
                 }
                 catch (ArgumentException ex)
@@ -180,15 +180,22 @@ namespace Hospital_System
                 }
             }
 
-            p.Height = ReadDouble("Height (m): ");
-            p.Weight = ReadDouble("Weight (kg): ");
+            p.Height = InputHelper.ReadDouble("Height (m): ");
+            p.Weight = InputHelper.ReadDouble("Weight (kg): ");
             p.BloodType = ReadBloodType();
-            p.MedicalCase = ReadString("Medical Case: ");
-            p.Allergies = ReadString("Allergies: ");
-            p.Risk = ReadString("Risk Level: ");
-            p.MedicalHistory = ReadString("Medical History: ");
-            p.FamilyHistory = ReadString("Family History: ");
-            p.PaymentMethods = ReadString("Payment Method: ");
+            p.MedicalCase = InputHelper.ReadString("Medical Case: ");
+            p.Allergies = InputHelper.ReadString("Allergies: ");
+            p.Risk = InputHelper.ReadString("Risk Level: ");
+            p.MedicalHistory = InputHelper.ReadString("Medical History: ");
+            Console.Write("Last Surgery Date (yyyy-mm-dd) or Enter to skip: ");
+            if (DateTime.TryParse(Console.ReadLine(), out DateTime last)) p.LastSurgeryDate = last;
+
+            Console.Write("Next Surgery Date (yyyy-mm-dd) or Enter to skip: ");
+            if (DateTime.TryParse(Console.ReadLine(), out DateTime next)) p.NextScheduledProcedure = next;
+
+            p.PreviousSurgeriesLog = InputHelper.ReadString("Full Surgical History: ");
+            p.FamilyHistory = InputHelper.ReadString("Family History: ");
+            p.PaymentMethods = InputHelper.ReadString("Payment Method: ");
         }
 
     }

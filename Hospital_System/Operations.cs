@@ -5,7 +5,7 @@ namespace Hospital_System
 
     public partial class program
     {
-        class Operation
+       internal class Operation
         {
             public string PatientName { get; set; }
             public string DoctorName { get; set; }

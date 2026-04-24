@@ -9,8 +9,7 @@ using System.Xml;
 
 namespace Hospital_System
 {
-    // enum for managing the gender type ---> Ahmed AYman
-    public enum GenderType { Male, Female }
+    
 
     // enum for blood type
     public enum BloodGroup
@@ -44,7 +43,7 @@ namespace Hospital_System
 
         static void Main(string[] args)
         {
-
+            
             LoadData();
 
             while (true)
@@ -149,7 +148,6 @@ namespace Hospital_System
                 Console.WriteLine("Wrong number!");
             }
         }
-       
 
 
 
@@ -201,9 +199,9 @@ namespace Hospital_System
 
 
 
+
+    }
 }
-}
-
 
 
 
