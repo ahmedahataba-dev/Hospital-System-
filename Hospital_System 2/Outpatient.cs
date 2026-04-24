@@ -7,7 +7,7 @@ using System.Linq;
 namespace Hospital_System
 {
 #nullable enable
-    class Outpatient : Patient
+    class Outpatients : Patient
     {
         public string? ClinicName { get; set; }
         public double ConsultationFee { get; set; }
