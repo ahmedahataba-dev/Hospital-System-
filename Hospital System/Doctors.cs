@@ -18,8 +18,10 @@ namespace Hospital_System
         private string assignedRoom = string.Empty;
         private decimal consultationFee;
         private int maxPatientsPerDay;   
-
-        
+//
+//ahmed
+        public static List <Doctor> doctors =new List<Doctor> ();
+//
         public List<string> CurrentPatients { get; set; } = new List<string>();
 
         
@@ -88,20 +90,23 @@ namespace Hospital_System
             }
         }
 
-        public Doctor(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
-                      string department, string bloodType, string medicalLicenseNumber, decimal consultationFee,
-                      int maxPatientsPerDay, string assignedRoom, DoctorRank rank)
-        {
-            Department = department;
-           BloodType = bloodType;
-            MedicalLicenseNumber = medicalLicenseNumber;
-            ConsultationFee = consultationFee;
-            MaxPatientsPerDay = maxPatientsPerDay;
-            AssignedRoom = assignedRoom;
-            Rank = rank;
-        }
+		public Doctor(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email,
+				string address, decimal salary, /*double arrivaltime, double departuretime,*/ double experienceyears,
+				string department, string bloodType, string medicalLicenseNumber, decimal consultationFee,
+				int maxPatientsPerDay, string assignedRoom, DoctorRank rank)
+	  : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/*, arrivaltime, departuretime,*/ experienceyears)
+		{
+			Department = department;
+			BloodType = bloodType;
+			MedicalLicenseNumber = medicalLicenseNumber;
+			ConsultationFee = consultationFee;
+			MaxPatientsPerDay = maxPatientsPerDay;
+			AssignedRoom = assignedRoom;
+			Rank = rank;
+            HospitalData.AddDoctor(this);
+		}
 
-        public bool AcceptPatient(string patientName)
+		public bool AcceptPatient(string patientName)
         {
             if (CurrentPatients.Count >= MaxPatientsPerDay)
             {

@@ -21,22 +21,24 @@ namespace Hospital_System
 
 		public static List<Employee> employees = new List<Employee>();
 
+		public Employee() : base() { }
+
 		public int EmployeeId
 		{
 			get { return employeeid; }
-			set { if (value <= 0) throw new ArgumentException("Invalid ID."); else employeeid = value; }
+			set { if (value <= 0) employeeid = 1; else employeeid = value; }
 		}
 
 		public decimal Salary
 		{
 			get => salary;
-			set { if (value <= 0) throw new ArgumentException("Invalid Salary."); salary = value; }
+			set { if (value <= 0) salary = 0; else salary = value; }
 		}
 
 		public double ExperienceYears
 		{
 			get { return experienceyears; }
-			set { if (value < 0) throw new ArgumentException("Invalid Number."); experienceyears = value; }
+			set { if (value < 0) experienceyears = 0; else experienceyears = value; }
 		}
 
 		public bool IsCheckedIn { get; set; }

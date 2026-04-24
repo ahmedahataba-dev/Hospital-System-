@@ -1,43 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Hospital_System
 {
-    internal class Pharmacists
-    {
-        internal class PharmacyStaff : Employee
-        {
-            private static int pharmacyStaffIdCounter = 1;
-            private int pharmacyStaffId;
+	internal class PharmacyStaff : Employee
+	{
+		public static List<PharmacyStaff> pharmacists = new List<PharmacyStaff>();
+		public static int pharmacyStaffIdCounter = 1;
+		private int pharmacyStaffId;
 
-            public int PharmacyStaffId
-            {
-                get { return pharmacyStaffId; }
-                private set { pharmacyStaffId = value; }
-            }
+		public PharmacyStaff() : base() { }
 
-            public string Role { get; set; }
+		public int PharmacyStaffId
+		{
+			get { return pharmacyStaffId; }
+			set { pharmacyStaffId = value; }
+		}
+		public string Role { get; set; }
 
-            public PharmacyStaff(
-                string name,
-                int age,
-                GenderType gender,
-                string nationalId,
-                string phoneNumber,
-                string email,
-                string address,
-               decimal salary,
-               //string arrivalTime,
-               //int departureTime,
-                int experienceYears,
-                string role
-            )
-                : base(name, age, gender, nationalId, phoneNumber, email, address, salary,/* arrivalTime, departureTime,*/ experienceYears)
-            {
-                PharmacyStaffId = pharmacyStaffIdCounter++;
-                Role = role;
-            }
-        }
-    }
+		public PharmacyStaff(string name, int age, GenderType gender, string nationalId, string phoneNumber, string email, string address, decimal salary, double experienceYears, string role)
+			: base(name, age, gender, nationalId, phoneNumber, email, address, salary, experienceYears)
+		{
+			PharmacyStaffId = pharmacyStaffIdCounter++;
+			Role = role;
+		}
+	}
 }

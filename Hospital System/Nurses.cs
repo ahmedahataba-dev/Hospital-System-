@@ -1,6 +1,7 @@
 ﻿using Hospital_System;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Text;
 internal class Nurse : Employee // 1. Changed to singular 'Nurse'
 {
@@ -11,9 +12,10 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
     private string assignedWard = string.Empty;// can be used to specify the ward or department the nurse is assigned to (e.g., emergency, intensive care unit, etc.)
     private bool isOnCall=false;// can be used to indicate whether the nurse is currently on call or not
     private int currentPatientLoad; // to track number of patients to manage workload
-    //private bool canAdministerMedication; // can be used to indicate whether the nurse is authorized to administer medication to patients
-   // private bool isHeadNurse;// can be used to indicate whether the nurse holds a leadership position
+                                    //private bool canAdministerMedication; // can be used to indicate whether the nurse is authorized to administer medication to patients
+                                    // private bool isHeadNurse;// can be used to indicate whether the nurse holds a leadership position
 
+    public static List<Nurse> nurses = new List<Nurse>();
     public string LicenseNumber
     {
         get => licenseNumber;
@@ -81,8 +83,9 @@ internal class Nurse : Employee // 1. Changed to singular 'Nurse'
         Degree = degree;
         AssignedWard = assignedWard;
         IsOnCall = isOnCall;
-        CurrentPatientLoad = currentPatientLoad; 
+        CurrentPatientLoad = currentPatientLoad;
         //CanAdministerMedication = canAdministerMedication;
         //IsHeadNurse = isHeadNurse;
+        HospitalData.AddNurse(this);
     }
 }

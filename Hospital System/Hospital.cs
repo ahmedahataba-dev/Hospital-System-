@@ -118,6 +118,8 @@ namespace Hospital_System
             }
         }
 
+
+
         protected internal static void RunMainMenu(Hospital neurai)
         {
             bool stayInMenu = true;
