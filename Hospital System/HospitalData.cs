@@ -57,6 +57,7 @@ namespace Hospital_System
 			{
 				Doctor.doctors.Add(newdoc);
 				SaveDoctors();
+				
 			}
 			else
 			{
@@ -76,7 +77,7 @@ namespace Hospital_System
 			if (File.Exists(doctorFileName))
 			{
 				var deserializeddoctorslist = File.ReadAllText(doctorFileName);
-				Doctor.doctors = JsonSerializer.Deserialize<List<Doctor>>(deserializeddoctorslist);
+				Doctor.doctors = JsonSerializer.Deserialize<List<Doctor>>(deserializeddoctorslist) ?? new List<Doctor>();
 			}
 		}
 
