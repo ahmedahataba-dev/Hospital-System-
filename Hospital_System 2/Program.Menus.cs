@@ -54,7 +54,7 @@ namespace Hospital_System
             string[] types = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
             Console.WriteLine("\nSelect Type: \n1. A+ \n2. A- \n3. B+ \n4. B- \n5. AB+ \n6. AB- \n7. O+ \n8. O-");
 
-            int choice = ReadInt("Choice (1-8): ");
+            int choice = InputHelper.ReadInt("Choice (1-8): ");
 
 
             if (choice < 1) choice = 1;
@@ -63,7 +63,7 @@ namespace Hospital_System
             return types[choice - 1];
         }
 
-        static int GetValidAmount() => ReadInt("Enter number of bags: ");
+        static int GetValidAmount() => InputHelper.ReadInt("Enter number of bags: ");
 
         static void OperationMenu()
         {
@@ -137,7 +137,7 @@ namespace Hospital_System
 
                 if (registered == "y")
                 {
-                    int id = ReadInt("Enter Patient ID: ");
+                    int id = InputHelper.ReadInt("Enter Patient ID: ");
                     var patient = patients.FirstOrDefault(p => p.PatientId == id);
 
                     if (patient != null)

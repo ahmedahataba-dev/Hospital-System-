@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Hospital_System
 {
-    public partial class program
+    internal class InputHelper
     {
         //  عشان نضمن إن اليوزر دخل رقم صحيح مش حروف
-        static int ReadInt(string Int)
+        public static int ReadInt(string Int)
         {
             while (true)
             {
@@ -23,7 +23,7 @@ namespace Hospital_System
         }
 
         // عشان الارقام العشرية
-        static double ReadDouble(string Double)
+        public static double ReadDouble(string Double)
         {
             while (true)
             {
@@ -35,7 +35,7 @@ namespace Hospital_System
         }
 
         //  عشان نضمن إن الخانة متتسابش فاضية
-        static string ReadString(string empty)
+        public static string ReadString(string empty)
         {
             while (true)
             {
@@ -48,7 +48,7 @@ namespace Hospital_System
         }
 
         // بتخلي اليوزر يدخل حروف ومسافات بس 
-        static string ReadLettersOnly(string letters)
+        public static string ReadLettersOnly(string letters)
         {
             while (true)
             {
@@ -61,7 +61,7 @@ namespace Hospital_System
         }
 
 
-        //static bool ReadBool(string prompt)
+        //public static bool ReadBool(string prompt)
         //{
         //    while (true)
         //    {
