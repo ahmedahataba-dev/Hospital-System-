@@ -1,4 +1,6 @@
-﻿internal class FinancialDep
+﻿using Hospital_System;
+
+internal class FinancialDep
 {
 	public enum DiscountType { None, Insurance, SpecialCase }
 	public enum InvoiceStatus { Pending, PartiallyPaid, Paid }
@@ -136,4 +138,15 @@
 			Console.WriteLine(new string('=', 35));
 		}
 	}
+	//Ahmed Ayman -------------------------------------
+		public static decimal CalcNetSalary(Employee e)//method to calc net salary after the deductions 
+	{
+		if (e == null)
+		{
+			Console.WriteLine("Error: Employee object is null.");
+			return 0;
+		}
+		return e.NetSalary;
+	}
+	//-------------------------------------------------
 }

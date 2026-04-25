@@ -32,7 +32,7 @@ Console.WriteLine("\n-----------------------------------\n");
 HospitalData.ExtractDoctors();
 //new Doctor("Sarah Kamel", 42, GenderType.Female, "28502021234567", "01122223333", "sarah.k@neurai.com", "Giza", 28000m, 14.0, "Pulmonology", "A+", "MED-PUL-002", 600m, 20, "Room 105", Doctor.DoctorRank.Senior);
 //new Doctor("Mona Samir", 55, GenderType.Female, "27011111234567", "01177778888", "mona.s@neurai.com", "Zayed", 40000m, 25.0, "Neurology", "A-", "MED-NEU-006", 1000m, 10, "Room 305", Doctor.DoctorRank.Consultant);
-HospitalData.SaveDoctors();
+//HospitalData.SaveDoctors();
 foreach (var d in Doctor.doctors)
 {
 	Console.WriteLine($"{d.Name} has no  {d.MedicalLicenseNumber}");
