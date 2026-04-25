@@ -6,8 +6,8 @@ using System.IO;
 
 namespace Hospital_System
 {
-    public partial class program
-    {
+   
+    
         public class BloodBank
         {
             private Dictionary<string, int> _bloodStocks;
@@ -324,4 +324,3 @@ namespace Hospital_System
             }
         }
     }
-}

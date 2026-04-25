@@ -13,6 +13,8 @@ namespace Hospital_System
         public static List<Operation> operationsList = new List<Operation>();
         public static BloodBank myBank = new BloodBank();
         public static bool[] roomsStatus = new bool[9];
+        public const string filePath = "patients_data.json";
+        public const string operationsFilePath = "operations_data.json";
 
         static JsonSerializerSettings jsonSettings = new JsonSerializerSettings
         {
