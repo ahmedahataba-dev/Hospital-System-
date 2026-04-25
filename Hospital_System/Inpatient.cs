@@ -9,6 +9,7 @@ namespace Hospital_System
     class Inpatient : Patient
     {
 #nullable enable
+
         public bool HasOperations { get; set; }
         public string? OperationType { get; set; }
         public string? WardName { get; set; }
