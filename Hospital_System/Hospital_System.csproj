@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BloodBank.cs" />
+    <Compile Include="BloodTransfer.cs" />
+    <Compile Include="Donor.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="Inpatient.cs" />
     <Compile Include="InputHelper.cs" />

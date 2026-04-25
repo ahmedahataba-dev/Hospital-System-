@@ -14,32 +14,50 @@ namespace Hospital_System
             bool back = false;
             while (!back)
             {
-                Console.Clear();
-                Console.WriteLine("--- Blood Bank Management ---");
-                Console.WriteLine("\n1. View Inventory");
-                Console.WriteLine("2. Register Donation");
-                Console.WriteLine("3. Withdraw Blood");
-                Console.WriteLine("4. Back to Main Menu");
-                Console.Write("Choice: ");
+                Console.Clear();      
+                Console.WriteLine("BLOOD BANK MANAGEMENT");
+                Console.WriteLine(" \nDonor Management");
+                Console.WriteLine("  1. Register New Donor");
+                Console.WriteLine("  2. View All Donors");
+                Console.WriteLine("  3. Filter Donors by Blood Type");
+                Console.WriteLine("  4. Record Donation");
+                Console.WriteLine(" \nPatient / Transfer ");
+                Console.WriteLine("   5. Process Blood Transfer");
+                Console.WriteLine("   6. View Transfer Records");
+                Console.WriteLine(" \nInventory");
+                Console.WriteLine("   7. View Inventory");
+                Console.WriteLine("   8. Withdraw Blood (Manual)");
+                Console.WriteLine(" \nReports");
+                Console.WriteLine("   9. Dashboard");
+                Console.WriteLine("   0. Back to Main Menu");
+                Console.WriteLine("-------------------------------------------");
+                Console.Write("Choose: ");
                 string c = Console.ReadLine();
 
                 switch (c)
                 {
-                    case "1": myBank.PrintInventoryReport(); Console.ReadKey(); break;
-                    case "2": Donation(myBank); break;
-                    case "3": Withdrawal(myBank); break;
-                    case "4": back = true; break;
+                    case "1": myBank.RegisterDonor(); Console.ReadKey(); break;
+                    case "2": myBank.ViewDonors(); Console.ReadKey(); break;
+                    case "3":
+                        string[] types = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
+                        Console.WriteLine("1.A+ 2.A- 3.B+ 4.B- 5.AB+ 6.AB- 7.O+ 8.O-");
+                        int ch = InputHelper.ReadInt("Choice: ");
+                        if (ch < 1) ch = 1; if (ch > 8) ch = 8;
+                        myBank.ViewDonors(types[ch - 1]);
+                        Console.ReadKey();
+                        break;
+                    case "4": myBank.RecordDonation(); Console.ReadKey(); break;
+                    case "5": myBank.ProcessTransfer(); Console.ReadKey(); break;
+                    case "6": myBank.ViewTransfers(); Console.ReadKey(); break;
+                    case "7": myBank.PrintInventoryReport(); Console.ReadKey(); break;
+                    case "8": Withdrawal(myBank); break;
+                    case "9": myBank.ShowDashboard(); Console.ReadKey(); break;
+                    case "0": back = true; break;
+                    default: Console.WriteLine("Invalid choice!"); Console.ReadKey(); break;
                 }
             }
         }
-        //  تسجيل التبرع
-        static void Donation(BloodBank bank)
-        {
-            string type = GetBloodTypeFromMenu();
-            int amount = GetValidAmount();
-            bank.DonateBlood(type, amount);
-            Console.ReadKey();
-        }
+      
         // سحب الدم
         static void Withdrawal(BloodBank bank)
         {
