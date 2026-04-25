@@ -1,60 +1,60 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json; // المكتبة المسؤولة عن تحويل البيانات لـ JSON
 
 namespace Hospital_System
 {
     public class HospitalService
     {
+        // القوائم التي تخزن البيانات في الذاكرة أثناء تشغيل البرنامج
         public List<OnlineRegistration> AllPatients = new List<OnlineRegistration>();
         public List<Booking> AllBookings = new List<Booking>();
 
-        private readonly string _patientsFile = "patients.txt";
-        private readonly string _bookingsFile = "bookings.txt";
+        // أسماء الملفات بامتداد .json
+        private readonly string _patientsFile = "patients.json";
+        private readonly string _bookingsFile = "bookings.json";
 
-        //  File I/O 
+        // --- إدارة الملفات (JSON I/O) ---
 
         public void LoadData()
         {
+            // تحميل بيانات المرضى
             if (File.Exists(_patientsFile))
             {
-                foreach (var line in File.ReadAllLines(_patientsFile))
-                {
-                    string[] parts = line.Split(',');
-                    if (parts.Length >= 5)
-                        AllPatients.Add(new OnlineRegistration
-                        {
-                            NationalID = parts[0],
-                            NameEnglish = parts[1],
-                            Phone = parts[2],
-                            Address = parts[3],
-                            Password = parts[4],
-                            IsRegistered = true
-                        });
-                }
+                string jsonString = File.ReadAllText(_patientsFile);
+                // تحويل النص من JSON إلى القائمة AllPatients
+                AllPatients = JsonSerializer.Deserialize<List<OnlineRegistration>>(jsonString) ?? new List<OnlineRegistration>();
             }
 
+            // تحميل بيانات الحجوزات
             if (File.Exists(_bookingsFile))
             {
-                foreach (var line in File.ReadAllLines(_bookingsFile))
-                {
-                    string[] parts = line.Split(',');
-                    if (parts.Length >= 6)
-                        AllBookings.Add(new Booking
-                        {
-                            PatientID = parts[0],
-                            ClinicName = parts[1],
-                            Day = parts[2],
-                            Code = parts[3],
-                            IsPaid = bool.Parse(parts[4]),
-                            BookingDateTime = parts[5]
-                        });
-                }
+                string jsonString = File.ReadAllText(_bookingsFile);
+                // تحويل النص من JSON إلى القائمة AllBookings
+                AllBookings = JsonSerializer.Deserialize<List<Booking>>(jsonString) ?? new List<Booking>();
             }
         }
 
-        //  Registration 
+        private void SavePatients()
+        {
+            // تحويل القائمة كاملة إلى نص بتنسيق JSON وحفظها
+            var options = new JsonSerializerOptions { WriteIndented = true }; // لجعل الملف سهل القراءة للعين
+            string jsonString = JsonSerializer.Serialize(AllPatients, options);
+            File.WriteAllText(_patientsFile, jsonString);
+        }
+
+        private void SaveBookings()
+        {
+            // تحويل قائمة الحجوزات كاملة إلى JSON وحفظها
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize(AllBookings, options);
+            File.WriteAllText(_bookingsFile, jsonString);
+        }
+
+        // --- التسجيل (Registration) ---
 
         public string CheckSignUp(string name, string id, string phone, string address)
         {
@@ -76,16 +76,16 @@ namespace Hospital_System
             patient.IsRegistered = true;
 
             AllPatients.Add(patient);
-            File.AppendAllText(_patientsFile, patient.ToFileLine() + Environment.NewLine);
+            SavePatients(); // استدعاء دالة الحفظ الجديدة
             return "";
         }
 
-        //  Login 
+        // --- تسجيل الدخول (Login) ---
 
         public OnlineRegistration FindPatient(string id, string password) =>
             AllPatients.FirstOrDefault(p => p.NationalID == id && p.Password == password);
 
-        //  Booking 
+        // --- الحجز (Booking) ---
 
         public Booking CreateBooking(string patientId, Clinic clinic, string day)
         {
@@ -98,11 +98,12 @@ namespace Hospital_System
                 ClinicName = clinic.NameEnglish,
                 Day = day,
                 Code = code,
-                BookingDateTime = currentTime
+                BookingDateTime = currentTime,
+                IsPaid = false
             };
 
             AllBookings.Add(booking);
-            File.AppendAllText(_bookingsFile, booking.ToFileLine() + Environment.NewLine);
+            SaveBookings(); // حفظ قائمة الحجوزات المحدثة
             return booking;
         }
 
