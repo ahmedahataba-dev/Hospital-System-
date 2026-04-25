@@ -1,15 +1,77 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using static Hospital_System.program;
 
 namespace Hospital_System
 {
-    public partial class program
+    internal class HospitalEngine
     {
-        // إضافة مريض محجوز في المستشفى
-        static void AddInpatient()
+        public static List<Patient> patients = new List<Patient>();
+        public static List<Operation> operationsList = new List<Operation>();
+        public static BloodBank myBank = new BloodBank();
+        public static bool[] roomsStatus = new bool[9];
+
+        static JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,
+            Formatting = Formatting.Indented
+        };
+
+        // ===================== SAVE =====================
+        public void SaveData()
+        {
+            try
+            {
+                string patientsJson = JsonConvert.SerializeObject(patients, jsonSettings);
+                File.WriteAllText(filePath, patientsJson);
+
+                string operationsJson = JsonConvert.SerializeObject(operationsList, jsonSettings);
+                File.WriteAllText(operationsFilePath, operationsJson);
+
+                string roomsJson = JsonConvert.SerializeObject(roomsStatus, Formatting.Indented);
+                File.WriteAllText("rooms_data.json", roomsJson);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error saving data: " + ex.Message);
+            }
+        }
+
+       
+        public void LoadData()
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    string jsonData = File.ReadAllText(filePath);
+                    patients = JsonConvert.DeserializeObject<List<Patient>>(jsonData, jsonSettings) ?? new List<Patient>();
+                }
+
+                if (File.Exists(operationsFilePath))
+                {
+                    string opData = File.ReadAllText(operationsFilePath);
+                    operationsList = JsonConvert.DeserializeObject<List<Operation>>(opData, jsonSettings) ?? new List<Operation>();
+                }
+
+                if (File.Exists("rooms_data.json"))
+                {
+                    string roomsData = File.ReadAllText("rooms_data.json");
+                    var loadedRooms = JsonConvert.DeserializeObject<bool[]>(roomsData);
+                    if (loadedRooms != null) roomsStatus = loadedRooms;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error loading data: " + ex.Message);
+            }
+        }
+
+       
+        public void AddInpatient()
         {
             Inpatient p = new Inpatient();
             FillBasicInfo(p);
@@ -23,12 +85,13 @@ namespace Hospital_System
             if (p.HasOperations) p.OperationType = InputHelper.ReadString("Operation Type: ");
 
             patients.Add(p);
-            SaveData();
+            SaveData(); 
             Console.WriteLine("\nSaved! Press any key...");
             Console.ReadKey();
         }
-        //  إضافة مريض عيادة خارجية يعني هيكشف وماشي
-        static void AddOutpatient()
+
+        
+        public void AddOutpatient()
         {
             Outpatient p = new Outpatient();
             FillBasicInfo(p);
@@ -37,32 +100,31 @@ namespace Hospital_System
             p.Complaint = InputHelper.ReadString("Complaint: ");
 
             patients.Add(p);
-            SaveData();
+            SaveData(); 
             Console.WriteLine("\nSaved! Press any key...");
             Console.ReadKey();
         }
-        //  عرض المرضى 
-        static void ViewByCategory()
+
+        
+        public void ViewByCategory()
         {
             Console.WriteLine("\n1. View Inpatients | 2. View Outpatients | 3. View All");
             Console.Write("Select choice: ");
             string view = Console.ReadLine();
 
             if (view == "1")
-
                 patients.OfType<Inpatient>().ToList().ForEach(p => p.Display());
-
             else if (view == "2")
-
                 patients.OfType<Outpatient>().ToList().ForEach(p => p.Display());
-
             else
                 patients.ForEach(p => p.Display());
+
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
         }
-        // بحث بالرقم القومي او الاسم
-        static void Search()
+
+        
+        public void Search()
         {
             string query = InputHelper.ReadString("Enter Name or National ID to search: ").ToLower();
             var results = patients.Where(p =>
@@ -75,8 +137,9 @@ namespace Hospital_System
                 Console.WriteLine("No patient found with these details.");
             Console.ReadKey();
         }
-        // عشان لو عايزه اعدل على حاجه , بس غالبا هشيلها
-        static void UpdatePatient()
+
+        
+        public void UpdatePatient()
         {
             Console.Write("Enter Patient ID to update: ");
             if (int.TryParse(Console.ReadLine(), out int id))
@@ -98,15 +161,16 @@ namespace Hospital_System
                     string mCase = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(mCase)) p.MedicalCase = mCase;
 
-                    SaveData();
+                    SaveData(); 
                     Console.WriteLine("Updated successfully!");
                 }
                 else Console.WriteLine("ID not found.");
             }
             Console.ReadKey();
         }
-        // مسح مريض من السيستم
-        static void DeletePatient()
+
+       
+        public void DeletePatient()
         {
             Console.Write("Enter the ID of the patient to delete: ");
             if (int.TryParse(Console.ReadLine(), out int id))
@@ -115,24 +179,21 @@ namespace Hospital_System
                 if (patient != null)
                 {
                     patients.Remove(patient);
-
-                    SaveData();
+                    SaveData(); 
                     Console.WriteLine("Patient record deleted successfully.");
                     Console.ReadKey();
                 }
                 else Console.WriteLine("Patient ID not found.");
             }
         }
-        // عشان البيانات المشتركة بين المرضى كلهم
-        static void FillBasicInfo(Patient p)
+
+      
+        public void FillBasicInfo(Patient p)
         {
-            //عشان يدي ID تلقائي للمريض
             p.PatientId = patients.Count == 0 ? 1 : patients.Max(x => x.PatientId) + 1;
             Console.WriteLine($"\n[Patient ID: {p.PatientId}]");
 
-
             p.Name = InputHelper.ReadLettersOnly("Enter Name: ");
-
 
             while (true)
             {
@@ -147,13 +208,11 @@ namespace Hospital_System
                 }
             }
 
-
             Console.WriteLine("Select Gender: 1. Male | 2. Female");
             string gChoice = Console.ReadLine();
             p.Gender = (gChoice == "2") ? GenderType.Female : GenderType.Male;
 
-
-            while (true) // عشان يدخل 14 رقم في الرقم القومي
+            while (true)
             {
                 try
                 {
@@ -166,8 +225,7 @@ namespace Hospital_System
                 }
             }
 
-
-            while (true) //عشان يدخل 11 رقم في رقم التليفون
+            while (true)
             {
                 try
                 {
@@ -198,5 +256,21 @@ namespace Hospital_System
             p.PaymentMethods = InputHelper.ReadString("Payment Method: ");
         }
 
+        public static BloodGroup ReadBloodType()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nChoose your blood type:");
+                var types = Enum.GetValues(typeof(BloodGroup));
+                for (int i = 0; i < types.Length; i++)
+                    Console.WriteLine($"{i + 1}. {types.GetValue(i)}");
+
+                Console.Write("Choose from (1-8): ");
+                if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= 8)
+                    return (BloodGroup)(choice - 1);
+
+                Console.WriteLine("Wrong number!");
+            }
+        }
     }
 }

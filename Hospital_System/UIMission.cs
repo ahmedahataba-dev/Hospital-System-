@@ -1,20 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using static Hospital_System.program;
+using static Hospital_System.HospitalEngine;
 
 namespace Hospital_System
 {
-    public partial class program
+    internal class UIMission
     {
+        public static void Run(HospitalEngine engine)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("     HOSPITAL MANAGEMENT SYSTEM     ");
+                Console.WriteLine("\n1. Add Inpatient");
+                Console.WriteLine("2. Add Outpatient");
+                Console.WriteLine("3. View All Patients");
+                Console.WriteLine("4. Search for Patient (Name/National ID)");
+                Console.WriteLine("5. Update Patient Data");
+                Console.WriteLine("6. Delete Patient");
+                Console.WriteLine("7. Blood Bank System Menu");
+                Console.WriteLine("8. Operating System Menu");
+                Console.WriteLine("9. Exit");
+                Console.Write("\nSelect an option: ");
+
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1": engine.AddInpatient(); break;
+                    case "2": engine.AddOutpatient(); break;
+                    case "3": engine.ViewByCategory(); break;
+                    case "4": engine.Search(); break;
+                    case "5": engine.UpdatePatient(); break;
+                    case "6": engine.DeletePatient(); break;
+                    case "7": BloodBankMenu(); break;
+                    case "8": OperationMenu(engine); break;
+                    case "9":
+                        Console.WriteLine("Exiting... Goodbye!");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice! Press any key to try again.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
         static void BloodBankMenu()
         {
             bool back = false;
             while (!back)
             {
-                Console.Clear();      
+                Console.Clear();
                 Console.WriteLine("BLOOD BANK MANAGEMENT");
                 Console.WriteLine(" \nDonor Management");
                 Console.WriteLine("  1. Register New Donor");
@@ -36,29 +73,28 @@ namespace Hospital_System
 
                 switch (c)
                 {
-                    case "1": myBank.RegisterDonor(); Console.ReadKey(); break;
-                    case "2": myBank.ViewDonors(); Console.ReadKey(); break;
+                    case "1": HospitalEngine.myBank.RegisterDonor(); Console.ReadKey(); break;
+                    case "2": HospitalEngine.myBank.ViewDonors(); Console.ReadKey(); break;
                     case "3":
                         string[] types = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
                         Console.WriteLine("1.A+ 2.A- 3.B+ 4.B- 5.AB+ 6.AB- 7.O+ 8.O-");
                         int ch = InputHelper.ReadInt("Choice: ");
                         if (ch < 1) ch = 1; if (ch > 8) ch = 8;
-                        myBank.ViewDonors(types[ch - 1]);
+                        HospitalEngine.myBank.ViewDonors(types[ch - 1]);
                         Console.ReadKey();
                         break;
-                    case "4": myBank.RecordDonation(); Console.ReadKey(); break;
-                    case "5": myBank.ProcessTransfer(); Console.ReadKey(); break;
-                    case "6": myBank.ViewTransfers(); Console.ReadKey(); break;
-                    case "7": myBank.PrintInventoryReport(); Console.ReadKey(); break;
-                    case "8": Withdrawal(myBank); break;
-                    case "9": myBank.ShowDashboard(); Console.ReadKey(); break;
+                    case "4": HospitalEngine.myBank.RecordDonation(); Console.ReadKey(); break;
+                    case "5": HospitalEngine.myBank.ProcessTransfer(); Console.ReadKey(); break;
+                    case "6": HospitalEngine.myBank.ViewTransfers(); Console.ReadKey(); break;
+                    case "7": HospitalEngine.myBank.PrintInventoryReport(); Console.ReadKey(); break;
+                    case "8": Withdrawal(HospitalEngine.myBank); break;
+                    case "9": HospitalEngine.myBank.ShowDashboard(); Console.ReadKey(); break;
                     case "0": back = true; break;
                     default: Console.WriteLine("Invalid choice!"); Console.ReadKey(); break;
                 }
             }
         }
-      
-        // سحب الدم
+
         static void Withdrawal(BloodBank bank)
         {
             string type = GetBloodTypeFromMenu();
@@ -71,19 +107,15 @@ namespace Hospital_System
         {
             string[] types = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
             Console.WriteLine("\nSelect Type: \n1. A+ \n2. A- \n3. B+ \n4. B- \n5. AB+ \n6. AB- \n7. O+ \n8. O-");
-
             int choice = InputHelper.ReadInt("Choice (1-8): ");
-
-
             if (choice < 1) choice = 1;
             if (choice > 8) choice = 8;
-
             return types[choice - 1];
         }
 
         static int GetValidAmount() => InputHelper.ReadInt("Enter number of bags: ");
 
-        static void OperationMenu()
+        public static void OperationMenu(HospitalEngine engine)
         {
             while (true)
             {
@@ -100,9 +132,9 @@ namespace Hospital_System
 
                 switch (choice)
                 {
-                    case "1": AddOperation(false); break;
+                    case "1": AddOperation(false, engine); break;
                     case "2": ShowOperations(); break;
-                    case "3": AddOperation(true); break;
+                    case "3": AddOperation(true, engine); break;
                     case "4": CheckRooms(); break;
                     case "5": return;
                     default: Console.WriteLine("Invalid choice!"); break;
@@ -112,17 +144,14 @@ namespace Hospital_System
             }
         }
 
-        static void AddOperation(bool isEmergency)
+        static void AddOperation(bool isEmergency, HospitalEngine engine)
         {
             Console.Clear();
             Operation op = new Operation();
             op.IsEmergency = isEmergency;
 
-
-
             if (isEmergency)
             {
-
                 Console.BackgroundColor = ConsoleColor.Red;
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("!!! EMERGENCY MODE ACTIVATED !!!");
@@ -134,10 +163,10 @@ namespace Hospital_System
                 op.SurgeryDate = DateTime.Now;
                 op.Time = DateTime.Now;
 
-                int freeRoom = Array.IndexOf(roomsStatus, false);
+                int freeRoom = Array.IndexOf(HospitalEngine.roomsStatus, false);
                 if (freeRoom != -1)
                 {
-                    roomsStatus[freeRoom] = true;
+                    HospitalEngine.roomsStatus[freeRoom] = true;
                     op.RoomNumber = (freeRoom + 1).ToString();
                     Console.WriteLine($"\n SYSTEM ALERT: Room {op.RoomNumber} Reserved Immediately!");
                 }
@@ -148,7 +177,6 @@ namespace Hospital_System
             }
             else
             {
-
                 Console.WriteLine("--- Schedule New Operation ---");
                 Console.Write("Is this patient already registered? (y/n): ");
                 string registered = Console.ReadLine().ToLower();
@@ -156,7 +184,7 @@ namespace Hospital_System
                 if (registered == "y")
                 {
                     int id = InputHelper.ReadInt("Enter Patient ID: ");
-                    var patient = patients.FirstOrDefault(p => p.PatientId == id);
+                    var patient = HospitalEngine.patients.FirstOrDefault(p => p.PatientId == id);
 
                     if (patient != null)
                     {
@@ -167,32 +195,31 @@ namespace Hospital_System
                     else
                     {
                         Console.WriteLine("ID not found! You must register the patient first.");
-                        AddInpatient();
-                        op.PatientName = patients.Last().Name;
+                        engine.AddInpatient();
+                        op.PatientName = HospitalEngine.patients.Last().Name;
                     }
                 }
                 else
                 {
                     Console.WriteLine("Registering new patient...");
-                    AddInpatient();
-                    op.PatientName = patients.Last().Name;
+                    engine.AddInpatient();
+                    op.PatientName = HospitalEngine.patients.Last().Name;
                 }
+
                 Console.Write("Surgery Type: "); op.OperationType = Console.ReadLine();
                 Console.Write("Surgeon Name: "); op.DoctorName = Console.ReadLine();
                 Console.Write("Surgery Date: ");
                 op.SurgeryDate = DateTime.Parse(Console.ReadLine());
-
                 Console.Write("Time: ");
                 op.Time = DateTime.Parse(Console.ReadLine());
                 Console.Write("Assign Room (1-9): "); op.RoomNumber = Console.ReadLine();
 
-
-                if (int.TryParse(op.RoomNumber, out int rNum) && rNum <= 5 && rNum > 0)
-                    roomsStatus[rNum - 1] = true;
+                if (int.TryParse(op.RoomNumber, out int rNum) && rNum <= 9 && rNum > 0)
+                    HospitalEngine.roomsStatus[rNum - 1] = true;
             }
 
             operationsList.Add(op);
-            SaveData();
+            engine.SaveData(); 
             Console.WriteLine("\nDone! Data Saved Successfully.");
         }
 
@@ -200,17 +227,17 @@ namespace Hospital_System
         {
             Console.Clear();
             Console.WriteLine("--- Current Surgery Schedule ---");
-
             Console.WriteLine("{0,-15} {1,-20} {2,-20} {3,-15} {4,-10}", "Patient", "Surgery", "Date", "Time", "Room");
             Console.WriteLine("-------------------------------------------------------------------------------------");
 
             foreach (var op in operationsList)
             {
-
                 if (op.IsEmergency) Console.ForegroundColor = ConsoleColor.Red;
-
-                Console.WriteLine("{0,-15} {1,-20} {2,-20} {3,-15} {4,-10}", op.PatientName, op.OperationType, op.SurgeryDate.ToShortDateString(), op.Time.ToShortTimeString(), op.RoomNumber);
-
+                Console.WriteLine("{0,-15} {1,-20} {2,-20} {3,-15} {4,-10}",
+                    op.PatientName, op.OperationType,
+                    op.SurgeryDate.ToShortDateString(),
+                    op.Time.ToShortTimeString(),
+                    op.RoomNumber);
                 Console.ResetColor();
             }
         }
@@ -219,17 +246,11 @@ namespace Hospital_System
         {
             Console.Clear();
             Console.WriteLine("--- Operating Rooms Status ---");
-            for (int i = 0; i < roomsStatus.Length; i++)
+            for (int i = 0; i < HospitalEngine.roomsStatus.Length; i++)
             {
-
-                string status = roomsStatus[i] ? "OCCUPIED " : "AVAILABLE ";
+                string status = HospitalEngine.roomsStatus[i] ? "OCCUPIED " : "AVAILABLE ";
                 Console.WriteLine($"Room #{i + 1}: {status}");
             }
         }
-
-
-
     }
 }
-
-

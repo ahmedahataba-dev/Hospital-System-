@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="BloodBank.cs" />
     <Compile Include="BloodTransfer.cs" />
+    <Compile Include="HospitalEngine.cs" />
     <Compile Include="Donor.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="Inpatient.cs" />
@@ -58,10 +59,9 @@
     <Compile Include="Patient.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Program.Menus.cs" />
-    <Compile Include="Program.Patient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Room.cs" />
+    <Compile Include="UIMission.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

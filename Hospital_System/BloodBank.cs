@@ -3,42 +3,50 @@ using Formatting = Newtonsoft.Json.Formatting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 
 namespace Hospital_System
 {
-
     public partial class program
     {
         public class BloodBank
         {
             private Dictionary<string, int> _bloodStocks;
-            private const string bloodFilePath = "blood_inventory.json"; // الملف اللي هيتحفظ فيه
+            private const string bloodFilePath = "blood_inventory.json";
             private List<Donor> _donors;
             private List<BloodTransfer> _transfers;
             private int _nextDonorId = 1;
             private int _nextTransferId = 1;
             private const string donorsFilePath = "donors_data.json";
             private const string transfersFilePath = "transfers_data.json";
+
             public BloodBank()
             {
+               
+                _donors = new List<Donor>();
+                _transfers = new List<BloodTransfer>();
+
                 if (!LoadBloodData())
                 {
-
                     _bloodStocks = new Dictionary<string, int>
-                {
-                    {"A+", 15}, {"A-", 7}, {"B+", 12}, {"B-", 4},
-                    {"AB+", 5}, {"AB-", 2}, {"O+", 20}, {"O-", 25}
-                };
+                    {
+                        {"A+", 15}, {"A-", 7}, {"B+", 12}, {"B-", 4},
+                        {"AB+", 5}, {"AB-", 2}, {"O+", 20}, {"O-", 25}
+                    };
                     SaveBloodData();
                 }
+
+               
+                LoadDonors();
+                LoadTransfers();
             }
+
+           
 
             public void DonateBlood(string type, int bags)
             {
                 _bloodStocks[type] += bags;
                 Console.WriteLine($"\n[SUCCESS] Added {bags} bags of {type}. Total stock: {_bloodStocks[type]}");
-                SaveBloodData();
+                SaveBloodData(); 
             }
 
             public bool WithdrawBlood(string type, int bags)
@@ -47,12 +55,11 @@ namespace Hospital_System
                 {
                     _bloodStocks[type] -= bags;
                     Console.WriteLine($"\n[APPROVED] Issued {bags} bags of {type}. Remaining: {_bloodStocks[type]}");
-                    SaveBloodData();
+                    SaveBloodData(); 
 
                     if (_bloodStocks[type] < 5)
-                    {
                         Console.WriteLine($"[CRITICAL WARNING] {type} stock is very low ({_bloodStocks[type]} bags left)!");
-                    }
+
                     return true;
                 }
 
@@ -76,12 +83,10 @@ namespace Hospital_System
                 Console.WriteLine("========================================\n");
             }
 
+            
+
             private void SaveBloodData()
             {
-                _donors = new List<Donor>();
-                _transfers = new List<BloodTransfer>();
-                LoadDonors();
-                LoadTransfers();
                 try
                 {
                     string json = JsonConvert.SerializeObject(_bloodStocks, Formatting.Indented);
@@ -92,7 +97,6 @@ namespace Hospital_System
                     Console.WriteLine("Error saving blood data: " + ex.Message);
                 }
             }
-
 
             private bool LoadBloodData()
             {
@@ -108,7 +112,8 @@ namespace Hospital_System
                 catch { }
                 return false;
             }
-            // -------- DONOR MANAGEMENT --------
+
+          
 
             public void RegisterDonor()
             {
@@ -127,7 +132,7 @@ namespace Hospital_System
 
                 d.LastDonationDate = DateTime.Now;
                 _donors.Add(d);
-                SaveDonors();
+                SaveDonors(); 
                 Console.WriteLine($"\n[SUCCESS] Donor registered with ID: {d.DonorId}");
             }
 
@@ -158,10 +163,8 @@ namespace Hospital_System
 
                 int bags = InputHelper.ReadInt("Number of bags donated: ");
 
-                // أضف للمخزون
                 _bloodStocks[donor.BloodType] += bags;
 
-                // سجّل في تاريخ المتبرع
                 donor.DonationHistory.Add(new DonationLog
                 {
                     Date = DateTime.Now,
@@ -170,16 +173,15 @@ namespace Hospital_System
                 });
                 donor.LastDonationDate = DateTime.Now;
 
-                SaveBloodData();
-                SaveDonors();
+                SaveBloodData(); 
+                SaveDonors();   
                 Console.WriteLine($"\n[SUCCESS] Recorded {bags} bags from {donor.Name}. Stock updated.");
             }
 
-            // -------- BLOOD TRANSFER --------
+           
 
             public void ProcessTransfer()
             {
-                // اختار المتبرع
                 int donorId = InputHelper.ReadInt("Enter Donor ID: ");
                 Donor donor = null;
                 foreach (var d in _donors)
@@ -187,11 +189,8 @@ namespace Hospital_System
 
                 if (donor == null) { Console.WriteLine("Donor not found!"); return; }
 
-                // اختار المريض
                 string patientName = InputHelper.ReadString("Patient Name: ");
-                string patientBlood = donor.BloodType; // نفس الفصيلة تلقائياً
 
-                // تحقق من التوافق
                 Console.WriteLine($"Donor blood type: {donor.BloodType}");
                 Console.WriteLine("Confirm blood type match? (y/n): ");
                 if (Console.ReadLine().ToLower() != "y")
@@ -202,14 +201,12 @@ namespace Hospital_System
 
                 int bags = InputHelper.ReadInt("Number of bags to transfer: ");
 
-                // تحقق من المخزون
                 if (_bloodStocks[donor.BloodType] < bags)
                 {
                     Console.WriteLine($"[DENIED] Only {_bloodStocks[donor.BloodType]} bags available.");
                     return;
                 }
 
-                // نفّذ النقل
                 _bloodStocks[donor.BloodType] -= bags;
 
                 BloodTransfer transfer = new BloodTransfer
@@ -224,8 +221,8 @@ namespace Hospital_System
                 };
                 _transfers.Add(transfer);
 
-                SaveBloodData();
-                SaveTransfers();
+                SaveBloodData();  
+                SaveTransfers();  
 
                 Console.WriteLine($"\n[SUCCESS] Transfer #{transfer.TransferId} completed.");
 
@@ -241,7 +238,7 @@ namespace Hospital_System
                 Console.WriteLine("Total transfers: " + _transfers.Count);
             }
 
-            // -------- DASHBOARD --------
+        
 
             public void ShowDashboard()
             {
@@ -264,7 +261,7 @@ namespace Hospital_System
                 Console.WriteLine("========================================");
             }
 
-            // -------- SAVE / LOAD --------
+           
 
             private void SaveDonors()
             {
@@ -294,6 +291,8 @@ namespace Hospital_System
                 }
                 catch { }
             }
+
+          
 
             private void SaveTransfers()
             {
@@ -326,52 +325,3 @@ namespace Hospital_System
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
