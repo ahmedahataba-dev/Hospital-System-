@@ -15,9 +15,9 @@ namespace Hospital_System
             ShowMainMenu();
         }
 
-        // ═══════════════════════════════════════════════
+        
         //                  MAIN MENU
-        // ═══════════════════════════════════════════════
+        
 
         static void ShowMainMenu()
         {
@@ -49,9 +49,8 @@ namespace Hospital_System
             }
         }
 
-        // ═══════════════════════════════════════════════
+        
         //                  STAFF SECTION
-        // ═══════════════════════════════════════════════
 
         static void StaffLogin()
         {
@@ -220,10 +219,9 @@ namespace Hospital_System
             Pause();
         }
 
-        // 
+    
         //               HOSPITAL INFO
-        // 
-
+        
         static void ShowHospitalInfo()
         {
             Console.Clear();
@@ -234,9 +232,8 @@ namespace Hospital_System
             Pause();
         }
 
-        // 
+        
         //                   HELPERS
-        // 
 
         static void Skip() => Console.WriteLine();
         static void Pause() { Console.WriteLine("\nPress Enter to continue..."); Console.ReadLine(); }
