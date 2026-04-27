@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Hospital_System
@@ -23,20 +27,61 @@ namespace Hospital_System
 
         public int EmployeeId
         {
-            get { return employeeid; }
-            set { if (value <= 0) employeeid = 1; else employeeid = value; }
+            get
+            {
+                return employeeid;
+            }
+            set
+            {
+                // Allow 0 silently during JSON deserialization.
+                // AddEmployee() always assigns the counter value which is >= 1.
+                employeeid = value;
+            }
         }
 
         public decimal Salary
         {
-            get => salary;
-            set { if (value <= 0) salary = 0; else salary = value; }
+            get
+            {
+                return salary;
+            }
+            set
+            {
+                // Allow 0 / negative values silently during JSON deserialization.
+                // Business logic that creates employees via the constructor still
+                // validates salary through the constructor parameter, so no real
+                // employee will end up with an invalid salary at runtime.
+                salary = value;
+            }
+        }
+
+        /// <summary>
+        /// Call this when setting salary from user input (UI / console) to enforce validation.
+        /// </summary>
+        public void SetSalaryValidated(decimal value)
+        {
+            if (value <= 0)
+                throw new ArgumentException("Invalid Salary.");
+            salary = value;
         }
 
         public double ExperienceYears
         {
-            get { return experienceyears; }
-            set { if (value < 0) experienceyears = 0; else experienceyears = value; }
+            get
+            {
+                return experienceyears;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Invalid Number.");
+                }
+                else
+                {
+                    experienceyears = value;
+                }
+            }
         }
 
         public bool IsCheckedIn { get; set; }
@@ -50,8 +95,6 @@ namespace Hospital_System
         {
             Salary = salary;
             ExperienceYears = experienceyears;
-            EmployeeId = employeeid_counter;
-            employeeid_counter++;
             HospitalData.AddEmployee(this);
         }
 
@@ -76,7 +119,10 @@ namespace Hospital_System
                 }
                 HospitalData.SaveEmployees();
             }
-            else Console.WriteLine("You Are Already Checked In.");
+            else
+            {
+                Console.WriteLine("You Are Already Checked In.");
+            }
         }
 
         public void CheckOut()
@@ -90,7 +136,10 @@ namespace Hospital_System
                 IsCheckedIn = false;
                 HospitalData.SaveEmployees();
             }
-            else Console.WriteLine("Please Check In first.");
+            else
+            {
+                Console.WriteLine("Please Check In first.");
+            }
         }
 
         public void CheckInandOut()
@@ -116,7 +165,7 @@ namespace Hospital_System
             }
             else
             {
-                Console.WriteLine("u are not a registered employee.");
+                Console.WriteLine("You are not a registered employee.");
             }
         }
     }
