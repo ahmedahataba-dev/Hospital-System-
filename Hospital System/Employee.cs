@@ -21,24 +21,64 @@ namespace Hospital_System
 
 		public static List<Employee> employees = new List<Employee>();
 
+
 		public Employee() : base() { }
 
 		public int EmployeeId
 		{
-			get { return employeeid; }
-			set { if (value <= 0) employeeid = 1; else employeeid = value; }
+			get
+			{
+				return employeeid;
+			}
+			set
+			{
+				if (value <= 0)
+				{
+					throw new ArgumentException("Invalid ID.");
+				}
+				else
+				{
+					employeeid = value;
+				}
+			}
 		}
 
 		public decimal Salary
 		{
-			get => salary;
-			set { if (value <= 0) salary = 0; else salary = value; }
+			get
+			{
+				return salary;
+			}
+			set
+			{
+				if (value <= 0)
+				{
+					throw new ArgumentException("Invalid Salary.");
+				}
+				else
+				{
+					salary = value;
+				}
+			}
 		}
 
 		public double ExperienceYears
 		{
-			get { return experienceyears; }
-			set { if (value < 0) experienceyears = 0; else experienceyears = value; }
+			get
+			{
+				return experienceyears;
+			}
+			set
+			{
+				if (value < 0)
+				{
+					throw new ArgumentException("Invalid Number.");
+				}
+				else
+				{
+					experienceyears = value;
+				}
+			}
 		}
 
 		public bool IsCheckedIn { get; set; }
@@ -52,8 +92,6 @@ namespace Hospital_System
 		{
 			Salary = salary;
 			ExperienceYears = experienceyears;
-			EmployeeId = employeeid_counter;
-			employeeid_counter++;
 			HospitalData.AddEmployee(this);
 		}
 
@@ -78,7 +116,10 @@ namespace Hospital_System
 				}
 				HospitalData.SaveEmployees();
 			}
-			else Console.WriteLine("You Are Already Checked In.");
+			else
+			{
+				Console.WriteLine("You Are Already Checked In.");
+			}
 		}
 
 		public void CheckOut()
@@ -92,7 +133,10 @@ namespace Hospital_System
 				IsCheckedIn = false;
 				HospitalData.SaveEmployees();
 			}
-			else Console.WriteLine("Please Check In first.");
+			else
+			{
+				Console.WriteLine("Please Check In first.");
+			}
 		}
 
 		public void CheckInandOut()
