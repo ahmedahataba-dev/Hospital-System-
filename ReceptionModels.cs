@@ -138,7 +138,6 @@ namespace Hospital_System
         {
             string formatted = FormatName(username);
 
-            // Youssef — Admin with his own password
             if (formatted == AdminUsername && password == AdminPassword)
             {
                 return new EmployeeAccount
@@ -149,7 +148,6 @@ namespace Hospital_System
                 };
             }
 
-            // Other staff — shared password
             if (password == SharedPassword &&
                 System.Array.Exists(StaffUsernames, u => u == formatted))
             {
