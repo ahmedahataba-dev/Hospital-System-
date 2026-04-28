@@ -2,21 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static Hospital_System.PharmacyStaff;
 
 // By Ahmed Hataba
 namespace Hospital_System
 {
     internal class HospitalData
     {
+        private const string employeeFileName = "employees.json";
+        private const string doctorFileName = "doctors.json";
+        private const string nurseFileName = "nurses.json";
+        private const string pharmacistsFileName = "pharmacists.json";
+        private const string securityFileName = "security.json";
 
-
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             WriteIndented = true,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
         };
 
         // Employees Json implementation --------------------
@@ -32,19 +37,22 @@ namespace Hospital_System
 
         public static void SaveEmployees()
         {
-            string json = JsonSerializer.Serialize(Employee.employees, JsonOptions);
-            File.WriteAllText(DataStore.Employees, json);
+            string serializedemployeeslist = JsonSerializer.Serialize(Employee.employees, options);
+            File.WriteAllText(employeeFileName, serializedemployeeslist);
         }
 
         public static void ExtractEmployees()
         {
-            if (File.Exists(DataStore.Employees))
+            if (File.Exists(employeeFileName))
             {
-                string json = File.ReadAllText(DataStore.Employees);
-                Employee.employees = JsonSerializer.Deserialize<List<Employee>>(json, JsonOptions)
-                                     ?? new List<Employee>();
-                if (Employee.employees.Any())
-                    Employee.employeeid_counter = Employee.employees.Max(e => e.EmployeeId) + 1;
+                string deserializedemployeeslist = File.ReadAllText(employeeFileName);
+                Employee.employees = JsonSerializer.Deserialize<List<Employee>>(deserializedemployeeslist, options);
+
+                if (Employee.employees != null && Employee.employees.Any())
+                {
+                    int max_id = Employee.employees.Max(e => e.EmployeeId);
+                    Employee.employeeid_counter = max_id + 1;
+                }
             }
         }
 
@@ -56,21 +64,24 @@ namespace Hospital_System
                 Doctor.doctors.Add(newdoc);
                 SaveDoctors();
             }
+            else
+            {
+                Console.WriteLine($"Warning: Doctor With Medical License {newdoc.MedicalLicenseNumber} Already Exists.");
+            }
         }
 
         public static void SaveDoctors()
         {
-            string json = JsonSerializer.Serialize(Doctor.doctors, JsonOptions);
-            File.WriteAllText(DataStore.Doctors, json);
+            string serializeddoctorslist = JsonSerializer.Serialize(Doctor.doctors, options);
+            File.WriteAllText(doctorFileName, serializeddoctorslist);
         }
 
         public static void ExtractDoctors()
         {
-            if (File.Exists(DataStore.Doctors))
+            if (File.Exists(doctorFileName))
             {
-                string json = File.ReadAllText(DataStore.Doctors);
-                Doctor.doctors = JsonSerializer.Deserialize<List<Doctor>>(json, JsonOptions)
-                                 ?? new List<Doctor>();
+                var deserializeddoctorslist = File.ReadAllText(doctorFileName);
+                Doctor.doctors = JsonSerializer.Deserialize<List<Doctor>>(deserializeddoctorslist, options);
             }
         }
 
@@ -90,36 +101,37 @@ namespace Hospital_System
 
         public static void SaveNurses()
         {
-            string json = JsonSerializer.Serialize(Nurse.nurses, JsonOptions);
-            File.WriteAllText(DataStore.Nurses, json);
+            string serializednurseslist = JsonSerializer.Serialize(Nurse.nurses, options);
+            File.WriteAllText(nurseFileName, serializednurseslist);
         }
 
         public static void ExtractNurses()
         {
-            if (File.Exists(DataStore.Nurses))
+            if (File.Exists(nurseFileName))
             {
-                string json = File.ReadAllText(DataStore.Nurses);
-                Nurse.nurses = JsonSerializer.Deserialize<List<Nurse>>(json, JsonOptions)
-                               ?? new List<Nurse>();
+                var deserializednurseslist = File.ReadAllText(nurseFileName);
+                Nurse.nurses = JsonSerializer.Deserialize<List<Nurse>>(deserializednurseslist, options);
             }
         }
 
         // Pharmacists json files ---------------------
         public static void SavePharmacists()
         {
-            string json = JsonSerializer.Serialize(PharmacyStaff.pharmacists, JsonOptions);
-            File.WriteAllText(DataStore.Pharmacists, json);
+            string serializedpharmacistslist = JsonSerializer.Serialize(PharmacyStaff.pharmacists, options);
+            File.WriteAllText(pharmacistsFileName, serializedpharmacistslist);
         }
 
         public static void ExtractPharmacists()
         {
-            if (File.Exists(DataStore.Pharmacists))
+            if (File.Exists(pharmacistsFileName))
             {
-                string json = File.ReadAllText(DataStore.Pharmacists);
-                PharmacyStaff.pharmacists = JsonSerializer.Deserialize<List<PharmacyStaff>>(json, JsonOptions)
-                                            ?? new List<PharmacyStaff>();
-                if (PharmacyStaff.pharmacists.Any())
-                    PharmacyStaff.pharmacyStaffIdCounter = PharmacyStaff.pharmacists.Max(p => p.PharmacyStaffId) + 1;
+                var deserializedpharmacistslist = File.ReadAllText(pharmacistsFileName);
+                PharmacyStaff.pharmacists = JsonSerializer.Deserialize<List<PharmacyStaff>>(deserializedpharmacistslist, options);
+                if (PharmacyStaff.pharmacists != null && PharmacyStaff.pharmacists.Any())
+                {
+                    int max_id = PharmacyStaff.pharmacists.Max(p => p.PharmacyStaffId);
+                    PharmacyStaff.pharmacyStaffIdCounter = max_id + 1;
+                }
             }
         }
 
@@ -139,17 +151,16 @@ namespace Hospital_System
         // Security db implementation --------------------------
         public static void SaveSecurity()
         {
-            string json = JsonSerializer.Serialize(Security.securities, JsonOptions);
-            File.WriteAllText(DataStore.SecurityStaff, json);
+            string serializedsecuritylist = JsonSerializer.Serialize(Security.securities, options);
+            File.WriteAllText(securityFileName, serializedsecuritylist);
         }
 
         public static void ExtractSecurity()
         {
-            if (File.Exists(DataStore.SecurityStaff))
+            if (File.Exists(securityFileName))
             {
-                string json = File.ReadAllText(DataStore.SecurityStaff);
-                Security.securities = JsonSerializer.Deserialize<List<Security>>(json, JsonOptions)
-                                      ?? new List<Security>();
+                var deserializedsecuritylist = File.ReadAllText(securityFileName);
+                Security.securities = JsonSerializer.Deserialize<List<Security>>(deserializedsecuritylist, options);
             }
         }
 
