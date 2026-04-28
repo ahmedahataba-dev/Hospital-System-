@@ -581,10 +581,10 @@ namespace Hospital_System
         ("🧹", "Room Cleaning"),
         ("🩸", "Blood Bank"),
         ("🏥", "Operations"),
-        ("🔬", "Lab Analysis"),
+        ("🔬", "Analysis Lab"),
         ("🎫", "Reception Booking"),
         ("🔑", "Accounts"),
-        ("💊", "Prescription"),
+        ("💊", "Prescription"), 
             };
 
             int top = 82;
