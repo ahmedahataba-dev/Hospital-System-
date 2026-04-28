@@ -63,9 +63,9 @@ namespace Hospital_System.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap NeurAi_Logo {
+        internal static System.Drawing.Bitmap NeurAI {
             get {
-                object obj = ResourceManager.GetObject("NeurAi_Logo", resourceCulture);
+                object obj = ResourceManager.GetObject("NeurAI", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

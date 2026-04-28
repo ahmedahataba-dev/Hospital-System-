@@ -554,24 +554,15 @@ namespace Hospital_System
             logo.Click += (s, e) => NavigateTo("Dashboard");
             PictureBox Logo = new PictureBox
             {
-                Image = Properties.Resources.NeurAi_Logo,
+                Image = Properties.Resources.NeurAI,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Size = new Size(120, 60),
-                Location = new Point(20, 10)
+                Size = new Size(200, 120),
+                Location = new Point(20, 0)
             };
 
-            sideNav.Controls.Add(logo);
-            Label title = new Label
-            {
-                Text = "NeurAi",
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = NavActive,
-                Location = new Point(140, 35),
-                AutoSize = true
-            };
-
+         
             logo.Controls.Add(Logo);
-            logo.Controls.Add(title);
+          
             sideNav.Controls.Add(logo);
             sideNav.Controls.Add(logo);
 
