@@ -10,10 +10,8 @@ namespace Hospital_System
 {
     internal class HospitalData
     {
-        // paths resolved via DataStore so all JSON lands next to the .exe
 
 
-        // Shared options: pretty-print + ignore circular refs + skip nulls
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
