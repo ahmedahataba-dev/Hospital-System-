@@ -122,7 +122,6 @@ namespace Hospital_System
         private const string AdminUsername = "Youssif";
         private const string AdminHash = "ML2UJrRNxmwMz1+aVhpqXAK7N06ECRn3h/zBpF1m/uo=";
         private const string SharedPassword = "12345";
-
         private string FormatName(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
