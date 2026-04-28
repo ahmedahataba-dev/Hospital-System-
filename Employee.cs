@@ -55,9 +55,6 @@ namespace Hospital_System
             }
         }
 
-        /// <summary>
-        /// Call this when setting salary from user input (UI / console) to enforce validation.
-        /// </summary>
         public void SetSalaryValidated(decimal value)
         {
             if (value <= 0)
