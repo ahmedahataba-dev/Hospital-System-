@@ -529,9 +529,10 @@ namespace Hospital_System
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = PageBg;
 
+            // IMPORTANT: clear controls first (prevents layering bugs)
             Controls.Clear();
 
-            // ── Sidebar  ──
+            // ── Sidebar FIRST ──
             sideNav = new Panel
             {
                 Dock = DockStyle.Left,
@@ -545,8 +546,8 @@ namespace Hospital_System
             var logo = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 100,
-                BackColor = NavBg
+                Height = 120,
+                BackColor = Color.FromArgb(5, 15, 35)  // slightly darker to frame the logo
             };
 
             logo.Cursor = Cursors.Hand;
@@ -555,14 +556,12 @@ namespace Hospital_System
             {
                 Image = Properties.Resources.NeurAI,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Size = new Size(200, 120),
-                Location = new Point(20, 0)
+                Size = new Size(160, 80),
+                Location = new Point(35, 10)
             };
 
-
-            logo.Controls.Add(Logo);
-
             sideNav.Controls.Add(logo);
+            logo.Controls.Add(Logo);
             sideNav.Controls.Add(logo);
 
             // nav items
@@ -633,8 +632,6 @@ namespace Hospital_System
             };
 
             Controls.Add(contentArea);
-            Controls.Add(contentArea);
-
 
             Controls.SetChildIndex(sideNav, 0);
             Controls.SetChildIndex(contentArea, 1);
@@ -1719,7 +1716,6 @@ namespace Hospital_System
                     neurai.CampusFacilities.CreateAmbulance();
                     NavigateTo("Emergency");
                 };
-                //MessageBox.Show($"Ambulance {newPlate} added to fleet!", "Fleet Updated ✅");
                 NavigateTo("Ambulance"); // refresh page
             };
             acard.Controls.Add(addBtn);
