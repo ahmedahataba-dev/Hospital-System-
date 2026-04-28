@@ -4,7 +4,9 @@ using System.Collections.Generic;
 internal class Nurse : Employee // 1. Changed to singular 'Nurse'
 {
 
-    private string licenseNumber = string.Empty;
+	public Nurse() : base() { }
+
+	private string licenseNumber = string.Empty;
     private string speciality = string.Empty;// can be used to specify the nurse's area of expertise (e.g., pediatric nurse, surgical nurse, etc.)
     private string degree = string.Empty;// can be used to specify the nurse's educational background (e.g., Bachelor of Science in Nursing, Master of Science in Nursing, etc.)
     private string assignedWard = string.Empty;// can be used to specify the ward or department the nurse is assigned to (e.g., emergency, intensive care unit, etc.)

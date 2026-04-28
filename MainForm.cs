@@ -78,8 +78,14 @@ namespace Hospital_System
                 if (dept != null && !dept.Doctors.Any(d => d.MedicalLicenseNumber == doc.MedicalLicenseNumber))
                     dept.Doctors.Add(doc);
             }
+			// ── Sync persisted security guards into the runtime Guards list ──
+			foreach (var sec in Security.securities)
+			{
+				if (!neurai.CampusSecurity.Guards.Any(g => g.BadgeNumber == sec.BadgeNumber))
+					neurai.CampusSecurity.Guards.Add(sec);
+			}
 
-            _engine.LoadData();
+			_engine.LoadData();
             hospitalService.LoadData();    // online patients & bookings
             receptionService.LoadData();   // reception patients & bookings
             RoomCleaningTracker.LoadData(); // room cleaning history & statuses
@@ -577,9 +583,10 @@ namespace Hospital_System
         ("👨‍⚕️", "Doctors"),
         ("🧑‍🤝‍🧑", "Patients"),
         ("💊", "Pharmacy"),
-        ("🏦", "Billing"),
+		("🏦", "Billing"),
         ("🚑", "Emergency"),
-        ("🔒", "Security"),
+		("💉", "Pharmacists"),
+		("🔒", "Security"),
         ("👥", "Staff"),
         ("📦", "Inventory"),
         ("🧹", "Room Cleaning"),
@@ -687,7 +694,8 @@ namespace Hospital_System
             else if (key == "Doctors") page = PageDoctors();
             else if (key == "Patients") page = PagePatients();
             else if (key == "Pharmacy") page = PagePharmacy();
-            else if (key == "Billing") page = PageBilling();
+			else if (key == "Pharmacists") page = PagePharmacists();
+			else if (key == "Billing") page = PageBilling();
             else if (key == "Emergency")
             {
                 page = new Panel(); // dummy container
@@ -1979,13 +1987,13 @@ namespace Hospital_System
             var gcard = Card(0, 86, 660, 320, "Active Guard Roster");
             var dg = Grid(14, 34, 632, 272);
             dg.Columns.Add("badge", "Badge #"); dg.Columns.Add("name", "Officer Name"); dg.Columns.Add("shift", "Shift");
-            void RefreshGuards()
-            {
-                dg.Rows.Clear();
-                foreach (var g in neurai.CampusSecurity.Guards)
-                    dg.Rows.Add($"SEC-{g.BadgeNumber:D3}", g.Name, g.Shift);
-            }
-            RefreshGuards();
+			void RefreshGuards()
+			{
+				dg.Rows.Clear();
+				foreach (var g in Security.securities)
+					dg.Rows.Add($"SEC-{g.BadgeNumber:D3}", g.Name, g.Shift);
+			}
+			RefreshGuards();
             gcard.Controls.Add(dg);
             s.Controls.Add(gcard);
 
@@ -2016,16 +2024,27 @@ namespace Hospital_System
             hcard.Controls.Add(Lbl("Shift:", FBold, TextGrey, 298, 42));
             var cbShift = CB(348, 38, 120, new[] { "Day", "Evening", "Night" }); hcard.Controls.Add(cbShift);
             var hgBtn = Btn("Hire Guard", AccentGrn, 14, 90, 130, 36);
-            hgBtn.Click += (s2, e2) =>
-            {
-                string nm = tbGnm.Text.Trim(); string sh = cbShift.SelectedItem?.ToString() ?? "Day";
-                if (string.IsNullOrWhiteSpace(nm)) { MessageBox.Show("Enter a name."); return; }
-                neurai.CampusSecurity.HireSubstituteGuard(nm, sh);
-                RefreshGuards();
-                MessageBox.Show($"Guard '{nm}' hired for {sh} shift.", "Hired ✅");
-                tbGnm.Clear();
-            };
-            hcard.Controls.Add(hgBtn);
+			// AFTER
+			hgBtn.Click += (s2, e2) =>
+			{
+				string nm = tbGnm.Text.Trim();
+				string sh = cbShift.SelectedItem?.ToString() ?? "Day";
+				if (string.IsNullOrWhiteSpace(nm)) { MessageBox.Show("Enter a name."); return; }
+
+				int nextBadge = (Security.securities.Any() ? Security.securities.Max(g => g.BadgeNumber) : 0) + 1;
+				string badgeStr = $"SEC-{nextBadge:D3}";
+
+				var newGuard = new Security(nm, badgeStr, sh);
+				newGuard.NationalId = $"SUB-{nextBadge:D3}";
+
+				// REMOVED: neurai.CampusSecurity.Guards.Add(newGuard);  ← no longer needed
+				HospitalData.AddSecurity(newGuard); // adds to Security.securities + saves JSON
+
+				RefreshGuards(); // now correctly shows the updated Security.securities
+				MessageBox.Show($"Guard '{nm}' hired for {sh} shift.", "Hired ✅");
+				tbGnm.Clear();
+			};
+			hcard.Controls.Add(hgBtn);
             s.Controls.Add(hcard);
 
             return page;
@@ -2055,30 +2074,159 @@ namespace Hospital_System
                 c.Controls.Add(g); t.Controls.Add(c); return t;
             }
 
-            Panel NurseTab()
-            {
-                var t = new Panel { BackColor = PageBg, Size = new Size(1080, 400) };
-                var c = Card(0, 0, 1080, 380, $"Nurses  ({Nurse.nurses.Count})");
-                var g = Grid(14, 34, 1052, 330);
-                g.Columns.Add("name", "Name"); g.Columns.Add("lic", "License"); g.Columns.Add("spec", "Speciality");
-                g.Columns.Add("ward", "Ward"); g.Columns.Add("call", "On Call"); g.Columns.Add("load", "Patient Load");
-                foreach (var n in Nurse.nurses)
-                    g.Rows.Add(n.Name, n.LicenseNumber, n.Speciality, n.AssignedWard, n.IsOnCall ? "✅" : "–", n.CurrentPatientLoad);
-                c.Controls.Add(g); t.Controls.Add(c); return t;
-            }
+			Panel NurseTab()
+			{
+				var t = new Panel { BackColor = PageBg, Size = new Size(1080, 620) };
 
-            Panel PharmTab()
-            {
-                var t = new Panel { BackColor = PageBg, Size = new Size(1080, 400) };
-                var c = Card(0, 0, 1080, 380, $"Pharmacists  ({PharmacyStaff.pharmacists.Count})");
-                var g = Grid(14, 34, 1052, 330);
-                g.Columns.Add("id", "ID"); g.Columns.Add("name", "Name"); g.Columns.Add("role", "Role"); g.Columns.Add("sal", "Salary");
-                foreach (var p in PharmacyStaff.pharmacists)
-                    g.Rows.Add(p.PharmacyStaffId, p.Name, p.Role, p.Salary.ToString("C"));
-                c.Controls.Add(g); t.Controls.Add(c); return t;
-            }
+				// ── Display grid (unchanged) ──
+				var c = Card(0, 0, 1080, 380, $"Nurses  ({Nurse.nurses.Count})");
+				var g = Grid(14, 34, 1052, 330);
+				g.Columns.Add("name", "Name"); g.Columns.Add("lic", "License"); g.Columns.Add("spec", "Speciality");
+				g.Columns.Add("ward", "Ward"); g.Columns.Add("call", "On Call"); g.Columns.Add("load", "Patient Load");
+				void RefreshNurses()
+				{
+					g.Rows.Clear();
+					foreach (var n in Nurse.nurses)
+						g.Rows.Add(n.Name, n.LicenseNumber, n.Speciality, n.AssignedWard, n.IsOnCall ? "✅" : "–", n.CurrentPatientLoad);
+				}
+				RefreshNurses();
+				c.Controls.Add(g); t.Controls.Add(c);
 
-            void ShowTab(Panel tab)
+				// ── Hire Nurse form ──
+				var hc = Card(0, 394, 1080, 210, "➕ Hire New Nurse");
+				int lx = 14, ly = 36, gap = 38;
+
+				hc.Controls.Add(Lbl("Name:", FBold, TextGrey, lx, ly));
+				var tbNName = TB(lx + 60, ly, 200); hc.Controls.Add(tbNName);
+
+				hc.Controls.Add(Lbl("License:", FBold, TextGrey, lx + 280, ly));
+				var tbNLic = TB(lx + 350, ly, 150, $"NUR-{DateTime.Now.Ticks % 99999}"); hc.Controls.Add(tbNLic);
+
+				ly += gap;
+				hc.Controls.Add(Lbl("Speciality:", FBold, TextGrey, lx, ly));
+				var cbNSpec = CB(lx + 80, ly, 180, new[] { "General", "Pediatric", "Surgical", "ICU", "Emergency" }); hc.Controls.Add(cbNSpec);
+
+				hc.Controls.Add(Lbl("Ward:", FBold, TextGrey, lx + 280, ly));
+				var cbNWard = CB(lx + 330, ly, 160, new[] { "Ward A", "Ward B", "ICU", "ER", "Pediatrics", "Surgery" }); hc.Controls.Add(cbNWard);
+
+				ly += gap;
+				hc.Controls.Add(Lbl("Salary:", FBold, TextGrey, lx, ly));
+				var tbNSal = TB(lx + 60, ly, 90, "8000"); hc.Controls.Add(tbNSal);
+
+				hc.Controls.Add(Lbl("Exp (yrs):", FBold, TextGrey, lx + 168, ly));
+				var tbNExp = TB(lx + 255, ly, 60, "1"); hc.Controls.Add(tbNExp);
+
+				var cbNCall = new CheckBox { Text = "On Call", Font = FBold, ForeColor = TextGrey, Location = new Point(lx + 340, ly), AutoSize = true };
+				hc.Controls.Add(cbNCall);
+
+				ly += gap + 4;
+				var hireNBtn = Btn("✅ Hire Nurse", AccentGrn, lx, ly, 140, 34);
+				hireNBtn.Click += (s2, e2) =>
+				{
+					try
+					{
+						string nm = tbNName.Text.Trim();
+						if (string.IsNullOrWhiteSpace(nm)) { MessageBox.Show("Enter a name."); return; }
+						string lic = tbNLic.Text.Trim();
+						if (Nurse.nurses.Any(n => n.LicenseNumber == lic)) { MessageBox.Show("License number already exists."); return; }
+
+						decimal sal = decimal.TryParse(tbNSal.Text, out decimal sv) ? sv : 8000;
+						double exp = double.TryParse(tbNExp.Text, out double ev) ? ev : 1;
+
+						// Nurse constructor auto-calls HospitalData.AddNurse(this) + SaveNurses()
+						var _ = new Nurse(
+							nm, 25, GenderType.Female, $"NID-{DateTime.Now.Ticks % 99999}",
+							"00000000000", "nurse@neurai.com", "Unknown",
+							sal, exp,
+							lic,
+							cbNSpec.SelectedItem?.ToString() ?? "General",
+							"BSN",
+							cbNWard.SelectedItem?.ToString() ?? "Ward A",
+							cbNCall.Checked, 0
+						);
+
+						RefreshNurses();
+						MessageBox.Show($"Nurse '{nm}' hired!", "Success ✅");
+						tbNName.Clear();
+					}
+					catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+				};
+				hc.Controls.Add(hireNBtn);
+				t.Controls.Add(hc);
+
+				return t;
+			}
+			Panel PharmTab()
+			{
+				var t = new Panel { BackColor = PageBg, Size = new Size(1080, 580) };
+
+				// ── Display grid (unchanged) ──
+				var c = Card(0, 0, 1080, 380, $"Pharmacists  ({PharmacyStaff.pharmacists.Count})");
+				var g = Grid(14, 34, 1052, 330);
+				g.Columns.Add("id", "ID"); g.Columns.Add("name", "Name"); g.Columns.Add("role", "Role"); g.Columns.Add("sal", "Salary");
+				void RefreshPharm()
+				{
+					g.Rows.Clear();
+					foreach (var p in PharmacyStaff.pharmacists)
+						g.Rows.Add(p.PharmacyStaffId, p.Name, p.Role, p.Salary.ToString("C"));
+				}
+				RefreshPharm();
+				c.Controls.Add(g); t.Controls.Add(c);
+
+				// ── Hire Pharmacist form ──
+				var hc = Card(0, 394, 1080, 170, "➕ Hire New Pharmacist");
+				int lx = 14, ly = 36, gap = 38;
+
+				hc.Controls.Add(Lbl("Name:", FBold, TextGrey, lx, ly));
+				var tbPName = TB(lx + 60, ly, 200); hc.Controls.Add(tbPName);
+
+				hc.Controls.Add(Lbl("Role:", FBold, TextGrey, lx + 280, ly));
+				var cbPRole = CB(lx + 330, ly, 180, new[] { "Pharmacist", "Senior Pharmacist", "Pharmacy Technician", "Intern" });
+				hc.Controls.Add(cbPRole);
+
+				ly += gap;
+				hc.Controls.Add(Lbl("Salary:", FBold, TextGrey, lx, ly));
+				var tbPSal = TB(lx + 60, ly, 90, "9000"); hc.Controls.Add(tbPSal);
+
+				hc.Controls.Add(Lbl("Exp (yrs):", FBold, TextGrey, lx + 168, ly));
+				var tbPExp = TB(lx + 255, ly, 60, "1"); hc.Controls.Add(tbPExp);
+
+				ly += gap + 4;
+				var hirePhBtn = Btn("✅ Hire Pharmacist", AccentGrn, lx, ly, 160, 34);
+				hirePhBtn.Click += (s2, e2) =>
+				{
+					try
+					{
+						string nm = tbPName.Text.Trim();
+						if (string.IsNullOrWhiteSpace(nm)) { MessageBox.Show("Enter a name."); return; }
+
+						decimal sal = decimal.TryParse(tbPSal.Text, out decimal sv) ? sv : 9000;
+						double exp = double.TryParse(tbPExp.Text, out double ev) ? ev : 1;
+						string nid = $"PH-{DateTime.Now.Ticks % 99999}";
+
+						var newPharm = new PharmacyStaff(
+							nm, 28, GenderType.Male, nid,
+							"00000000000", "pharm@neurai.com", "Unknown",
+							sal, exp,
+							cbPRole.SelectedItem?.ToString() ?? "Pharmacist"
+						);
+
+						// PharmacyStaff constructor does NOT auto-save — call AddPharmacists explicitly
+						HospitalData.AddPharmacists(newPharm);
+
+						RefreshPharm();
+						MessageBox.Show($"Pharmacist '{nm}' hired!", "Success ✅");
+						tbPName.Clear();
+					}
+					catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+				};
+				hc.Controls.Add(hirePhBtn);
+				t.Controls.Add(hc);
+
+				return t;
+			}
+
+			void ShowTab(Panel tab)
             {
                 if (activeTab != null) s.Controls.Remove(activeTab);
                 tab.Location = new Point(0, 50); s.Controls.Add(tab); activeTab = tab;
@@ -3186,6 +3334,92 @@ namespace Hospital_System
             return page;
         }
 
+		// ═════════════════════════════════════════════════════
+		//  PAGE: PHARMACISTS  (mirrors PageDoctors pattern)
+		// ═════════════════════════════════════════════════════
+		Panel PagePharmacists()
+		{
+			var page = ScrollPage("Pharmacist Management", "View and hire pharmacy staff");
+			var s = GetScroll(page);
 
-    }
+			// ───────────── GRID ─────────────
+			var gcard = Card(0, 0, 1080, 380, "All Pharmacists");
+			var dg = Grid(14, 34, 1052, 334);
+
+			dg.Columns.Add("id", "Staff ID");
+			dg.Columns.Add("name", "Name");
+			dg.Columns.Add("role", "Role");
+
+			void RefreshGrid()
+			{
+				dg.Rows.Clear();
+				foreach (var p in PharmacyStaff.pharmacists)
+					dg.Rows.Add(p.PharmacyStaffId, p.Name, p.Role);
+			}
+
+			RefreshGrid();
+			gcard.Controls.Add(dg);
+			s.Controls.Add(gcard);
+
+			// ───────────── HIRE PHARMACIST ─────────────
+			var hcard = Card(0, 394, 1080, 200, "➕ Hire New Pharmacist");
+			int lx = 14, ly = 34, gap = 38;
+
+			hcard.Controls.Add(Lbl("Name:", FBold, TextGrey, lx, ly));
+			var tbName = TB(lx + 60, ly, 220); hcard.Controls.Add(tbName);
+
+			hcard.Controls.Add(Lbl("Role:", FBold, TextGrey, lx + 300, ly));
+			var cbRole = CB(lx + 348, ly, 200,
+				new[] { "Pharmacist", "Senior Pharmacist", "Pharmacy Technician", "Intern" });
+			hcard.Controls.Add(cbRole);
+
+			ly += gap;
+
+			hcard.Controls.Add(Lbl("Salary:", FBold, TextGrey, lx, ly));
+			var tbSal = TB(lx + 60, ly, 100, "9000"); hcard.Controls.Add(tbSal);
+
+			hcard.Controls.Add(Lbl("Exp (yrs):", FBold, TextGrey, lx + 180, ly));
+			var tbExp = TB(lx + 268, ly, 70, "1"); hcard.Controls.Add(tbExp);
+
+			ly += gap + 6;
+
+			var hireBtn = Btn("✅ Hire Pharmacist", AccentGrn, lx, ly, 170, 36);
+			hireBtn.Click += (s2, e2) =>
+			{
+				try
+				{
+					string nm = tbName.Text.Trim();
+					if (string.IsNullOrWhiteSpace(nm)) { MessageBox.Show("Enter a name."); return; }
+
+					bool dup = PharmacyStaff.pharmacists
+						.Any(p => p.Name.Equals(nm, StringComparison.OrdinalIgnoreCase));
+					if (dup) { MessageBox.Show($"Pharmacist '{nm}' already exists."); return; }
+
+					decimal sal = decimal.TryParse(tbSal.Text, out decimal sv) ? sv : 9000;
+					double exp = double.TryParse(tbExp.Text, out double ev) ? ev : 1;
+					string nid = $"PH-{DateTime.Now.Ticks % 99999}";
+
+					var newPharm = new PharmacyStaff(
+						nm, 28, GenderType.Male, nid,
+						"00000000000", "pharm@neurai.com", "Unknown",
+						sal, exp,
+						cbRole.SelectedItem?.ToString() ?? "Pharmacist"
+					);
+
+					// AddPharmacists adds to the list AND saves to pharmacists.json
+					HospitalData.AddPharmacists(newPharm);
+
+					RefreshGrid();
+					MessageBox.Show($"Pharmacist '{nm}' hired! (ID: {newPharm.PharmacyStaffId})", "Success ✅");
+					tbName.Clear();
+				}
+				catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+			};
+
+			hcard.Controls.Add(hireBtn);
+			s.Controls.Add(hcard);
+
+			return page;
+		}                                                                                                                                           
+	}
 }
