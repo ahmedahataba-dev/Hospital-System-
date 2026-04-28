@@ -114,7 +114,7 @@ namespace Hospital_System
             }
         }
 
-        // Pharmacists json files ---------------------
+        // Pharmacists json file ---------------------
         public static void SavePharmacists()
         {
             string serializedpharmacistslist = JsonSerializer.Serialize(PharmacyStaff.pharmacists, options);

@@ -146,9 +146,23 @@ namespace Hospital_System
             {
                 switch (chosenno)
                 {
-                    case 1: CheckIn(); break;
-                    case 2: CheckOut(); break;
-                    default: Console.WriteLine("Invalid choice."); break;
+                    case 1:
+                    { 
+
+                        CheckIn();
+                        break; 
+
+                    }
+                    case 2:
+                    {
+                        CheckOut();
+                        break;
+                    }
+                    default:
+                    {
+                        Console.WriteLine("Invalid choice.");
+                        break; 
+                    }
                 }
             }
         }
