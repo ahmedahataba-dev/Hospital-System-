@@ -547,7 +547,7 @@ namespace Hospital_System
             {
                 Dock = DockStyle.Top,
                 Height = 120,
-                BackColor = Color.FromArgb(5, 15, 35)  // slightly darker to frame the logo
+                BackColor = Color.FromArgb(5, 15, 35)
             };
 
             logo.Cursor = Cursors.Hand;
@@ -556,8 +556,8 @@ namespace Hospital_System
             {
                 Image = Properties.Resources.NeurAI,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Size = new Size(160, 80),
-                Location = new Point(35, 10)
+                Size = new Size(220, 120),
+                Location = new Point(5, 5)
             };
 
             sideNav.Controls.Add(logo);
