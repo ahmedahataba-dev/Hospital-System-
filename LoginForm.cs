@@ -69,8 +69,8 @@ namespace Hospital_System
             {
                 Image = Properties.Resources.NeurAI,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Size = new Size(90, 70),
-                Location = new Point(12, 10)
+                Size = new Size(150, 100),
+                Location = new Point(-10, -5)
             };
             banner.Controls.Add(logoPic);
 
@@ -80,7 +80,7 @@ namespace Hospital_System
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 ForeColor = Color.FromArgb(0, 188, 212),
                 AutoSize = true,
-                Location = new Point(110, 14)
+                Location = new Point(150, 14)
             });
             banner.Controls.Add(new Label
             {
@@ -88,7 +88,7 @@ namespace Hospital_System
                 Font = FNorm,
                 ForeColor = Color.FromArgb(160, 180, 210),
                 AutoSize = true,
-                Location = new Point(112, 54)
+                Location = new Point(140, 54)
             });
             Controls.Add(banner);
 
