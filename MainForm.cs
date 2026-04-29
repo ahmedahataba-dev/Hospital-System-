@@ -47,7 +47,6 @@ namespace Hospital_System
         private string receptionChosenDay = "Saturday";
         private EmployeeAccountService empAccountSvc = new EmployeeAccountService();
         private LoginResult _loginResult;
-
         // ─────────────────────────────────────────────────────
 
         public void MainForm_Load(object sender, EventArgs e)
@@ -523,7 +522,7 @@ namespace Hospital_System
 
         void BuildShell()
         {
-            Text = "NeurAi Medical Center — Hospital Management System";
+			Text = "NeurAi Medical Center — Hospital Management System";
             Size = new Size(1350, 860);
             MinimumSize = new Size(1100, 700);
             StartPosition = FormStartPosition.CenterScreen;
@@ -2267,7 +2266,7 @@ namespace Hospital_System
         // ═════════════════════════════════════════════════════
         Panel PageBloodBank()
         {
-            var page = ScrollPage("Blood Bank", "Donors, transfers and inventory — saved to blood_inventory.json");
+            var page = ScrollPage("Blood Bank", "Donors Management ");
             var s = GetScroll(page);
 
             // ── Inventory ──
@@ -2601,19 +2600,17 @@ namespace Hospital_System
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.SuspendLayout();
-            // 
-            // MainForm
-            // 
-            this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(1024, 600);
-            this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hospital Management System";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.ResumeLayout(false);
+			this.SuspendLayout();
+			// 
+			// MainForm
+			// 
+			this.ClientSize = new System.Drawing.Size(1280, 720);
+			this.MinimumSize = new System.Drawing.Size(1024, 600);
+			this.Name = "MainForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.Text = "Hospital Management System";
+			this.Load += new System.EventHandler(this.MainForm_Load);
+			this.ResumeLayout(false);
 
         }
 
@@ -3074,7 +3071,7 @@ namespace Hospital_System
         // ═══════════════════════════════════════════════════════
         Panel PageLabAnalysis()
         {
-            var page = ScrollPage("🔬  Lab Analysis", "Enter test results and generate a colour-coded report");
+            var page = ScrollPage("🔬  Analysis Lab", "Enter test results and generate a colour-coded report");
             var scroll = GetScroll(page);
 
             scroll.Controls.Add(Lbl("Patient Name", FBold, TextGrey, 0, 0));
