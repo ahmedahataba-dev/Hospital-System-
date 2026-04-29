@@ -528,11 +528,9 @@ namespace Hospital_System
             MinimumSize = new Size(1100, 700);
             StartPosition = FormStartPosition.CenterScreen;
             BackColor = PageBg;
-
-            // IMPORTANT: clear controls first (prevents layering bugs)
             Controls.Clear();
 
-            // ── Sidebar FIRST ──
+            // ── Sidebar  ──
             sideNav = new Panel
             {
                 Dock = DockStyle.Left,
@@ -546,7 +544,7 @@ namespace Hospital_System
             var logo = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 120,
+                Height = 80,
                 BackColor = Color.FromArgb(5, 15, 35)
             };
 
@@ -557,7 +555,7 @@ namespace Hospital_System
                 Image = Properties.Resources.NeurAI,
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Size = new Size(220, 120),
-                Location = new Point(5, 5)
+                Location = new Point(0, 0)
             };
 
             sideNav.Controls.Add(logo);
@@ -584,7 +582,7 @@ namespace Hospital_System
         ("🔬", "Analysis Lab"),
         ("🎫", "Reception Booking"),
         ("🔑", "Accounts"),
-        ("💊", "Prescription"), 
+        ("💊", "Prescription"),
             };
 
             int top = 82;
@@ -696,7 +694,7 @@ namespace Hospital_System
             else if (key == "Room Cleaning") page = PageRoomCleaning();
             else if (key == "Blood Bank") page = PageBloodBank();
             else if (key == "Operations") page = PageOperations();
-            else if (key == "Lab Analysis") page = PageLabAnalysis();
+            else if (key == "Analysis Lab") page = PageLabAnalysis();
             else if (key == "Reception Booking") page = PageReceptionBooking();
             else if (key == "Accounts") page = PageAccounts();
             else if (key == "Prescription") page = PagePrescription();
@@ -2603,18 +2601,20 @@ namespace Hospital_System
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.SuspendLayout();
             // 
             // MainForm
             // 
-            // FIX: Changed from (282, 253) to a standard desktop resolution
             this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.MinimumSize = new System.Drawing.Size(1024, 600); // Prevents it from being squished again
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.Name = "MainForm";
-            this.Text = "Hospital Management System"; // Added a window title
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Hospital Management System";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
+
         }
 
         // ═══════════════════════════════════════════════════════
