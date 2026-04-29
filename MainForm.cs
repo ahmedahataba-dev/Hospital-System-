@@ -580,7 +580,7 @@ namespace Hospital_System
         ("🧹", "Room Cleaning"),
         ("🩸", "Blood Bank"),
         ("🏥", "Operations"),
-        ("🔬", "Lab Analysis"),
+        ("🔬", "Analysis Lab"),
         ("🎫", "Reception Booking"),
         ("🔑", "Accounts"),
         ("💊", "Prescription"),
@@ -695,7 +695,7 @@ namespace Hospital_System
             else if (key == "Room Cleaning") page = PageRoomCleaning();
             else if (key == "Blood Bank") page = PageBloodBank();
             else if (key == "Operations") page = PageOperations();
-            else if (key == "Lab Analysis") page = PageLabAnalysis();
+            else if (key == "Analysis Lab") page = PageLabAnalysis();
             else if (key == "Reception Booking") page = PageReceptionBooking();
             else if (key == "Accounts") page = PageAccounts();
             else if (key == "Prescription") page = PagePrescription();
@@ -3073,7 +3073,7 @@ namespace Hospital_System
         // ═══════════════════════════════════════════════════════
         Panel PageLabAnalysis()
         {
-            var page = ScrollPage("🔬  Lab Analysis", "Enter test results and generate a colour-coded report");
+            var page = ScrollPage("🔬  Analysis Lab", "Enter test results and generate a colour-coded report");
             var scroll = GetScroll(page);
 
             scroll.Controls.Add(Lbl("Patient Name", FBold, TextGrey, 0, 0));
