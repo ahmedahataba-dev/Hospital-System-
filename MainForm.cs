@@ -583,7 +583,7 @@ namespace Hospital_System
         ("🔬", "Analysis Lab"),
         ("🎫", "Reception Booking"),
         ("🔑", "Accounts"),
-        ("💊", "Prescription"),
+        ("💊", "Prescription"), 
             };
 
             int top = 82;
