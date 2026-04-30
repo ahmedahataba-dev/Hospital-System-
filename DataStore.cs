@@ -37,7 +37,8 @@ namespace Hospital_System
             public static readonly string Transfers = Path("transfers_data.json");
             public static readonly string RoomCleaning = Path("room_cleaning.json");
             public static readonly string Inventory = Path("inventory.json");
-        }
+            public static readonly string LabRecords = Path("lab_records.json");
+    }
     }
 
 

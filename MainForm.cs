@@ -44,6 +44,7 @@ namespace Hospital_System
         private ClinicService clinicService = new ClinicService();
         private OnlineRegistration loggedInPatient = null;
         private ReceptionService receptionService = new ReceptionService();
+        private LabService labService = new LabService();   
         private string receptionChosenDay = "Saturday";
         private EmployeeAccountService empAccountSvc = new EmployeeAccountService();
         private LoginResult _loginResult;
@@ -87,6 +88,8 @@ namespace Hospital_System
             _engine.LoadData();
             hospitalService.LoadData();    // online patients & bookings
             receptionService.LoadData();   // reception patients & bookings
+            labService.LoadData();         // analysis lab records
+
             RoomCleaningTracker.LoadData(); // room cleaning history & statuses
             BuildShell();
             NavigateTo("Dashboard");
@@ -1545,39 +1548,204 @@ namespace Hospital_System
             var page = ScrollPage("Billing & Financial", "Generate invoices and apply discounts");
             var s = GetScroll(page);
 
-            var services = new List<(string name, decimal price)>();
+            var pharmacy = neurai.CampusFacilities.HospitalPharmacy;
+            var services = new System.Collections.Generic.List<(string name, decimal price)>();
+            var prescriptionItems = new System.Collections.Generic.List<(Medicine med, int qty)>();
 
-            var fcard = Card(0, 0, 580, 520, "Create Invoice");
-            int lx = 14, ly = 34, gap = 38;
+            var fcard = Card(0, 0, 860, 660, "Create Invoice");
+            int lx = 14, ly = 14, gap = 38;
+
+            // ── Patient Info Section ──
+            var patientHeader = new Panel
+            {
+                Location = new Point(lx, ly),
+                Size = new Size(820, 44),
+                BackColor = Color.FromArgb(21, 101, 192)
+            };
+            patientHeader.Controls.Add(new Label
+            {
+                Text = "  👤  Patient Information",
+                Font = FBold,
+                ForeColor = Color.White,
+                Location = new Point(8, 12),
+                AutoSize = true
+            });
+            fcard.Controls.Add(patientHeader);
+
+            ly += 52;
             fcard.Controls.Add(Lbl("Patient ID:", FBold, TextGrey, lx, ly));
-            var tbPid = TB(lx + 90, ly, 100); fcard.Controls.Add(tbPid);
-            fcard.Controls.Add(Lbl("Patient Name:", FBold, TextGrey, lx + 210, ly));
-            var tbPnm = TB(lx + 310, ly, 200); fcard.Controls.Add(tbPnm);
+            var tbPid = TB(lx + 90, ly, 150); fcard.Controls.Add(tbPid);
 
-            ly += gap; fcard.Controls.Add(Lbl("Services:", FBold, TextGrey, lx, ly));
+            var btnLookup = Btn("🔍 Lookup", AccentBlue, lx + 254, ly - 2, 90, 28);
+            fcard.Controls.Add(btnLookup);
+
+            fcard.Controls.Add(Lbl("Patient Name:", FBold, TextGrey, lx + 360, ly));
+            var tbPnm = TB(lx + 460, ly, 200); fcard.Controls.Add(tbPnm);
+
+            ly += gap + 4;
+
+            // ── Separator ──
+            var sep = new Panel
+            {
+                Location = new Point(lx, ly),
+                Size = new Size(820, 1),
+                BackColor = Color.FromArgb(200, 210, 230)
+            };
+            fcard.Controls.Add(sep);
+            ly += 10;
+
+            // ── Patient ID with auto-fill ──
+           
+            btnLookup.Click += (s2, e2) =>
+            {
+                string pid = tbPid.Text.Trim();
+                if (string.IsNullOrWhiteSpace(pid))
+                { MessageBox.Show("Enter a Patient ID first."); return; }
+
+                var rp = receptionService.AllPatients.Find(p =>
+                    p.NationalID.Equals(pid, System.StringComparison.OrdinalIgnoreCase));
+                if (rp != null) { tbPnm.Text = rp.NameEnglish; return; }
+
+                var hp = hospitalService.AllPatients.Find(p =>
+                    p.NationalID.Equals(pid, System.StringComparison.OrdinalIgnoreCase));
+                if (hp != null) { tbPnm.Text = hp.NameEnglish; return; }
+
+                MessageBox.Show("Patient ID not found. You can type the name manually.",
+                    "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            };
+
+            // ── Services ──
+            ly += gap;
+            fcard.Controls.Add(Lbl("Services:", FBold, TextGrey, lx, ly));
             ly += 22;
-            var lb = new ListBox { Location = new Point(lx, ly), Size = new Size(410, 90), Font = FNorm }; fcard.Controls.Add(lb);
-            ly += 98;
+            var lb = new ListBox { Location = new Point(lx, ly), Size = new Size(500, 80), Font = FNorm };
+            fcard.Controls.Add(lb);
+            ly += 88;
             var tbSvc = TB(lx, ly, 210, "Service name"); fcard.Controls.Add(tbSvc);
             var tbPrc = TB(lx + 220, ly, 80, "Price"); fcard.Controls.Add(tbPrc);
             var addSvc = Btn("+ Add", AccentGrn, lx + 310, ly - 2, 80, 30);
             fcard.Controls.Add(addSvc);
             addSvc.Click += (s2, e2) =>
             {
-                string sn = tbSvc.Text.Trim(); if (sn == "" || sn == "Service name") return;
+                string sn = tbSvc.Text.Trim();
+                if (sn == "" || sn == "Service name") return;
                 decimal.TryParse(tbPrc.Text, out decimal pr);
-                services.Add((sn, pr)); lb.Items.Add($"{sn}  —  {pr:C}");
+                services.Add((sn, pr));
+                lb.Items.Add($"{sn}  —  {pr:C}");
                 tbSvc.Clear(); tbPrc.Clear();
             };
 
-            ly += gap + 2; fcard.Controls.Add(Lbl("Discount:", FBold, TextGrey, lx, ly));
-            var cbDisc = CB(lx + 80, ly, 220, new[] { "None (0%)", "Insurance (30% off)", "Special Case (15% off)" }); fcard.Controls.Add(cbDisc);
+            // ── Prescription ──
+            ly += gap + 4;
+            fcard.Controls.Add(Lbl("Prescription:", FBold, TextGrey, lx, ly));
 
+            var allMeds = new System.Collections.Generic.List<Medicine>();
+            foreach (var kv in pharmacy.categories)
+                allMeds.AddRange(kv.Value);
+
+            var deptNames = new[] { "— All —" }.Concat(pharmacy.categories.Keys).ToArray();
+            var cbDept = CB(lx + 110, ly, 180, deptNames); fcard.Controls.Add(cbDept);
+
+            fcard.Controls.Add(Lbl("Search:", FBold, TextGrey, lx + 302, ly));
+            var tbMedSearch = TB(lx + 360, ly, 160, "Medicine name"); fcard.Controls.Add(tbMedSearch);
+
+            ly += 30;
+            var lbMeds = new ListBox
+            {
+                Location = new Point(lx, ly),
+                Size = new Size(360, 90),
+                Font = FNorm
+            };
+            fcard.Controls.Add(lbMeds);
+
+            fcard.Controls.Add(Lbl("Qty:", FBold, TextGrey, lx + 374, ly));
+            var tbQty = TB(lx + 410, ly, 60, "1"); fcard.Controls.Add(tbQty);
+            var btnAddMed = Btn("+ Add Med", AccentOrg, lx + 480, ly, 110, 30);
+            fcard.Controls.Add(btnAddMed);
+
+            ly += 96;
+            var lbPrescription = new ListBox
+            {
+                Location = new Point(lx, ly),
+                Size = new Size(500, 70),
+                Font = FNorm
+            };
+            fcard.Controls.Add(lbPrescription);
+
+            void RefreshMedList()
+            {
+                lbMeds.Items.Clear();
+                string dept = cbDept.SelectedItem?.ToString() ?? "— All —";
+                string search = tbMedSearch.Text.Trim().ToLower();
+                foreach (var m in allMeds)
+                {
+                    bool inDept = dept == "— All —" || pharmacy.categories.Any(kv =>
+                        kv.Key == dept && kv.Value.Contains(m));
+                    bool matchSearch = string.IsNullOrEmpty(search) ||
+                                       search == "medicine name" ||
+                                       m.Name.ToLower().Contains(search);
+                    if (inDept && matchSearch && !m.IsExpired() && m.Quantity > 0)
+                        lbMeds.Items.Add($"{m.Name}  —  {m.Price:C}  (Stock: {m.Quantity})");
+                }
+            }
+            RefreshMedList();
+            cbDept.SelectedIndexChanged += (s2, e2) => RefreshMedList();
+            tbMedSearch.TextChanged += (s2, e2) => RefreshMedList();
+
+            btnAddMed.Click += (s2, e2) =>
+            {
+                if (lbMeds.SelectedIndex < 0)
+                { MessageBox.Show("Select a medicine first."); return; }
+                if (!int.TryParse(tbQty.Text, out int qty) || qty <= 0)
+                { MessageBox.Show("Enter a valid quantity."); return; }
+
+                string selName = lbMeds.SelectedItem.ToString()
+                    .Split(new[] { "  —  " }, System.StringSplitOptions.None)[0];
+                Medicine selMed = allMeds.Find(m => m.Name == selName);
+                if (selMed == null) return;
+
+                if (qty > selMed.Quantity)
+                { MessageBox.Show($"Only {selMed.Quantity} units in stock."); return; }
+
+                selMed.Quantity -= qty;
+
+                var existing = prescriptionItems.FindIndex(x => x.med.Name == selMed.Name);
+                if (existing >= 0)
+                {
+                    var old = prescriptionItems[existing];
+                    prescriptionItems[existing] = (old.med, old.qty + qty);
+                }
+                else
+                {
+                    prescriptionItems.Add((selMed, qty));
+                }
+
+                decimal medPrice = (decimal)(selMed.Price * qty);
+                services.Add(($"💊 {selMed.Name} x{qty}", medPrice));
+                lb.Items.Add($"💊 {selMed.Name} x{qty}  —  {medPrice:C}");
+
+                lbPrescription.Items.Clear();
+                foreach (var pi in prescriptionItems)
+                    lbPrescription.Items.Add(
+                        $"💊 {pi.med.Name}  x{pi.qty}  —  {pi.med.Price * pi.qty:C}");
+
+                RefreshMedList();
+                tbQty.Text = "1";
+            };
+
+            // ── Discount ──
+            ly += 78;
+            fcard.Controls.Add(Lbl("Discount:", FBold, TextGrey, lx, ly));
+            var cbDisc = CB(lx + 80, ly, 220,
+                new[] { "None (0%)", "Insurance (30% off)", "Special Case (15% off)" });
+            fcard.Controls.Add(cbDisc);
+
+            // ── Receipt ──
             ly += gap + 6;
             var receipt = new RichTextBox
             {
                 Location = new Point(lx, ly),
-                Size = new Size(548, 0),
+                Size = new Size(820, 0),
                 Font = FMono,
                 BackColor = Color.FromArgb(246, 249, 252),
                 ReadOnly = true,
@@ -1586,37 +1754,69 @@ namespace Hospital_System
             fcard.Controls.Add(receipt);
 
             ly += 6;
-            var genBtn = Btn("🧾 Generate Invoice", AccentBlue, lx, ly, 180, 36);
+            var genBtn = Btn("🧾 Generate Invoice", AccentBlue, lx, ly, 190, 36);
             fcard.Controls.Add(genBtn);
+
             genBtn.Click += (s2, e2) =>
             {
-                if (!int.TryParse(tbPid.Text, out int pid)) { MessageBox.Show("Enter valid Patient ID."); return; }
-                string pnm = tbPnm.Text.Trim(); if (string.IsNullOrWhiteSpace(pnm)) { MessageBox.Show("Enter patient name."); return; }
-                if (services.Count == 0) { MessageBox.Show("Add at least one service."); return; }
+                if (!int.TryParse(tbPid.Text, out int pid))
+                { MessageBox.Show("Enter valid Patient ID."); return; }
+                string pnm = tbPnm.Text.Trim();
+                if (string.IsNullOrWhiteSpace(pnm) || pnm == "Type patient name here")
+                { MessageBox.Show("Enter patient name."); return; }
+                if (services.Count == 0)
+                { MessageBox.Show("Add at least one service or medicine."); return; }
+
                 decimal sub = services.Sum(sv => sv.price);
-                decimal disc = cbDisc.SelectedIndex == 1 ? sub * 0.30m : cbDisc.SelectedIndex == 2 ? sub * 0.15m : 0;
+                decimal disc = cbDisc.SelectedIndex == 1 ? sub * 0.30m
+                              : cbDisc.SelectedIndex == 2 ? sub * 0.15m : 0;
                 decimal total = sub - disc;
-                string eqLine = new string('=', 36);
-                string dLine = new string('-', 36);
-                string txt = eqLine + "\n      INVOICE - " + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "\n" + eqLine + "\n";
-                txt += "Patient ID : " + pid + "\nName       : " + pnm + "\n" + dLine + "\nServices:\n";
-                foreach (var sv in services) txt += "  " + sv.name.PadRight(22) + sv.price.ToString("C").PadLeft(7) + "\n";
-                txt += dLine + "\nSubtotal   : " + sub.ToString("C").PadLeft(8) + "\nDiscount   : -" + disc.ToString("C").PadLeft(7) + "\n" + eqLine + "\nTOTAL DUE  : " + total.ToString("C").PadLeft(8) + "\n" + eqLine;
-                receipt.Text = txt; receipt.Height = 220;
+
+                string eq = new string('=', 44);
+                string dl = new string('-', 44);
+                string txt = eq + "\n   INVOICE — " +
+                             System.DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "\n" + eq + "\n";
+                txt += "Patient ID : " + pid + "\nName       : " + pnm + "\n" + dl + "\n";
+
+                txt += "Services:\n";
+                foreach (var sv in services)
+                    if (!sv.name.StartsWith("💊"))
+                        txt += "  " + sv.name.PadRight(28) + sv.price.ToString("C").PadLeft(9) + "\n";
+
+                if (prescriptionItems.Count > 0)
+                {
+                    txt += dl + "\nPrescription:\n";
+                    foreach (var pi in prescriptionItems)
+                        txt += $"  💊 {pi.med.Name,-24} x{pi.qty,3}" +
+                               $"   {(pi.med.Price * pi.qty),8:C}\n";
+                }
+
+                txt += dl + "\nSubtotal   : " + sub.ToString("C").PadLeft(10)
+                     + "\nDiscount   : -" + disc.ToString("C").PadLeft(9) + "\n"
+                     + eq + "\nTOTAL DUE  : " + total.ToString("C").PadLeft(10) + "\n" + eq;
+
+                receipt.Text = txt;
+                receipt.Height = 260;
                 genBtn.Location = new Point(lx, receipt.Bottom + 10);
                 fcard.Height = genBtn.Bottom + 20;
             };
+
             s.Controls.Add(fcard);
 
-            // Invoice history grid placeholder
-            var hcard = Card(600, 0, 480, 340, "Invoice History");
+            // ── Invoice History ──
+            var hcard = Card(880, 0, 480, 340, "Invoice History");
             var hg = Grid(14, 34, 452, 290);
-            hg.Columns.Add("id", "Invoice ID"); hg.Columns.Add("date", "Date"); hg.Columns.Add("pt", "Patient"); hg.Columns.Add("total", "Total");
+            hg.Columns.Add("id", "Invoice ID");
+            hg.Columns.Add("date", "Date");
+            hg.Columns.Add("pt", "Patient");
+            hg.Columns.Add("total", "Total");
             hcard.Controls.Add(hg);
             genBtn.Click += (s2, e2) =>
             {
                 if (receipt.Text.Length > 10 && int.TryParse(tbPid.Text, out int pid2))
-                    hg.Rows.Add(new Random().Next(1000, 9999), DateTime.Now.ToString("yyyy-MM-dd"), tbPnm.Text,
+                    hg.Rows.Add(new System.Random().Next(1000, 9999),
+                                System.DateTime.Now.ToString("yyyy-MM-dd"),
+                                tbPnm.Text,
                                 $"{services.Sum(sv => sv.price):C}");
             };
             s.Controls.Add(hcard);
@@ -1851,7 +2051,7 @@ namespace Hospital_System
             return p;
         }
         // ═════════════════════════════════════════════════════
-        //  PAGE: INVENTORY  (Ahmed Essam's InventoryManager)
+        //  PAGE: INVENTORY 
         // ═════════════════════════════════════════════════════
         Panel PageInventory()
         {
@@ -3066,28 +3266,77 @@ namespace Hospital_System
         }
 
 
-        // ═══════════════════════════════════════════════════════
-        //  PAGE: LAB ANALYSIS
-        // ═══════════════════════════════════════════════════════
+        // ═══════════════════════════════════════════════════════════════════
+        // INSTRUCTIONS: Paste this entire block inside your MainForm class,
+        // replacing the existing PageLabAnalysis() method.
+        // ═══════════════════════════════════════════════════════════════════
+
         Panel PageLabAnalysis()
         {
             var page = ScrollPage("🔬  Analysis Lab", "Enter test results and generate a colour-coded report");
             var scroll = GetScroll(page);
 
-            scroll.Controls.Add(Lbl("Patient Name", FBold, TextGrey, 0, 0));
-            var tbName = TB(0, 20, 280); scroll.Controls.Add(tbName);
+            // ── Tab strip: Enter Results | Search Patient | Today's Tests ──
+            var tabStrip = new Panel { Location = new Point(0, 0), Size = new Size(900, 38), BackColor = Color.FromArgb(220, 228, 240) };
+            string[] tabNames = { "Enter Results", "Search Patient", "Today's Tests" };
+            Panel[] tabPages = new Panel[tabNames.Length];
+            Button[] tabBtns = new Button[tabNames.Length];
+            for (int ti = 0; ti < tabPages.Length; ti++)
+                tabPages[ti] = new Panel { Location = new Point(0, 42), Size = new Size(1060, 1000), BackColor = Color.FromArgb(236, 240, 245), Visible = false };
 
-            var menuCard = Card(0, 58, 1040, 420, "Test Menu — enter values in the Result column");
-            menuCard.Paint += (s, e) => e.Graphics.DrawRectangle(new System.Drawing.Pen(Color.FromArgb(220, 224, 230)), 0, 0, menuCard.Width - 1, menuCard.Height - 1);
-            scroll.Controls.Add(menuCard);
+            void ShowLabTab(int idx)
+            {
+                for (int k = 0; k < tabBtns.Length; k++)
+                {
+                    tabPages[k].Visible = (k == idx);
+                    tabBtns[k].BackColor = (k == idx) ? AccentBlue : Color.FromArgb(200, 210, 230);
+                    tabBtns[k].ForeColor = (k == idx) ? Color.White : TextDark;
+                }
+            }
+            for (int ti = 0; ti < tabNames.Length; ti++)
+            {
+                int capturedIdx = ti;
+                tabBtns[ti] = new Button
+                {
+                    Text = tabNames[ti],
+                    Font = FBold,
+                    Size = new Size(200, 36),
+                    Location = new Point(4 + ti * 204, 1),
+                    FlatStyle = FlatStyle.Flat,
+                    BackColor = Color.FromArgb(200, 210, 230),
+                    ForeColor = TextDark
+                };
+                tabBtns[ti].FlatAppearance.BorderSize = 0;
+                tabBtns[ti].Click += (s, e) => ShowLabTab(capturedIdx);
+                tabStrip.Controls.Add(tabBtns[ti]);
+            }
+            scroll.Controls.Add(tabStrip);
+            foreach (var tp in tabPages) scroll.Controls.Add(tp);
 
-            // header
+            // ════════════════════════════════════════════════════
+            //  TAB 0 – Enter Results  (original logic, unchanged)
+            // ════════════════════════════════════════════════════
+            Panel enterTab = tabPages[0];
+
+            // ── Patient identity fields (new) ──
+            enterTab.Controls.Add(Lbl("Patient Name", FBold, TextGrey, 0, 10));
+            var tbPatName = TB(0, 30, 280); enterTab.Controls.Add(tbPatName);
+
+            enterTab.Controls.Add(Lbl("Patient ID", FBold, TextGrey, 300, 10));
+            var tbPatID = TB(300, 30, 200); enterTab.Controls.Add(tbPatID);
+
+            var menuCard = Card(0, 76, 1040, 420, "Test Menu — enter values in the Result column");
+            menuCard.Paint += (s2, e2) => e2.Graphics.DrawRectangle(new System.Drawing.Pen(Color.FromArgb(220, 224, 230)), 0, 0, menuCard.Width - 1, menuCard.Height - 1);
+            enterTab.Controls.Add(menuCard);
+
+            // header row
             var hdr = new Panel { Location = new Point(0, 26), Size = new Size(1040, 34), BackColor = NavBg };
             void AddHdr(string t, int x, int w) { hdr.Controls.Add(new Label { Text = t, Font = FBold, ForeColor = Color.White, Location = new Point(x, 7), Size = new Size(w, 20) }); }
             AddHdr("Test", 10, 160); AddHdr("Min", 178, 60); AddHdr("Max", 248, 60);
             AddHdr("Unit", 316, 90); AddHdr("Your Result", 414, 120); AddHdr("Status", 544, 130);
             menuCard.Controls.Add(hdr);
 
+            // ── ORIGINAL test list (unchanged) ──
             var labMenu = new System.Collections.Generic.List<(string name, double min, double max, string unit)>
             {
                 ("Glucose",       70,   100,  "mg/dL"),   ("HGB",           13.5, 17.5, "g/dL"),
@@ -3121,28 +3370,107 @@ namespace Hospital_System
                 resultBoxes.Add((test.name, test.min, test.max, test.unit, tb, stLbl));
             }
 
-            var btnReport = Btn("Generate Report", AccentBlue, 0, 490, 180, 36);
-            scroll.Controls.Add(btnReport);
+            var btnReport = Btn("Generate Report", AccentBlue, 0, 508, 180, 36);
+            enterTab.Controls.Add(btnReport);
 
-            var reportGrid = Grid(0, 540, 1040, 320);
+
+            var btnShowToday = Btn("👥 Today's Patients", AccentGrn, 190, 508, 200, 36);
+            enterTab.Controls.Add(btnShowToday);
+
+            var todayPopup = new Panel
+            {
+                Location = new Point(0, 950),
+                Size = new Size(1040, 300),
+                BackColor = Color.White,
+                Visible = false
+            };
+            enterTab.Controls.Add(todayPopup);
+
+            btnShowToday.Click += (s, e) =>
+            {
+                todayPopup.Controls.Clear();
+                todayPopup.Visible = true;
+                var recs = labService.GetTodaysRecords();
+
+                if (recs.Count == 0)
+                {
+                    todayPopup.Controls.Add(new Label
+                    {
+                        Text = "There is no patient today till now",
+                        Font = FBold,
+                        ForeColor = TextGrey,
+                        Location = new Point(10, 10),
+                        Size = new Size(500, 28)
+                    });
+                    return;
+                }
+
+                int y = 8;
+                todayPopup.Controls.Add(new Label
+                {
+                    Text = $"👥  Today's patients — {recs.Count} status",
+                    Font = FBold,
+                    ForeColor = AccentBlue,
+                    Location = new Point(10, y),
+                    Size = new Size(600, 24)
+                });
+                y += 30;
+
+                foreach (var rec in recs)
+                {
+                    int abnormal = rec.Results.Count(tr => tr.Status != "NORMAL");
+                    var lbl = new Label
+                    {
+                        Text = $"🔹 {rec.PatientName}  |  ID: {rec.PatientID}  |  {rec.TestTime}  |  test: {rec.Results.Count}  |  غير طبيعي: {abnormal}",
+                        Font = FNorm,
+                        ForeColor = abnormal > 0 ? AccentRed : AccentGrn,
+                        Location = new Point(10, y),
+                        Size = new Size(1000, 22)
+                    };
+                    todayPopup.Controls.Add(lbl);
+                    y += 26;
+                }
+            };
+
+            // ── Report grid (original columns preserved) ──
+            var reportGrid = Grid(0, 558, 1040, 320);
             reportGrid.Columns.Add("Test", "Test Name");
             reportGrid.Columns.Add("Result", "Result");
             reportGrid.Columns.Add("Unit", "Unit");
             reportGrid.Columns.Add("Range", "Ref. Range");
             reportGrid.Columns.Add("Status", "Status");
             reportGrid.Visible = false;
-            scroll.Controls.Add(reportGrid);
+            enterTab.Controls.Add(reportGrid);
 
-            var sumLbl = Lbl("", FBold, TextGrey, 0, 874);
-            scroll.Controls.Add(sumLbl);
+            // Patient info header shown above report
+            var reportHeaderLbl = Lbl("", new Font("Segoe UI", 10, FontStyle.Bold), TextDark, 0, 892);
+            enterTab.Controls.Add(reportHeaderLbl);
 
+            var sumLbl = Lbl("", FBold, TextGrey, 0, 916);
+            enterTab.Controls.Add(sumLbl);
+
+            var savedLbl = Lbl("", FBold, AccentGrn, 0, 940);
+            enterTab.Controls.Add(savedLbl);
+
+            // ── Generate Report button handler (original logic + save) ──
             btnReport.Click += (s, e) =>
             {
-                if (string.IsNullOrWhiteSpace(tbName.Text))
+                if (string.IsNullOrWhiteSpace(tbPatName.Text))
                 { MessageBox.Show("Enter patient name.", "Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+                if (string.IsNullOrWhiteSpace(tbPatID.Text))
+                { MessageBox.Show("Enter patient ID.", "Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
                 reportGrid.Rows.Clear();
                 int abnormal = 0; bool any = false;
+
+                // Build the persisted record
+                var record = new LabPatientRecord
+                {
+                    PatientName = tbPatName.Text.Trim(),
+                    PatientID = tbPatID.Text.Trim(),
+                    TestDate = System.DateTime.Today.ToString("yyyy-MM-dd"),
+                    TestTime = System.DateTime.Now.ToString("HH:mm:ss")
+                };
 
                 foreach (var r in resultBoxes)
                 {
@@ -3153,6 +3481,7 @@ namespace Hospital_System
 
                     any = true;
                     string status; Color col;
+                    // ── ORIGINAL High/Low logic (unchanged) ──
                     if (val < r.min) { status = "LOW  (L)"; col = AccentRed; }
                     else if (val > r.max) { status = "HIGH (H)"; col = AccentRed; }
                     else { status = "NORMAL"; col = AccentGrn; }
@@ -3160,20 +3489,207 @@ namespace Hospital_System
                     r.stLbl.Text = status; r.stLbl.ForeColor = col;
                     if (status != "NORMAL") abnormal++;
 
-                    int idx = reportGrid.Rows.Add(r.name, val, r.unit, r.min + " – " + r.max, status);
+                    int idx = reportGrid.Rows.Add(r.name, val, r.unit, r.min + " \u2013 " + r.max, status);
                     if (status != "NORMAL")
                     { reportGrid.Rows[idx].DefaultCellStyle.ForeColor = AccentRed; reportGrid.Rows[idx].DefaultCellStyle.Font = FBold; }
+
+                    // Add to persistent record
+                    record.Results.Add(new LabTestResult
+                    {
+                        TestName = r.name,
+                        Value = val,
+                        Unit = r.unit,
+                        RefRange = r.min + " – " + r.max,
+                        Status = status
+                    });
                 }
 
                 if (!any) { MessageBox.Show("Enter at least one result.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
 
+                // ── Show patient header in report ──
+                reportHeaderLbl.Text = $"Patient: {record.PatientName}   |   ID: {record.PatientID}   |   Date: {record.TestDate}  {record.TestTime}";
+
                 reportGrid.Visible = true;
                 sumLbl.Text = abnormal == 0 ? "All results within normal ranges." : abnormal + " abnormal result(s) — consult a doctor.";
                 sumLbl.ForeColor = abnormal == 0 ? AccentGrn : AccentRed;
+
+                // ── Save to JSON ──
+                labService.SaveRecord(record);
+                savedLbl.Text = "✔  Report saved to lab_records.json";
+                savedLbl.ForeColor = AccentGrn;
+
+                // ── Reset fields only (report stays visible) ──
+                tbPatName.Clear();
+                tbPatID.Clear();
+                foreach (var r in resultBoxes)
+                {
+                    r.tb.Text = "";
+                    r.stLbl.Text = "—";
+                    r.stLbl.ForeColor = TextGrey;
+                }
+
             };
+
+
+            // ════════════════════════════════════════════════════
+            //  TAB 1 – Search Patient by ID
+            // ════════════════════════════════════════════════════
+            Panel searchTab = tabPages[1];
+
+            searchTab.Controls.Add(Lbl("Search by Patient ID", FBold, TextGrey, 0, 10));
+            var tbSearchID = TB(0, 30, 260); searchTab.Controls.Add(tbSearchID);
+            var btnSearch = Btn("Search", AccentBlue, 272, 28, 110, 34); searchTab.Controls.Add(btnSearch);
+            var searchMsg = Lbl("", FBold, TextGrey, 0, 72); searchTab.Controls.Add(searchMsg);
+
+            var searchResultPanel = new Panel { Location = new Point(0, 96), Size = new Size(1040, 800), AutoScroll = true, BackColor = Color.FromArgb(236, 240, 245) };
+            searchTab.Controls.Add(searchResultPanel);
+
+            btnSearch.Click += (s, e) =>
+            {
+                searchResultPanel.Controls.Clear();
+                string searchId = tbSearchID.Text.Trim();
+                if (string.IsNullOrWhiteSpace(searchId))
+                { searchMsg.Text = "Enter a Patient ID to search."; searchMsg.ForeColor = AccentRed; return; }
+
+                var found = labService.SearchByID(searchId);
+                if (found.Count == 0)
+                { searchMsg.Text = "No records found for ID: " + searchId; searchMsg.ForeColor = AccentRed; return; }
+
+                searchMsg.Text = $"Found {found.Count} record(s) for ID: {searchId}";
+                searchMsg.ForeColor = AccentGrn;
+
+                int yOff = 0;
+                foreach (var rec in found)
+                {
+                    // Record header card
+                    var recCard = new Panel
+                    {
+                        Location = new Point(0, yOff),
+                        Size = new Size(1020, 36 + rec.Results.Count * 28 + 16),
+                        BackColor = Color.White
+                    };
+                    recCard.Paint += (sc, ec) => ec.Graphics.DrawRectangle(new System.Drawing.Pen(Color.FromArgb(200, 210, 230)), 0, 0, recCard.Width - 1, recCard.Height - 1);
+
+                    recCard.Controls.Add(new Label
+                    {
+                        Text = $"  {rec.PatientName}   |   ID: {rec.PatientID}   |   {rec.TestDate}  {rec.TestTime}",
+                        Font = FBold,
+                        ForeColor = AccentBlue,
+                        Location = new Point(6, 8),
+                        Size = new Size(980, 22)
+                    });
+
+                    int rowY = 34;
+                    foreach (var tr in rec.Results)
+                    {
+                        Color fgCol = (tr.Status == "NORMAL") ? AccentGrn : AccentRed;
+                        var rowLbl = new Label
+                        {
+                            Text = $"    {tr.TestName,-18}  {tr.Value,8}  {tr.Unit,-10}  Ref: {tr.RefRange,-14}  →  {tr.Status}",
+                            Font = (tr.Status == "NORMAL") ? FNorm : FBold,
+                            ForeColor = fgCol,
+                            Location = new Point(6, rowY),
+                            Size = new Size(980, 22)
+                        };
+                        recCard.Controls.Add(rowLbl);
+                        rowY += 26;
+                    }
+
+                    searchResultPanel.Controls.Add(recCard);
+                    yOff += recCard.Height + 10;
+                }
+            };
+
+            // ════════════════════════════════════════════════════
+            //  TAB 2 – Today's Tests
+            // ════════════════════════════════════════════════════
+            Panel todayTab = tabPages[2];
+
+            var btnRefreshToday = Btn("Refresh", AccentBlue, 0, 10, 110, 34); todayTab.Controls.Add(btnRefreshToday);
+            var todayMsg = Lbl("", FBold, TextGrey, 124, 18); todayTab.Controls.Add(todayMsg);
+
+            var todayGrid = Grid(0, 56, 1040, 200);
+            todayGrid.Columns.Add("tpname", "Patient Name");
+            todayGrid.Columns.Add("tpid", "Patient ID");
+            todayGrid.Columns.Add("ttime", "Time");
+            todayGrid.Columns.Add("ttests", "Tests Performed");
+            todayGrid.Columns.Add("tabnorm", "Abnormal Results");
+            todayTab.Controls.Add(todayGrid);
+
+            var todayDetailPanel = new Panel { Location = new Point(0, 268), Size = new Size(1040, 700), AutoScroll = true, BackColor = Color.FromArgb(236, 240, 245) };
+            todayTab.Controls.Add(todayDetailPanel);
+
+            void LoadTodayRecords()
+            {
+                todayGrid.Rows.Clear();
+                todayDetailPanel.Controls.Clear();
+
+                var todayRecs = labService.GetTodaysRecords();
+                todayMsg.Text = $"Today ({System.DateTime.Today:yyyy-MM-dd}): {todayRecs.Count} test session(s)";
+                todayMsg.ForeColor = todayRecs.Count > 0 ? AccentBlue : TextGrey;
+
+                int yOff = 0;
+                foreach (var rec in todayRecs)
+                {
+                    int abnCount = rec.Results.Count(tr => tr.Status != "NORMAL");
+                    todayGrid.Rows.Add(rec.PatientName, rec.PatientID, rec.TestTime,
+                                       rec.Results.Count, abnCount == 0 ? "None" : abnCount.ToString());
+
+                    // Detail card
+                    var recCard = new Panel
+                    {
+                        Location = new Point(0, yOff),
+                        Size = new Size(1020, 36 + rec.Results.Count * 26 + 16),
+                        BackColor = Color.White
+                    };
+                    recCard.Paint += (sc, ec) => ec.Graphics.DrawRectangle(new System.Drawing.Pen(Color.FromArgb(200, 210, 230)), 0, 0, recCard.Width - 1, recCard.Height - 1);
+                    recCard.Controls.Add(new Label
+                    {
+                        Text = $"  {rec.PatientName}   |   ID: {rec.PatientID}   |   {rec.TestTime}",
+                        Font = FBold,
+                        ForeColor = AccentBlue,
+                        Location = new Point(6, 8),
+                        Size = new Size(980, 22)
+                    });
+                    int rowY = 34;
+                    foreach (var tr in rec.Results)
+                    {
+                        Color fgCol = (tr.Status == "NORMAL") ? AccentGrn : AccentRed;
+                        var rowLbl = new Label
+                        {
+                            Text = $"    {tr.TestName,-18}  {tr.Value,8}  {tr.Unit,-10}  Ref: {tr.RefRange,-14}  →  {tr.Status}",
+                            Font = (tr.Status == "NORMAL") ? FNorm : FBold,
+                            ForeColor = fgCol,
+                            Location = new Point(6, rowY),
+                            Size = new Size(980, 22)
+                        };
+                        recCard.Controls.Add(rowLbl);
+                        rowY += 26;
+                    }
+                    todayDetailPanel.Controls.Add(recCard);
+                    yOff += recCard.Height + 10;
+                }
+            }
+
+            btnRefreshToday.Click += (s, e) => LoadTodayRecords();
+            LoadTodayRecords();   // auto-load on page open
+
+            btnRefreshToday.Click += (s, e) => LoadTodayRecords();
+            LoadTodayRecords();   // auto-load on page open
+
+            // ── Show first tab by default ──
+            ShowLabTab(0);
 
             return page;
         }
+
+
+
+
+
+
+
+
 
         // ═══════════════════════════════════════════════════════
         //  PAGE: RECEPTION BOOKING

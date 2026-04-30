@@ -108,6 +108,7 @@
     <Compile Include="HospitalService.cs" />
     <Compile Include="Inpatient.cs" />
     <Compile Include="InputHelper.cs" />
+    <Compile Include="labservice.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
