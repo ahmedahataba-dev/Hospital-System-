@@ -14,6 +14,7 @@ namespace Hospital_System
         public string AssignedDriver { get; set; }
         public string AssignedParamedic { get; set; }
 
+
         public Ambulance(string vehicleNumber, string model)
         {
             VehicleNumber = vehicleNumber;
