@@ -9,7 +9,7 @@ namespace Hospital_System
         public double Weight { get; set; }
         public string Allergies { get; set; }
         public string MedicalCase { get; set; }
-        //public BloodGroup BloodType { get; set; }
+        public BloodGroup BloodType { get; set; }
         public string MedicalHistory { get; set; }
         public string FamilyHistory { get; set; }
         public string Risk { get; set; }
@@ -27,15 +27,15 @@ namespace Hospital_System
 
         public Patient() { }
 
-        public virtual void Display()
-        {
-            Console.WriteLine($"\n[ID: {PatientId}] | Name: {Name} | Age: {Age} | Gender: {Gender}");
-            Console.WriteLine($"National ID: {NationalId} | Phone: {PhoneNumber}");
-            //Console.WriteLine($"Case: {MedicalCase} \nRisk: {Risk} \nBlood: {BloodType}");
-            Console.WriteLine($"Height: {Height}m \nWeight: {Weight}kg");
-            Console.WriteLine($"Allergies: {Allergies} \nPayment: {PaymentMethods}");
-            Console.WriteLine($"Medical History: {MedicalHistory}");
-            Console.WriteLine($"Family History: {FamilyHistory}");
-        }
+        //public virtual void Display()
+        //{
+        //    Console.WriteLine($"\n[ID: {PatientId}] | Name: {Name} | Age: {Age} | Gender: {Gender}");
+        //    Console.WriteLine($"National ID: {NationalId} | Phone: {PhoneNumber}");
+        //    //Console.WriteLine($"Case: {MedicalCase} \nRisk: {Risk} \nBlood: {BloodType}");
+        //    Console.WriteLine($"Height: {Height}m \nWeight: {Weight}kg");
+        //    Console.WriteLine($"Allergies: {Allergies} \nPayment: {PaymentMethods}");
+        //    Console.WriteLine($"Medical History: {MedicalHistory}");
+        //    Console.WriteLine($"Family History: {FamilyHistory}");
+        //}
     }
 }

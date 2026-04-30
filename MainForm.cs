@@ -44,7 +44,7 @@ namespace Hospital_System
         private ClinicService clinicService = new ClinicService();
         private OnlineRegistration loggedInPatient = null;
         private ReceptionService receptionService = new ReceptionService();
-        private LabService labService = new LabService();   
+        private LabService labService = new LabService();
         private string receptionChosenDay = "Saturday";
         private EmployeeAccountService empAccountSvc = new EmployeeAccountService();
         private LoginResult _loginResult;
@@ -525,7 +525,7 @@ namespace Hospital_System
 
         void BuildShell()
         {
-			Text = "NeurAi Medical Center — Hospital Management System";
+            Text = "NeurAi Medical Center — Hospital Management System";
             Size = new Size(1350, 860);
             MinimumSize = new Size(1100, 700);
             StartPosition = FormStartPosition.CenterScreen;
@@ -951,7 +951,7 @@ namespace Hospital_System
             var s = GetScroll(page);
 
             // Floor selector
-            var floorCard = Card(0, 0, 1080, 80, "Browse by Floor");
+            var floorCard = Card(0, 14, 1080, 80, "Browse by Floor");
             int fx = 14;
             for (int f = 1; f <= 5; f++)
             {
@@ -1010,7 +1010,7 @@ namespace Hospital_System
             var s = GetScroll(page);
 
             // ───────────── GRID ─────────────
-            var gcard = Card(0, 0, 1080, 380, "All Doctors");
+            var gcard = Card(0, 14, 1080, 380, "All Doctors");
             var dg = Grid(14, 34, 1052, 334);
 
             dg.Columns.Add("name", "Name");
@@ -1278,7 +1278,7 @@ namespace Hospital_System
             var s = GetScroll(page);
 
             // ── Grid ──
-            var gcard = Card(0, 0, 1080, 320, "Patient List");
+            var gcard = Card(0, 14, 1080, 320, "Patient List");
             var dg = Grid(14, 34, 1052, 275);
             dg.Columns.Add("id", "ID");
             dg.Columns.Add("name", "Full Name");
@@ -1496,7 +1496,7 @@ namespace Hospital_System
             var pharmacy = neurai.CampusFacilities.HospitalPharmacy;
 
             // Search + filter row
-            var fcard = Card(0, 0, 1080, 72);
+            var fcard = Card(0, 14, 1080, 72);
             fcard.Controls.Add(Lbl("Department:", FBold, TextGrey, 14, 22));
             var cbDept = CB(100, 18, 210, new[] { "— All —" }.Concat(pharmacy.categories.Keys).ToArray()); fcard.Controls.Add(cbDept);
             fcard.Controls.Add(Lbl("Search:", FBold, TextGrey, 330, 22));
@@ -1552,7 +1552,7 @@ namespace Hospital_System
             var services = new System.Collections.Generic.List<(string name, decimal price)>();
             var prescriptionItems = new System.Collections.Generic.List<(Medicine med, int qty)>();
 
-            var fcard = Card(0, 0, 860, 660, "Create Invoice");
+            var fcard = Card(0, 14, 860, 660, "Create Invoice");
             int lx = 14, ly = 14, gap = 38;
 
             // ── Patient Info Section ──
@@ -1595,7 +1595,7 @@ namespace Hospital_System
             ly += 10;
 
             // ── Patient ID with auto-fill ──
-           
+
             btnLookup.Click += (s2, e2) =>
             {
                 string pid = tbPid.Text.Trim();
@@ -2061,7 +2061,7 @@ namespace Hospital_System
             var inventory = new InventoryManager();
 
             // ── Stock grid ────────────────────────────────────
-            var gcard = Card(0, 0, 1080, 420, "Current Stock");
+            var gcard = Card(0, 14, 1080, 420, "Current Stock");
             var dg = Grid(14, 34, 1052, 374);
             dg.Columns.Add("name", "Item");
             dg.Columns.Add("cat", "Category");
@@ -2255,7 +2255,7 @@ namespace Hospital_System
             Panel EmpTab()
             {
                 var t = new Panel { BackColor = PageBg, Size = new Size(1080, 400) };
-                var c = Card(0, 0, 1080, 380, $"Employees  ({Employee.employees.Count})");
+                var c = Card(0, 14, 1080, 380, $"Employees  ({Employee.employees.Count})");
                 var g = Grid(14, 34, 1052, 330);
                 g.Columns.Add("id", "ID"); g.Columns.Add("name", "Name"); g.Columns.Add("age", "Age");
                 g.Columns.Add("email", "Email"); g.Columns.Add("phone", "Phone"); g.Columns.Add("sal", "Salary"); g.Columns.Add("exp", "Exp");
@@ -2269,7 +2269,7 @@ namespace Hospital_System
                 var t = new Panel { BackColor = PageBg, Size = new Size(1080, 620) };
 
                 // ── Display grid (unchanged) ──
-                var c = Card(0, 0, 1080, 380, $"Nurses  ({Nurse.nurses.Count})");
+                var c = Card(0, 14, 1080, 380, $"Nurses  ({Nurse.nurses.Count})");
                 var g = Grid(14, 34, 1052, 330);
                 g.Columns.Add("name", "Name"); g.Columns.Add("lic", "License"); g.Columns.Add("spec", "Speciality");
                 g.Columns.Add("ward", "Ward"); g.Columns.Add("call", "On Call"); g.Columns.Add("load", "Patient Load");
@@ -2351,7 +2351,7 @@ namespace Hospital_System
                 var t = new Panel { BackColor = PageBg, Size = new Size(1080, 580) };
 
                 // ── Display grid (unchanged) ──
-                var c = Card(0, 0, 1080, 380, $"Pharmacists  ({PharmacyStaff.pharmacists.Count})");
+                var c = Card(0, 14, 1080, 380, $"Pharmacists  ({PharmacyStaff.pharmacists.Count})");
                 var g = Grid(14, 34, 1052, 330);
                 g.Columns.Add("id", "ID"); g.Columns.Add("name", "Name"); g.Columns.Add("role", "Role"); g.Columns.Add("sal", "Salary");
                 void RefreshPharm()
@@ -2470,7 +2470,7 @@ namespace Hospital_System
             var s = GetScroll(page);
 
             // ── Inventory ──
-            var invCard = Card(0, 0, 500, 320, "🩸 Blood Inventory");
+            var invCard = Card(0, 14, 500, 320, "🩸 Blood Inventory");
             var invGrid = Grid(14, 34, 472, 274);
             invGrid.Columns.Add("type", "Blood Type");
             invGrid.Columns.Add("qty", "Bags");
@@ -2489,21 +2489,7 @@ namespace Hospital_System
             invCard.Controls.Add(invGrid);
             s.Controls.Add(invCard);
 
-            // ── Dashboard ──
-            var dashCard = Card(520, 0, 560, 320, "📊 Dashboard");
-            var statsLbl = new System.Windows.Forms.RichTextBox
-            {
-                Location = new Point(14, 34),
-                Size = new Size(532, 274),
-                ReadOnly = true,
-                BorderStyle = BorderStyle.None,
-                BackColor = Color.White,
-                Font = FNorm
-            };
-            void RefreshDash() => statsLbl.Text = HospitalEngine.myBank.GetDashboardInfo();
-            RefreshDash();
-            dashCard.Controls.Add(statsLbl);
-            s.Controls.Add(dashCard);
+
 
             // ── Donors ──
             var donorCard = Card(0, 334, 1080, 320, "👤 Donors");
@@ -2545,7 +2531,7 @@ namespace Hospital_System
                     int.TryParse(tbDAge.Text, out int a) ? a : 0,
                     tbDPhone.Text.Trim(),
                     cbDBld.SelectedItem?.ToString() ?? "O+");
-                RefreshDonors(); RefreshDash();
+                RefreshDonors();
                 MessageBox.Show($"Donor '{nm}' registered!", "Success ✅");
                 tbDName.Clear(); tbDAge.Clear(); tbDPhone.Clear();
             };
@@ -2568,7 +2554,7 @@ namespace Hospital_System
                 if (bags <= 0) { MessageBox.Show("Enter valid bag count."); return; }
                 string type = cbWBld.SelectedItem?.ToString() ?? "O+";
                 HospitalEngine.myBank.DonateBlood(type, bags);
-                RefreshInventory(); RefreshDash();
+                RefreshInventory();
                 wResult.Text = $"✅ Added {bags} bags of {type}."; wResult.ForeColor = AccentGrn;
             };
             withdrawBtn.Click += (s2, e2) =>
@@ -2577,7 +2563,7 @@ namespace Hospital_System
                 if (bags <= 0) { MessageBox.Show("Enter valid bag count."); return; }
                 string type = cbWBld.SelectedItem?.ToString() ?? "O+";
                 bool ok = HospitalEngine.myBank.WithdrawBlood(type, bags);
-                RefreshInventory(); RefreshDash();
+                RefreshInventory();
                 wResult.Text = ok ? $"✅ Issued {bags} bags of {type}." : $"❌ Insufficient {type} stock.";
                 wResult.ForeColor = ok ? AccentGrn : AccentRed;
             };
@@ -2585,7 +2571,7 @@ namespace Hospital_System
             s.Controls.Add(wdCard);
 
             // ── Transfers ──
-            var trCard = Card(560, 668, 520, 320, "🔄 Transfer Records");
+            var trCard = Card(560, 668, 520, 500, "🔄 Transfer Records");
             var trGrid = Grid(14, 34, 492, 274);
             trGrid.Columns.Add("id", "ID");
             trGrid.Columns.Add("donor", "Donor");
@@ -2603,6 +2589,62 @@ namespace Hospital_System
             }
             RefreshTransfers();
             trCard.Controls.Add(trGrid);
+
+            // ── New Transfer Form ──
+            int tx = 14, ty = 318;
+            trCard.Controls.Add(Lbl("── New Transfer ──", FBold, TextDark, tx, ty)); ty += 26;
+            trCard.Controls.Add(Lbl("Donor ID:", FBold, TextGrey, tx, ty));
+            var tbTrDonorId = TB(tx + 75, ty, 80, "ID"); trCard.Controls.Add(tbTrDonorId);
+            trCard.Controls.Add(Lbl("Bags:", FBold, TextGrey, tx + 180, ty));
+            var tbTrBags = TB(tx + 225, ty, 60, "1"); trCard.Controls.Add(tbTrBags); ty += 36;
+            trCard.Controls.Add(Lbl("Patient:", FBold, TextGrey, tx, ty));
+            var tbTrPatient = TB(tx + 65, ty, 200, "Patient name"); trCard.Controls.Add(tbTrPatient); ty += 36;
+            var trResult = Lbl("", FBold, TextGrey, tx, ty + 40, 490); trCard.Controls.Add(trResult);
+            var btnDoTransfer = Btn("🔄 Process Transfer", AccentBlue, tx, ty, 180, 34);
+            trCard.Controls.Add(btnDoTransfer);
+
+            btnDoTransfer.Click += (s2, e2) =>
+            {
+                if (!int.TryParse(tbTrDonorId.Text, out int donorId))
+                { MessageBox.Show("Enter valid Donor ID."); return; }
+                string patient = tbTrPatient.Text.Trim();
+                if (string.IsNullOrWhiteSpace(patient) || patient == "Patient name")
+                { MessageBox.Show("Enter patient name."); return; }
+                if (!int.TryParse(tbTrBags.Text, out int bags) || bags <= 0)
+                { MessageBox.Show("Enter valid bag count."); return; }
+
+                var donors = HospitalEngine.myBank.GetDonors();
+                var donor = donors.Find(d => d.DonorId == donorId);
+                if (donor == null) { MessageBox.Show("Donor not found!"); return; }
+
+                var stocks = HospitalEngine.myBank.GetStocks();
+                if (stocks[donor.BloodType] < bags)
+                {
+                    trResult.Text = $"❌ Only {stocks[donor.BloodType]} bags of {donor.BloodType} available.";
+                    trResult.ForeColor = AccentRed; return;
+                }
+
+                HospitalEngine.myBank.WithdrawBlood(donor.BloodType, bags);
+
+                var newTransfer = new BloodTransfer
+                {
+                    DonorName = donor.Name,
+                    PatientName = patient,
+                    BloodType = donor.BloodType,
+                    Bags = bags,
+                    Date = DateTime.Now,
+                    Status = "Completed"
+                };
+                HospitalEngine.myBank.AddTransfer(newTransfer);
+
+                RefreshTransfers(); RefreshInventory();
+                trResult.Text = $"✅ Transfer done: {bags} bags of {donor.BloodType} → {patient}.";
+                trResult.ForeColor = AccentGrn;
+                tbTrDonorId.Clear();
+                tbTrPatient.Text = "Patient name"; tbTrPatient.ForeColor = TextGrey;
+                tbTrBags.Text = "1"; tbTrBags.ForeColor = TextGrey;
+            };
+
             s.Controls.Add(trCard);
 
             return page;
@@ -2617,7 +2659,7 @@ namespace Hospital_System
             var s = GetScroll(page);
 
             // ── Room status ──
-            var roomCard = Card(0, 0, 1080, 68, "🏥 Operating Rooms");
+            var roomCard = Card(0, 14, 1080, 68, "🏥 Operating Rooms");
             for (int i = 0; i < 9; i++)
             {
                 int idx = i;
@@ -2800,17 +2842,17 @@ namespace Hospital_System
 
         private void InitializeComponent()
         {
-			this.SuspendLayout();
-			// 
-			// MainForm
-			// 
-			this.ClientSize = new System.Drawing.Size(1280, 720);
-			this.MinimumSize = new System.Drawing.Size(1024, 600);
-			this.Name = "MainForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Hospital Management System";
-			this.Load += new System.EventHandler(this.MainForm_Load);
-			this.ResumeLayout(false);
+            this.SuspendLayout();
+            // 
+            // MainForm
+            // 
+            this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.MinimumSize = new System.Drawing.Size(1024, 600);
+            this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Hospital Management System";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.ResumeLayout(false);
 
         }
 
@@ -2823,7 +2865,7 @@ namespace Hospital_System
             var scroll = GetScroll(page);
 
             // Status overview grid
-            var statusCard = Card(0, 0, 860, 280, "Current Room Status");
+            var statusCard = Card(0, 14, 860, 280, "Current Room Status");
             var statusGrid = Grid(14, 42, 828, 224);
             statusGrid.Columns.Add("Room", "Room #");
             statusGrid.Columns.Add("Status", "Status");
@@ -3895,7 +3937,7 @@ namespace Hospital_System
             bool isAdmin = _loginResult != null && _loginResult.Role == "Admin";
 
             // Logged-in user info
-            var infoCard = Card(0, 0, 500, 90, "Current Session");
+            var infoCard = Card(0, 14, 500, 90, "Current Session");
             if (_loginResult != null)
             {
                 infoCard.Controls.Add(Lbl("Logged in as: " + _loginResult.Username + "   (" + _loginResult.Role + ")", FBold, AccentGrn, 14, 36));
@@ -3943,7 +3985,7 @@ namespace Hospital_System
             var s = GetScroll(page);
 
             // ───────────── GRID ─────────────
-            var gcard = Card(0, 0, 1080, 380, "All Pharmacists");
+            var gcard = Card(0, 14, 1080, 380, "All Pharmacists");
             var dg = Grid(14, 34, 1052, 334);
 
             dg.Columns.Add("id", "Staff ID");

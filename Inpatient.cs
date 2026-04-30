@@ -14,16 +14,16 @@ namespace Hospital_System
         public string AttendingPhysician { get; set; }
         public string DietPlan { get; set; }
 
-        public override void Display()
-        {
-            base.Display();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("      Inpatient Specific Info      ");
-            Console.ResetColor();
-            Console.WriteLine($"Ward: {WardName} | Room: {RoomNumber} | Bed: {BedNumber}");
-            Console.WriteLine($"Physician: {AttendingPhysician} | Diet: {DietPlan}");
-            if (HasOperations) Console.WriteLine($"Operation: {OperationType}");
-            Console.WriteLine("--------------------------------------------------");
-        }
+        //public override void Display()
+        //{
+        //    base.Display();
+        //    Console.ForegroundColor = ConsoleColor.Cyan;
+        //    Console.WriteLine("      Inpatient Specific Info      ");
+        //    Console.ResetColor();
+        //    Console.WriteLine($"Ward: {WardName} | Room: {RoomNumber} | Bed: {BedNumber}");
+        //    Console.WriteLine($"Physician: {AttendingPhysician} | Diet: {DietPlan}");
+        //    if (HasOperations) Console.WriteLine($"Operation: {OperationType}");
+        //    Console.WriteLine("--------------------------------------------------");
+        //}
     }
 }

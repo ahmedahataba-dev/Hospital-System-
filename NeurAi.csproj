@@ -115,6 +115,7 @@
     <Compile Include="Medecine.cs" />
     <Compile Include="Nurses.cs" />
     <Compile Include="OnlineRegistration.cs" />
+    <Compile Include="Operation.cs" />
     <Compile Include="Outpatient.cs" />
     <Compile Include="Patient.cs" />
     <Compile Include="Person.cs" />

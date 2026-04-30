@@ -12,14 +12,14 @@ namespace Hospital_System
         public DateTime Date { get; set; } //وقت حصول التبرع
         public string Status { get; set; } 
 
-        public void Display()
-        {
-            Console.WriteLine($"\n[Transfer #{TransferId}] {Date.ToShortDateString()}");
-            Console.WriteLine($"From Donor : {DonorName}");
-            Console.WriteLine($"To Patient : {PatientName}");
-            Console.WriteLine($"Blood Type : {BloodType} | Bags: {Bags}");
-            Console.WriteLine($"Status     : {Status}");
-            Console.WriteLine("--------------------------------------------------");
-        }
+        //public void Display()
+        //{
+        //    Console.WriteLine($"\n[Transfer #{TransferId}] {Date.ToShortDateString()}");
+        //    Console.WriteLine($"From Donor : {DonorName}");
+        //    Console.WriteLine($"To Patient : {PatientName}");
+        //    Console.WriteLine($"Blood Type : {BloodType} | Bags: {Bags}");
+        //    Console.WriteLine($"Status     : {Status}");
+        //    Console.WriteLine("--------------------------------------------------");
+        //}
     }
 }
